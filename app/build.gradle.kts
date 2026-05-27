@@ -10,7 +10,7 @@ plugins {
 
 android {
     compileSdk = 35
-    namespace = "code.name.monkey.retromusic"
+    namespace = "com.resofy.music"
 
     defaultConfig {
         minSdk = 24
@@ -83,11 +83,11 @@ android {
         warning.addAll(listOf("ImpliedQuantity", "Instantiatable", "MissingQuantity", "MissingTranslation", "StringFormatInvalid"))
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "21"
+        jvmTarget = "17"
     }
     dependenciesInfo {
         includeInApk = false

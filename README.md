@@ -1,23 +1,23 @@
 <p align="center">
   <a href="https://retromusic.app">
     <img src="app\src\main\ic_launcher-web.png" height="128">
-    <h1 align="center">Retro Music Player 🎵</h1>
+    <h1 align="center">Resofy Player 🎵</h1>
   </a>
 </p>
 <p align="center">
-  <a href="https://github.com/RetroMusicPlayer/RetroMusicPlayer" style="text-decoration:none" area-label="Android">
+  <a href="https://github.com/Resofy/Resofy" style="text-decoration:none" area-label="Android">
     <img src="https://img.shields.io/badge/Platform-Android-green.svg">
   </a>
-  <a href="https://github.com/RetroMusicPlayer/RetroMusicPlayer/actions/workflows/android.yml" style="text-decoration:none" area-label="Build Status">
-    <img src="https://github.com/RetroMusicPlayer/RetroMusicPlayer/actions/workflows/android.yml/badge.svg">
+  <a href="https://github.com/Resofy/Resofy/actions/workflows/android.yml" style="text-decoration:none" area-label="Build Status">
+    <img src="https://github.com/Resofy/Resofy/actions/workflows/android.yml/badge.svg">
   </a>
-  <a href="https://github.com/RetroMusicPlayer/RetroMusicPlayer" style="text-decoration:none" area-label="Min API: 21">
+  <a href="https://github.com/Resofy/Resofy" style="text-decoration:none" area-label="Min API: 21">
     <img src="https://img.shields.io/badge/minSdkVersion-21-green.svg">
   </a>
-  <a href="https://play.google.com/store/apps/details?id=code.name.monkey.retromusic" style="text-decoration:none" area-label="Play Store">
+  <a href="https://play.google.com/store/apps/details?id=music" style="text-decoration:none" area-label="Play Store">
     <img src="https://img.shields.io/badge/Download-Google_Play-green.svg">
   </a>
-  <a href="https://github.com/RetroMusicPlayer/RetroMusicPlayer/blob/master/LICENSE.md" style="text-decoration:none" area-label="License: GPL v3">
+  <a href="https://github.com/Resofy/Resofy/blob/master/LICENSE.md" style="text-decoration:none" area-label="License: GPL v3">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg">
   </a>
   <a href="https://twitter.com/retromusicapp" style="text-decoration:none" area-label="Twitter Follow">
@@ -40,9 +40,9 @@ ___
 ## Download
 | Play Store | F-Droid |
 |:-:|:-:|
-| [<img src="assets/google-play-badge.png" height="80">](https://play.google.com/store/apps/details?id=code.name.monkey.retromusic) | [<img src="https://f-droid.org/badge/get-it-on.png" height="80">](https://f-droid.org/en/packages/code.name.monkey.retromusic/) |
+| [<img src="assets/google-play-badge.png" height="80">](https://play.google.com/store/apps/details?id=music) | [<img src="https://f-droid.org/badge/get-it-on.png" height="80">](https://f-droid.org/en/packages/music/) |
 
-or get it from the [GitHub Releases](https://github.com/RetroMusicPlayer/RetroMusicPlayer/releases).
+or get it from the [GitHub Releases](https://github.com/Resofy/Resofy/releases).
 
 ## ⚠ Join [@retromusiclog](https://telegram.me/retromusiclog) on Telegram for important updates.
 ___
@@ -140,9 +140,9 @@ If you have any feature suggestions, please create an issue with detailed inform
 
 ## 🗂️ License
 
-Retro Music Player is released under the GNU General Public License v3.0
+Resofy Player is released under the GNU General Public License v3.0
 (GPLv3), which can be found [here](LICENSE.md)
 
 
->Please note: Retro Music Player is a local music player app. It
+>Please note: Resofy Player is a local music player app. It
 >doesn't support music downloading or online music streaming.
