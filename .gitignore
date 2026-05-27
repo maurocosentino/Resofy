@@ -1,43 +1,61 @@
-#built application files
+# Built application files
 *.apk
 *.ap_
- 
-# files for the dex VM
+
+# Dex
 *.dex
- 
-# Java class files
+
+# Java/Kotlin compiled files
 *.class
- 
-# generated files
+
+# Generated files
 bin/
 gen/
- 
-# Local configuration file (sdk path, etc)
+
+# Local config
 local.properties
- 
-# Windows thumbnail db
+
+# OS files
 Thumbs.db
- 
-# OSX files
 .DS_Store
- 
-# Eclipse project files
-.classpath
-.project
- 
-# Android Studio
+
+# IDE
 *.iml
-.idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
-.gradle
+.idea/
+.gradle/
+
+# Build folders
 build/
- 
-#NDK
+*/build/
+
+# Kotlin
+.kotlin/
+
+# NDK
 obj/
+.externalNativeBuild/
+.cxx/
 
-captures
+# Captures
+captures/
+
+# Releases
 app/normal/release/
-/models/
-/app/release/
+app/release/
 
-.kotlin
+# Models
+/models/
+
+# Logs
+*.log
+
+# Keystore files
+*.jks
+*.keystore
+
+# Mac/Linux temp
+*.swp
+*~
+
+# Android Studio navigation/editor
+.navigation/
