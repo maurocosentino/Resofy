@@ -47,21 +47,21 @@ object SubsonicMapper {
         username: String,
         password: String
     ): Song {
+        val coverUrl = buildCoverUrl(baseUrl, coverArt, username, password) ?: ""
         return Song(
-
             id = id.hashCode().toLong().let { if (it < 0) -it else it },
             title = title,
             trackNumber = track ?: 0,
             year = year ?: 0,
-            duration = ((duration ?: 0) * 1000).toLong(), // Subsonic da segundos, Song espera ms
-            data = buildStreamUrl(baseUrl, id, username, password), // ← la URL va aquí
+            duration = ((duration ?: 0) * 1000).toLong(),
+            data = buildStreamUrl(baseUrl, id, username, password),
             dateModified = 0L,
             albumId = albumId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
             albumName = album ?: "",
             artistId = artistId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
             artistName = artist ?: "",
             composer = null,
-            albumArtist = null
+            albumArtist = coverUrl
         )
     }
 }
