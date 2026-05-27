@@ -1,9 +1,7 @@
 package com.resofy.music.fragments.servers
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -15,23 +13,24 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.resofy.music.R
-import com.resofy.music.adapter.song.SongAdapter
+import com.resofy.music.adapter.album.AlbumAdapter
+import com.resofy.music.interfaces.IAlbumClickListener
 import com.resofy.music.util.ServerPreferences
 import kotlinx.coroutines.launch
 
-class ServerSongsFragment : Fragment() {
+class ServerAlbumsFragment : Fragment(), IAlbumClickListener {
 
-    private lateinit var viewModel: ServerSongsViewModel
-    private lateinit var adapter: SongAdapter
+    private lateinit var viewModel: ServerAlbumsViewModel
+    private lateinit var adapter: AlbumAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyText: TextView
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onAlbumClick(albumId: Long, view: View) {
+        // futuro: navegar a detalle del álbum remoto
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return inflater.inflate(R.layout.fragment_server_songs, container, false)
     }
 
@@ -47,35 +46,33 @@ class ServerSongsFragment : Fragment() {
         viewModel = ViewModelProvider(this, object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return ServerSongsViewModel(prefs.serverUrl, prefs.username, prefs.password) as T
+                return ServerAlbumsViewModel(prefs.serverUrl, prefs.username, prefs.password) as T
             }
-        })[ServerSongsViewModel::class.java]
+        })[ServerAlbumsViewModel::class.java]
 
-        adapter = SongAdapter(requireActivity(), mutableListOf(), R.layout.item_list)
+        adapter = AlbumAdapter(requireActivity(), mutableListOf(), R.layout.item_list, this)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = adapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
-                    android.util.Log.d("ServerSongs", "state received: $state")
                     when (state) {
-                        is ServerSongsState.Loading -> {
+                        is ServerAlbumsState.Loading -> {
                             progressBar.visibility = View.VISIBLE
                             recyclerView.visibility = View.GONE
                             emptyText.visibility = View.GONE
                         }
-                        is ServerSongsState.Success -> {
-                            android.util.Log.d("ServerSongs", "Songs received: ${state.songs.size}")
+                        is ServerAlbumsState.Success -> {
                             progressBar.visibility = View.GONE
-                            if (state.songs.isEmpty()) {
+                            if (state.albums.isEmpty()) {
                                 emptyText.visibility = View.VISIBLE
                             } else {
                                 recyclerView.visibility = View.VISIBLE
-                                adapter.swapDataSet(state.songs)
+                                adapter.swapDataSet(state.albums)
                             }
                         }
-                        is ServerSongsState.Error -> {
+                        is ServerAlbumsState.Error -> {
                             progressBar.visibility = View.GONE
                             emptyText.visibility = View.VISIBLE
                             emptyText.text = state.message
@@ -84,9 +81,5 @@ class ServerSongsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    companion object {
-        fun newInstance() = ServerSongsFragment()
     }
 }

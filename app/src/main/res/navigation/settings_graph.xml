@@ -138,11 +138,23 @@
             app:exitAnim="@anim/retro_fragment_open_exit"
             app:popEnterAnim="@anim/retro_fragment_close_enter"
             app:popExitAnim="@anim/retro_fragment_close_exit" />
+        <action
+            android:id="@+id/action_serversSettingsFragment_to_serverAlbumsFragment"
+            app:destination="@id/serverAlbumsFragment"
+            app:enterAnim="@anim/retro_fragment_open_enter"
+            app:exitAnim="@anim/retro_fragment_open_exit"
+            app:popEnterAnim="@anim/retro_fragment_close_enter"
+            app:popExitAnim="@anim/retro_fragment_close_exit" />
     </fragment>
 
     <fragment
         android:id="@+id/serverSongsFragment"
         android:name="com.resofy.music.fragments.servers.ServerSongsFragment"
         android:label="Server Songs" />
+
+    <fragment
+        android:id="@+id/serverAlbumsFragment"
+        android:name="com.resofy.music.fragments.servers.ServerAlbumsFragment"
+        android:label="Albums" />
 
 </navigation>

@@ -1,52 +1,24 @@
 package com.resofy.music.network.subsonic
 
+import com.resofy.music.model.Album
+import com.resofy.music.model.Artist
 import com.resofy.music.model.Song
+import kotlin.collections.mutableListOf
 
 object SubsonicMapper {
 
-    /**
-     * Construye la URL de stream que ExoPlayer va a reproducir directamente.
-     * Va al campo Song.data — que es lo que MusicService usa para reproducir.
-     */
-    fun buildStreamUrl(
-        baseUrl: String,
-        songId: String,
-        username: String,
-        password: String
-    ): String {
-        // Subsonic acepta la contraseña como hex token para mayor seguridad
-        // Por simplicidad inicial usamos u/p directo
+    fun buildStreamUrl(baseUrl: String, songId: String, username: String, password: String): String {
         val cleanUrl = baseUrl.trimEnd('/')
-        return "$cleanUrl/rest/stream" +
-                "?id=$songId" +
-                "&v=1.16.1" +
-                "&c=resofy" +
-                "&u=$username" +
-                "&p=$password" +
-                "&f=json"
+        return "$cleanUrl/rest/stream?id=$songId&v=1.16.1&c=resofy&u=$username&p=$password&f=json"
     }
 
-    fun buildCoverUrl(
-        baseUrl: String,
-        coverArtId: String?,
-        username: String,
-        password: String
-    ): String? {
+    fun buildCoverUrl(baseUrl: String, coverArtId: String?, username: String, password: String): String? {
         coverArtId ?: return null
         val cleanUrl = baseUrl.trimEnd('/')
-        return "$cleanUrl/rest/getCoverArt" +
-                "?id=$coverArtId" +
-                "&v=1.16.1" +
-                "&c=resofy" +
-                "&u=$username" +
-                "&p=$password"
+        return "$cleanUrl/rest/getCoverArt?id=$coverArtId&v=1.16.1&c=resofy&u=$username&p=$password"
     }
 
-    fun SubsonicSong.toSong(
-        baseUrl: String,
-        username: String,
-        password: String
-    ): Song {
+    fun SubsonicSong.toSong(baseUrl: String, username: String, password: String): Song {
         val coverUrl = buildCoverUrl(baseUrl, coverArt, username, password) ?: ""
         return Song(
             id = id.hashCode().toLong().let { if (it < 0) -it else it },
@@ -62,6 +34,55 @@ object SubsonicMapper {
             artistName = artist ?: "",
             composer = null,
             albumArtist = coverUrl
+        )
+    }
+
+    fun SubsonicAlbum.toAlbum(baseUrl: String, username: String, password: String): Album {
+        val coverUrl = buildCoverUrl(baseUrl, coverArt, username, password) ?: ""
+        val albumId = id.hashCode().toLong().let { if (it < 0) -it else it }
+        val dummySong = Song(
+            id = albumId,
+            title = "",
+            trackNumber = 0,
+            year = year ?: 0,
+            duration = 0L,
+            data = "https://",
+            dateModified = 0L,
+            albumId = albumId,
+            albumName = name,
+            artistId = artistId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
+            artistName = artist ?: "",
+            composer = coverUrl,
+            albumArtist = artist ?: ""
+        )
+        return Album(id = albumId, songs = mutableListOf(dummySong))
+    }
+
+    fun SubsonicArtist.toArtist(): Artist {
+        val artistId = id.hashCode().toLong().let { if (it < 0) -it else it }
+        val dummyAlbum = Album(
+            id = artistId,
+            songs = listOf(
+                Song(
+                    id = artistId,
+                    title = "",
+                    trackNumber = 0,
+                    year = 0,
+                    duration = 0L,
+                    data = "https://",
+                    dateModified = 0L,
+                    albumId = artistId,
+                    albumName = "",
+                    artistId = artistId,
+                    artistName = name,
+                    composer = null,
+                    albumArtist = null
+                )
+            )
+        )
+        return Artist(
+            artistName = name,
+            albums = listOf(dummyAlbum)
         )
     }
 }

@@ -59,7 +59,7 @@ object RetroGlideExtension {
 
     private fun getSongModel(song: Song, ignoreMediaStore: Boolean): Any {
         if (song.data.startsWith("http://") || song.data.startsWith("https://")) {
-            return song.albumArtist ?: ""
+            return song.composer ?: ""
         }
         return if (ignoreMediaStore) {
             AudioFileCover(song.data)

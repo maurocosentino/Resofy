@@ -10,6 +10,8 @@ data class SubsonicResponseBody(
     val status: String,
     val version: String,
     val searchResult3: SearchResult3?,
+    val albumList2: AlbumList2?,
+    val artists: ArtistsResult?,
     val error: SubsonicError?
 )
 
@@ -29,6 +31,37 @@ data class SubsonicSong(
     val duration: Int?,
     val coverArt: String?,
     val size: Long?
+)
+
+// Álbumes
+data class AlbumList2(
+    val album: List<SubsonicAlbum>?
+)
+
+data class SubsonicAlbum(
+    val id: String,
+    val name: String,
+    val title: String?,
+    val artist: String?,
+    val artistId: String?,
+    val coverArt: String?,
+    val year: Int?
+)
+
+// Artistas
+data class ArtistsResult(
+    val index: List<ArtistIndex>?
+)
+
+data class ArtistIndex(
+    val name: String,
+    val artist: List<SubsonicArtist>?
+)
+
+data class SubsonicArtist(
+    val id: String,
+    val name: String,
+    val albumCount: Int?
 )
 
 data class SubsonicError(

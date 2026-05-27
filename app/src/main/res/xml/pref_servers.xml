@@ -21,4 +21,8 @@
     <Preference
         android:key="server_browse"
         android:title="Ver canciones del servidor" />
+
+    <Preference
+        android:key="server_albums"
+        android:title="Ver álbumes del servidor" />
 </PreferenceScreen>
