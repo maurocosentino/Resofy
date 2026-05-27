@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+        android:key="server_url"
+        android:title="URL del servidor"
+        android:hint="http://192.168.1.100:4533"
+        android:dialogTitle="URL Navidrome/Subsonic" />
+
+    <EditTextPreference
+        android:key="server_username"
+        android:title="Usuario" />
+
+    <EditTextPreference
+        android:key="server_password"
+        android:title="Contraseña"
+        android:inputType="textPassword" />
+
+    <Preference
+        android:key="server_test"
+        android:title="Probar conexión" />
+
+    <Preference
+        android:key="server_browse"
+        android:title="Ver canciones del servidor" />
+</PreferenceScreen>

@@ -1,17 +1,3 @@
-/*
- * Copyright (c) 2020 Hemanth Savarla.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- */
 package com.resofy.music.fragments.settings
 
 import android.content.res.ColorStateList
@@ -46,6 +32,7 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
                 R.id.aboutSettings -> R.id.action_mainSettingsFragment_to_aboutActivity
                 R.id.nowPlayingSettings -> R.id.action_mainSettingsFragment_to_nowPlayingSettingsFragment
                 R.id.backup_restore_settings -> R.id.action_mainSettingsFragment_to_backupFragment
+                R.id.serverSettings -> R.id.action_mainSettingsFragment_to_serversSettingsFragment
                 else -> R.id.action_mainSettingsFragment_to_themeSettingsFragment
             }
         )
@@ -71,6 +58,7 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
         binding.otherSettings.setOnClickListener(this)
         binding.aboutSettings.setOnClickListener(this)
         binding.backupRestoreSettings.setOnClickListener(this)
+        binding.serverSettings.setOnClickListener(this)
 
         binding.buyProContainer.apply {
             isGone = App.isProVersion()
