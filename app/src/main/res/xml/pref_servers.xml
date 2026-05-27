@@ -25,4 +25,7 @@
     <Preference
         android:key="server_albums"
         android:title="Ver álbumes del servidor" />
+    <Preference
+        android:key="server_artists"
+        android:title="Ver artistas del servidor" />
 </PreferenceScreen>

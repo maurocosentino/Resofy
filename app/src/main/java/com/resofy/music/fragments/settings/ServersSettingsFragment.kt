@@ -41,6 +41,11 @@ class ServersSettingsFragment : AbsSettingsFragment() {
             findNavController().navigate(R.id.action_serversSettingsFragment_to_serverAlbumsFragment)
             true
         }
+
+        findPreference<Preference>("server_artists")?.setOnPreferenceClickListener {
+            findNavController().navigate(R.id.action_serversSettingsFragment_to_serverArtistsFragment)
+            true
+        }
     }
 
     private fun testConnection() {
