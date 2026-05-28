@@ -30,6 +30,11 @@ interface SubsonicService {
         @Query("f") format: String = "json"
     ): SubsonicResponse
 
+    @GET("rest/getArtist")
+    suspend fun getArtist(
+        @Query("id") artistId: String,
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
     @GET("rest/getArtists")
     suspend fun getArtists(
         @Query("f") format: String = "json"

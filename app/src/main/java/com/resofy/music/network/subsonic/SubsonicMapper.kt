@@ -59,21 +59,21 @@ object SubsonicMapper {
     }
 
     fun SubsonicArtist.toArtist(): Artist {
-        val artistId = id.hashCode().toLong().let { if (it < 0) -it else it }
+        val artistLongId = id.hashCode().toLong().let { if (it < 0) -it else it }
         val dummyAlbum = Album(
-            id = artistId,
+            id = artistLongId,
             songs = listOf(
                 Song(
-                    id = artistId,
+                    id = artistLongId,
                     title = "",
                     trackNumber = 0,
                     year = 0,
                     duration = 0L,
-                    data = "https://",
+                    data = "https://subsonic-artist-id:$id",
                     dateModified = 0L,
-                    albumId = artistId,
+                    albumId = artistLongId,
                     albumName = "",
-                    artistId = artistId,
+                    artistId = artistLongId,
                     artistName = name,
                     composer = null,
                     albumArtist = null

@@ -2,6 +2,7 @@ package com.resofy.music.fragments.artists
 
 import androidx.lifecycle.*
 import com.resofy.music.interfaces.IMusicServiceEventListener
+import com.resofy.music.model.Album
 import com.resofy.music.model.Artist
 import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.network.Result
@@ -30,7 +31,16 @@ class ArtistDetailsViewModel(
                     ?: realRepository.artistById(artistId)
                 artistDetails.postValue(artist)
             } else if (artistName != null) {
-                artistDetails.postValue(realRepository.albumArtistByName(artistName))
+                try {
+                    val cached = providerManager.activeProvider.artistByName(artistName)
+                    if (cached != null) {
+                        artistDetails.postValue(cached)
+                    } else {
+                        artistDetails.postValue(realRepository.albumArtistByName(artistName))
+                    }
+                } catch (e: Exception) {
+                    artistDetails.postValue(Artist.empty)
+                }
             }
         }
     }
@@ -40,6 +50,11 @@ class ArtistDetailsViewModel(
     }
 
     fun getArtist(): LiveData<Artist> = artistDetails
+
+    fun getAlbumsForArtist(artistId: Long): LiveData<List<Album>> = liveData(IO) {
+        val albums = providerManager.activeProvider.albumsForArtist(artistId)
+        if (albums.isNotEmpty()) emit(albums)
+    }
 
     fun getArtistInfo(
         name: String,

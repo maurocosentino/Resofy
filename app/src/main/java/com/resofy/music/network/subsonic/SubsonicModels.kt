@@ -13,8 +13,10 @@ data class SubsonicResponseBody(
     val albumList2: AlbumList2?,
     val artists: ArtistsResult?,
     val album: SubsonicAlbumDetail?,
+    val artist: SubsonicArtistDetail?,
     val error: SubsonicError?
 )
+
 
 data class SearchResult3(
     val song: List<SubsonicSong>?
@@ -60,7 +62,11 @@ data class SubsonicAlbumDetail(
 data class ArtistsResult(
     val index: List<ArtistIndex>?
 )
-
+data class SubsonicArtistDetail(
+    val id: String,
+    val name: String,
+    val album: List<SubsonicAlbum>?
+)
 data class ArtistIndex(
     val name: String,
     val artist: List<SubsonicArtist>?

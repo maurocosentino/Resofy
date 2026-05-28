@@ -65,6 +65,33 @@ class SubsonicMusicProvider(
         }
     }
 
+    override suspend fun albumsForArtist(artistId: Long): List<Album> {
+        if (baseUrl.isEmpty()) return emptyList()
+        val artist = cachedArtists.find { it.id == artistId } ?: return emptyList()
+        val subsonicId = artist.safeGetFirstAlbum().safeGetFirstSong().data
+            .removePrefix("https://subsonic-artist-id:")
+        return try {
+            when (val result = repository.getAlbumsForArtist(subsonicId)) {
+                is Result.Success -> {
+                    // Cargar canciones reales para cada álbum
+                    val albumsWithSongs = result.data.map { album ->
+                        val albumSubsonicId = album.safeGetFirstSong().data
+                            .removePrefix("https://subsonic-album-id:")
+                        when (val songsResult = repository.getSongsForAlbum(albumSubsonicId)) {
+                            is Result.Success -> Album(id = album.id, songs = songsResult.data)
+                            else -> album
+                        }
+                    }
+                    cachedAlbums = (cachedAlbums + albumsWithSongs).distinctBy { it.id }
+                    albumsWithSongs
+                }
+                else -> emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
     override suspend fun artists(): List<Artist> {
         if (baseUrl.isEmpty()) return emptyList()
         return try {
@@ -74,6 +101,18 @@ class SubsonicMusicProvider(
             }
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    override suspend fun artistByName(name: String): Artist? {
+        // Primero caché
+        cachedArtists.find { it.name == name }?.let { return it }
+        // Si no hay caché, cargar artistas
+        if (baseUrl.isEmpty()) return null
+        return try {
+            artists().find { it.name == name }
+        } catch (e: Exception) {
+            null
         }
     }
 

@@ -69,6 +69,17 @@ class SubsonicRepository(
         }
     }
 
+    suspend fun getAlbumsForArtist(artistId: String): Result<List<Album>> {
+        return try {
+            val response = service.getArtist(artistId)
+            val albums = response.response.artist?.album
+                ?.map { it.toAlbum(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(albums)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
     suspend fun testConnection(): Result<String> {
         return try {
             val response = service.search(query = "", songCount = 1)
