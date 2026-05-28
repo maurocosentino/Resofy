@@ -18,7 +18,11 @@ interface SubsonicService {
         @Query("offset") offset: Int = 0,
         @Query("f") format: String = "json"
     ): SubsonicResponse
-
+    @GET("rest/getAlbum")
+    suspend fun getAlbum(
+        @Query("id") albumId: String,
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
     @GET("rest/getAlbumList2")
     suspend fun getAlbumList(
         @Query("type") type: String = "alphabeticalByName",

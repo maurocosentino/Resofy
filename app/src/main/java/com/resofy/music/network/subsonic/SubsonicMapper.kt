@@ -39,23 +39,23 @@ object SubsonicMapper {
 
     fun SubsonicAlbum.toAlbum(baseUrl: String, username: String, password: String): Album {
         val coverUrl = buildCoverUrl(baseUrl, coverArt, username, password) ?: ""
-        val albumId = id.hashCode().toLong().let { if (it < 0) -it else it }
+        val albumLongId = id.hashCode().toLong().let { if (it < 0) -it else it }
         val dummySong = Song(
-            id = albumId,
-            title = "",
+            id = albumLongId,
+            title = id,  //guarda el Subsonic ID temporalmente
             trackNumber = 0,
             year = year ?: 0,
             duration = 0L,
-            data = "https://",
+            data = "https://subsonic-album-id:$id",  //ID en data para recuperarlo
             dateModified = 0L,
-            albumId = albumId,
+            albumId = albumLongId,
             albumName = name,
             artistId = artistId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
             artistName = artist ?: "",
             composer = coverUrl,
             albumArtist = artist ?: ""
         )
-        return Album(id = albumId, songs = mutableListOf(dummySong))
+        return Album(id = albumLongId, songs = mutableListOf(dummySong))
     }
 
     fun SubsonicArtist.toArtist(): Artist {

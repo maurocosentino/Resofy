@@ -18,6 +18,7 @@ import androidx.lifecycle.*
 import com.resofy.music.interfaces.IMusicServiceEventListener
 import com.resofy.music.model.Album
 import com.resofy.music.model.Artist
+import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.network.Result
 import com.resofy.music.network.model.LastFmAlbum
 import com.resofy.music.repository.RealRepository
@@ -26,6 +27,7 @@ import kotlinx.coroutines.launch
 
 class AlbumDetailsViewModel(
     private val repository: RealRepository,
+    private val providerManager: ProviderManager,
     private val albumId: Long
 ) : ViewModel(), IMusicServiceEventListener {
     private val albumDetails = MutableLiveData<Album>()
@@ -36,20 +38,50 @@ class AlbumDetailsViewModel(
 
     private fun fetchAlbum() {
         viewModelScope.launch(IO) {
-            albumDetails.postValue(repository.albumByIdAsync(albumId))
+            val album = providerManager.activeProvider.albumById(albumId)
+                ?: repository.albumByIdAsync(albumId)
+
+            if (album != null && album != Album.empty) {
+                // Cargar canciones reales del álbum
+                val songs = providerManager.activeProvider.songsForAlbum(albumId)
+                val albumWithSongs = if (songs.isNotEmpty()) {
+                    Album(id = album.id, songs = songs)
+                } else {
+                    album
+                }
+                albumDetails.postValue(albumWithSongs)
+            } else {
+                albumDetails.postValue(Album.empty)
+            }
         }
     }
 
     fun getAlbum(): LiveData<Album> = albumDetails
 
     fun getArtist(artistId: Long): LiveData<Artist> = liveData(IO) {
-        val artist = repository.artistById(artistId)
-        emit(artist)
+        try {
+            val cachedArtist = providerManager.activeProvider.artistById(artistId)
+            if (cachedArtist != null) {
+                emit(cachedArtist)
+                return@liveData
+            }
+            emit(repository.artistById(artistId))
+        } catch (e: Exception) {
+            emit(Artist.empty)
+        }
     }
 
     fun getAlbumArtist(artistName: String): LiveData<Artist> = liveData(IO) {
-        val artist = repository.albumArtistByName(artistName)
-        emit(artist)
+        try {
+            val cached = providerManager.activeProvider.cachedArtistByName(artistName)
+            if (cached != null) {
+                emit(cached)
+                return@liveData
+            }
+            emit(repository.albumArtistByName(artistName))
+        } catch (e: Exception) {
+            emit(Artist.empty)
+        }
     }
 
     fun getAlbumInfo(album: Album): LiveData<Result<LastFmAlbum>> = liveData(IO) {

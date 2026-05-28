@@ -164,18 +164,11 @@ private val viewModules = module {
     }
 
     viewModel { (albumId: Long) ->
-        AlbumDetailsViewModel(
-            get(),
-            albumId
-        )
+        AlbumDetailsViewModel(get(), get(), albumId)
     }
 
     viewModel { (artistId: Long?, artistName: String?) ->
-        ArtistDetailsViewModel(
-            get(),
-            artistId,
-            artistName
-        )
+        ArtistDetailsViewModel(get(), get(), artistId, artistName)
     }
 
     viewModel { (playlistId: Long) ->

@@ -8,6 +8,7 @@ import com.resofy.music.network.subsonic.SubsonicMapper.toAlbum
 import com.resofy.music.network.subsonic.SubsonicMapper.toArtist
 import com.resofy.music.network.subsonic.SubsonicMapper.toSong
 import com.resofy.music.network.subsonic.SubsonicService
+import kotlin.collections.emptyList
 
 class SubsonicRepository(
     private val service: SubsonicService,
@@ -39,6 +40,18 @@ class SubsonicRepository(
             Result.Success(albums)
         } catch (e: Exception) {
             android.util.Log.e("Subsonic", "albums exception=${e.message}", e)
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getSongsForAlbum(albumId: String): Result<List<Song>> {
+        return try {
+            val response = service.getAlbum(albumId)
+            val songs = response.response.album?.song
+                ?.map { it.toSong(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
             Result.Error(e)
         }
     }

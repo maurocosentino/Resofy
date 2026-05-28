@@ -17,32 +17,43 @@ class ProviderManager(
     private val _activeProviderType = MutableStateFlow(loadSavedProviderType())
     val activeProviderType: StateFlow<MusicProviderType> = _activeProviderType
 
-    private var _activeProvider: MusicProvider = buildProvider(_activeProviderType.value)
+    // Instancias persistentes — el caché vive aquí
+    private val localProvider: LocalMusicProvider by lazy {
+        LocalMusicProvider(localRepository)
+    }
 
-    val activeProvider: MusicProvider get() = _activeProvider
+    private var subsonicProvider: SubsonicMusicProvider? = null
+
+    private fun getOrCreateSubsonicProvider(): SubsonicMusicProvider {
+        val current = subsonicProvider
+        if (current != null) return current
+        return SubsonicMusicProvider(
+            baseUrl = serverPrefs.serverUrl,
+            username = serverPrefs.username,
+            password = serverPrefs.password,
+        ).also { subsonicProvider = it }
+    }
+
+    val activeProvider: MusicProvider
+        get() = when (_activeProviderType.value) {
+            MusicProviderType.LOCAL -> localProvider
+            MusicProviderType.SUBSONIC -> getOrCreateSubsonicProvider()
+        }
 
     fun setProvider(type: MusicProviderType) {
         saveProviderType(type)
-        _activeProvider = buildProvider(type)
         _activeProviderType.value = type
     }
 
     fun sync() {
-        // Fuerza rebuild del provider para refrescar credenciales/config
-        _activeProvider = buildProvider(_activeProviderType.value)
-        // El reload real lo hace LibraryViewModel observando activeProviderType
+        // Fuerza recreación del SubsonicProvider para refrescar credenciales
+        subsonicProvider = SubsonicMusicProvider(
+            baseUrl = serverPrefs.serverUrl,
+            username = serverPrefs.username,
+            password = serverPrefs.password,
+        )
+        // Dispara reload en LibraryViewModel
         _activeProviderType.value = _activeProviderType.value
-    }
-
-    private fun buildProvider(type: MusicProviderType): MusicProvider {
-        return when (type) {
-            MusicProviderType.LOCAL -> LocalMusicProvider(localRepository)
-            MusicProviderType.SUBSONIC -> SubsonicMusicProvider(
-                baseUrl = serverPrefs.serverUrl,
-                username = serverPrefs.username,
-                password = serverPrefs.password,
-            )
-        }
     }
 
     private fun loadSavedProviderType(): MusicProviderType {

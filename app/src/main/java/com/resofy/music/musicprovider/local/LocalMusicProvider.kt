@@ -17,4 +17,14 @@ class LocalMusicProvider(
     override suspend fun artists(): List<Artist> = repository.fetchArtists()
 
     override suspend fun shuffle(): List<Song> = repository.allSongs()
+    override suspend fun albumById(albumId: Long): Album? =
+        repository.albumByIdAsync(albumId)
+
+    override suspend fun artistById(artistId: Long): Artist? =
+        repository.artistById(artistId)
+
+    override fun cachedArtistByName(name: String): Artist? = null
+
+    override suspend fun songsForAlbum(albumId: Long): List<Song> =
+        repository.albumByIdAsync(albumId).songs
 }
