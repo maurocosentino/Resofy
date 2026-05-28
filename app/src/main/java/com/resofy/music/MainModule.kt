@@ -26,6 +26,7 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import com.resofy.music.musicprovider.ProviderManager
 
 val networkModule = module {
 
@@ -150,12 +151,16 @@ private val dataModule = module {
     single {
         RealLocalDataRepository(get())
     } bind LocalDataRepository::class
+
+    single {
+        ProviderManager(androidContext(), get())
+    }
 }
 
 private val viewModules = module {
 
     viewModel {
-        LibraryViewModel(get())
+        LibraryViewModel(get(), get())
     }
 
     viewModel { (albumId: Long) ->

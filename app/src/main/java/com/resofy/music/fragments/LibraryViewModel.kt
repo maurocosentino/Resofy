@@ -12,6 +12,7 @@ import com.resofy.music.fragments.search.Filter
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.interfaces.IMusicServiceEventListener
 import com.resofy.music.model.*
+import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.repository.RealRepository
 import com.resofy.music.util.DensityUtil
 import com.resofy.music.util.PreferenceUtil
@@ -26,6 +27,7 @@ import java.io.File
 
 class LibraryViewModel(
     private val repository: RealRepository,
+    private val providerManager: ProviderManager,
 ) : ViewModel(), IMusicServiceEventListener {
 
     private val _paletteColor = MutableLiveData<Int>()
@@ -44,7 +46,12 @@ class LibraryViewModel(
     val paletteColor: LiveData<Int> = _paletteColor
 
     init {
-        loadLibraryContent()
+        // Observar cambios de provider y recargar
+        viewModelScope.launch {
+            providerManager.activeProviderType.collect {
+                loadLibraryContent()
+            }
+        }
     }
 
     private fun loadLibraryContent() {
@@ -80,19 +87,15 @@ class LibraryViewModel(
     fun getFabMargin(): LiveData<Int> = fabMargin
 
     private suspend fun fetchSongs() {
-        songs.postValue(repository.allSongs())
+        songs.postValue(providerManager.activeProvider.songs())
     }
 
     private suspend fun fetchAlbums() {
-        albums.postValue(repository.fetchAlbums())
+        albums.postValue(providerManager.activeProvider.albums())
     }
 
     private suspend fun fetchArtists() {
-        if (PreferenceUtil.albumArtistsOnly) {
-            artists.postValue(repository.albumArtists())
-        } else {
-            artists.postValue(repository.fetchArtists())
-        }
+        artists.postValue(providerManager.activeProvider.artists())
     }
 
     private suspend fun fetchPlaylists() {
@@ -172,7 +175,7 @@ class LibraryViewModel(
     }
 
     fun shuffleSongs() = viewModelScope.launch(IO) {
-        val songs = repository.allSongs()
+        val songs = providerManager.activeProvider.shuffle()
         withContext(Main) {
             MusicPlayerRemote.openAndShuffleQueue(songs, true)
         }

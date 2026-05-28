@@ -176,8 +176,8 @@
             android:layout_height="wrap_content"
             app:settingListItemIcon="@drawable/ic_language"
             app:settingListItemIconColor="@color/md_blue_A400"
-            app:settingListItemText="Navidrome / Subsonic"
-            app:settingListItemTitle="Servers" />
+            app:settingListItemText="Local · Navidrome · Subsonic"
+            app:settingListItemTitle="Music Providers" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

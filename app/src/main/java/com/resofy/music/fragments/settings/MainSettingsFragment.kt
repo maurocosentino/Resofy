@@ -32,7 +32,7 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
                 R.id.aboutSettings -> R.id.action_mainSettingsFragment_to_aboutActivity
                 R.id.nowPlayingSettings -> R.id.action_mainSettingsFragment_to_nowPlayingSettingsFragment
                 R.id.backup_restore_settings -> R.id.action_mainSettingsFragment_to_backupFragment
-                R.id.serverSettings -> R.id.action_mainSettingsFragment_to_serversSettingsFragment
+                R.id.serverSettings -> R.id.action_mainSettingsFragment_to_musicProvidersFragment
                 else -> R.id.action_mainSettingsFragment_to_themeSettingsFragment
             }
         )
