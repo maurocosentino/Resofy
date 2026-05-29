@@ -2,6 +2,7 @@ package com.resofy.music.musicprovider
 
 import com.resofy.music.model.Album
 import com.resofy.music.model.Artist
+import com.resofy.music.model.Home
 import com.resofy.music.model.Song
 
 interface MusicProvider {
@@ -14,6 +15,9 @@ interface MusicProvider {
     suspend fun artistByName(name: String): Artist?
     suspend fun albumsForArtist(artistId: Long): List<Album>
     suspend fun songsForAlbum(albumId: Long): List<Song>
+
+    suspend fun homeSections(): List<Home>
+    suspend fun suggestions(): List<Song>
     fun cachedArtistByName(name: String): Artist?
 
 }

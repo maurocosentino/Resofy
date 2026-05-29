@@ -107,11 +107,11 @@ class LibraryViewModel(
     }
 
     private suspend fun fetchHomeSections() {
-        home.postValue(repository.homeSections())
+        home.postValue(providerManager.activeProvider.homeSections())
     }
 
     private suspend fun fetchSuggestions() {
-        suggestions.postValue(repository.suggestions())
+        suggestions.postValue(providerManager.activeProvider.suggestions())
     }
 
     fun search(query: String?, filter: Filter) =
@@ -310,7 +310,6 @@ class LibraryViewModel(
         }
         songHistory.value = emptyList()
     }
-
 
     fun restoreHistory() {
         viewModelScope.launch(IO) {

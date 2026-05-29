@@ -2,6 +2,7 @@ package com.resofy.music.musicprovider.local
 
 import com.resofy.music.model.Album
 import com.resofy.music.model.Artist
+import com.resofy.music.model.Home
 import com.resofy.music.model.Song
 import com.resofy.music.musicprovider.MusicProvider
 import com.resofy.music.repository.RealRepository
@@ -20,6 +21,8 @@ class LocalMusicProvider(
     override suspend fun albumById(albumId: Long): Album? =
         repository.albumByIdAsync(albumId)
 
+    override suspend fun homeSections(): List<Home> = repository.homeSections()
+    override suspend fun suggestions(): List<Song> = repository.suggestions()
     override suspend fun artistById(artistId: Long): Artist? =
         repository.artistById(artistId)
 

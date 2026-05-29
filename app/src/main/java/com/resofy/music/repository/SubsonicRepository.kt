@@ -80,6 +80,31 @@ class SubsonicRepository(
             Result.Error(e)
         }
     }
+
+    suspend fun getAlbumListByType(type: String, size: Int = 10): Result<List<Album>> {
+        return try {
+            val response = service.getAlbumList(type = type, size = size)
+            val albums = response.response.albumList2?.album
+                ?.map { it.toAlbum(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(albums)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getRandomSongs(size: Int = 20): Result<List<Song>> {
+        return try {
+            val response = service.getAlbumList(type = "random", size = size)
+            // random devuelve albums, tomamos el primer song de cada uno como suggestion
+            val songs = response.response.albumList2?.album
+                ?.map { it.toAlbum(baseUrl, username, password).safeGetFirstSong() }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
     suspend fun testConnection(): Result<String> {
         return try {
             val response = service.search(query = "", songCount = 1)

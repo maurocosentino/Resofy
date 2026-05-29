@@ -24,7 +24,7 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import code.name.monkey.appthemehelper.common.ATHToolbarActivity
@@ -53,10 +53,15 @@ import com.resofy.music.util.PreferenceUtil.userName
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialFadeThrough
 import com.google.android.material.transition.MaterialSharedAxis
+import com.resofy.music.musicprovider.MusicProviderType
+import com.resofy.music.musicprovider.ProviderManager
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class HomeFragment :
     AbsMainActivityFragment(R.layout.fragment_home), IScrollHelper {
 
+    private val providerManager: ProviderManager by inject()
     private var _binding: HomeBinding? = null
     private val binding get() = _binding!!
 
@@ -67,7 +72,22 @@ class HomeFragment :
         mainActivity.setSupportActionBar(binding.toolbar)
         mainActivity.supportActionBar?.title = null
         setupListeners()
-        binding.titleWelcome.text = String.format("%s", userName)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            providerManager.activeProviderType.collect { type ->
+                val isLocal = type == MusicProviderType.LOCAL
+                if (isLocal) {
+                    binding.absPlaylists.root.visibility = View.VISIBLE
+                } else {
+                    binding.history.visibility = View.GONE
+                    binding.lastAdded.visibility = View.GONE
+                    binding.topPlayed.visibility = View.GONE
+                    binding.absPlaylists.root.visibility = View.GONE
+                }
+            }
+        }
+
+//        binding.titleWelcome.text = String.format("%s", userName)
 
         enterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
         reenterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
@@ -86,7 +106,7 @@ class HomeFragment :
             homeAdapter.swapData(it)
         }
 
-        loadProfile()
+//        loadProfile()
         setupTitle()
         colorButtons()
         postponeEnterTransition()
@@ -108,14 +128,14 @@ class HomeFragment :
     }
 
     private fun setupListeners() {
-        binding.bannerImage?.setOnClickListener {
-            findNavController().navigate(
-                R.id.user_info_fragment, null, null, FragmentNavigatorExtras(
-                    binding.userImage to "user_image"
-                )
-            )
-            reenterTransition = null
-        }
+//        binding.bannerImage?.setOnClickListener {
+//            findNavController().navigate(
+//                R.id.user_info_fragment, null, null, FragmentNavigatorExtras(
+//                    binding.userImage to "user_image"
+//                )
+//            )
+//            reenterTransition = null
+//        }
 
         binding.lastAdded.setOnClickListener {
             findNavController().navigate(
@@ -145,13 +165,13 @@ class HomeFragment :
             setSharedAxisYTransitions()
         }
 
-        binding.userImage.setOnClickListener {
-            findNavController().navigate(
-                R.id.user_info_fragment, null, null, FragmentNavigatorExtras(
-                    binding.userImage to "user_image"
-                )
-            )
-        }
+//        binding.userImage.setOnClickListener {
+//            findNavController().navigate(
+//                R.id.user_info_fragment, null, null, FragmentNavigatorExtras(
+//                    binding.userImage to "user_image"
+//                )
+//            )
+//        }
         // Reload suggestions
         binding.suggestions.refreshButton.setOnClickListener {
             libraryViewModel.forceReload(
@@ -169,18 +189,18 @@ class HomeFragment :
         binding.appBarLayout.title = appName
     }
 
-    private fun loadProfile() {
-        binding.bannerImage?.let {
-            Glide.with(requireContext())
-                .load(RetroGlideExtension.getBannerModel())
-                .profileBannerOptions(RetroGlideExtension.getBannerModel())
-                .into(it)
-        }
-        Glide.with(requireActivity())
-            .load(RetroGlideExtension.getUserModel())
-            .userProfileOptions(RetroGlideExtension.getUserModel(), requireContext())
-            .into(binding.userImage)
-    }
+//    private fun loadProfile() {
+//        binding.bannerImage?.let {
+//            Glide.with(requireContext())
+//                .load(RetroGlideExtension.getBannerModel())
+//                .profileBannerOptions(RetroGlideExtension.getBannerModel())
+//                .into(it)
+//        }
+//        Glide.with(requireActivity())
+//            .load(RetroGlideExtension.getUserModel())
+//            .userProfileOptions(RetroGlideExtension.getUserModel(), requireContext())
+//            .into(binding.userImage)
+//    }
 
     fun colorButtons() {
         binding.history.elevatedAccentColor()

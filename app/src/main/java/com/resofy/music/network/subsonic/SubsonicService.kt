@@ -26,10 +26,15 @@ interface SubsonicService {
     @GET("rest/getAlbumList2")
     suspend fun getAlbumList(
         @Query("type") type: String = "alphabeticalByName",
-        @Query("size") size: Int = 100,
+        @Query("size") size: Int = 500,
         @Query("f") format: String = "json"
     ): SubsonicResponse
 
+    @GET("rest/getSongsByGenre")
+    suspend fun getRandomSongs(
+        @Query("size") size: Int = 20,
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
     @GET("rest/getArtist")
     suspend fun getArtist(
         @Query("id") artistId: String,

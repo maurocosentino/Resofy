@@ -59,7 +59,11 @@ object RetroGlideExtension {
 
     private fun getSongModel(song: Song, ignoreMediaStore: Boolean): Any {
         if (song.data.startsWith("http://") || song.data.startsWith("https://")) {
-            return song.composer ?: ""
+            // Para canciones remotas reales, cover está en albumArtist
+            // Para dummy songs de álbumes, cover está en composer
+            val coverUrl = song.albumArtist?.takeIf { it.startsWith("http") }
+                ?: song.composer?.takeIf { it.startsWith("http") }
+            return coverUrl ?: ""
         }
         return if (ignoreMediaStore) {
             AudioFileCover(song.data)
