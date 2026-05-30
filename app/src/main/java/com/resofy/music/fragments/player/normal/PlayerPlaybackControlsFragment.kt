@@ -117,14 +117,20 @@ class PlayerPlaybackControlsFragment :
         binding.title.text = song.title
         binding.text.text = song.artistName
 
-        if (PreferenceUtil.isSongInfo) {
-            binding.songInfo.text = getSongInfo(song)
-            binding.songInfo.show()
-        } else {
-            binding.songInfo.hide()
+        when {
+            PreferenceUtil.isSongInfo -> {
+                binding.songInfo.text = getSongInfo(song)
+                binding.songInfo.show()
+            }
+            song.albumName.isNotEmpty() -> {
+                binding.songInfo.text = song.albumName
+                binding.songInfo.show()
+            }
+            else -> {
+                binding.songInfo.hide()
+            }
         }
     }
-
 
     override fun onServiceConnected() {
         updatePlayPauseDrawableState()

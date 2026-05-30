@@ -105,8 +105,7 @@ class PeekPlayerFragment : AbsPlayerFragment(R.layout.fragment_peek_player) {
     private fun updateSong() {
         val song = MusicPlayerRemote.currentSong
         binding.title.text = song.title
-        binding.text.text = song.artistName
-
+        binding.text.text = song.getDisplayText()
         if (PreferenceUtil.isSongInfo) {
             binding.songInfo.text = getSongInfo(song)
             binding.songInfo.show()

@@ -224,7 +224,7 @@ class ClassicPlayerFragment : AbsPlayerFragment(R.layout.fragment_classic_player
     private fun updateSong() {
         val song = MusicPlayerRemote.currentSong
         binding.title.text = song.title
-        binding.text.text = song.artistName
+        binding.text.text = song.getDisplayText()
 
         if (PreferenceUtil.isSongInfo) {
             binding.playerControlsContainer.songInfo.text = getSongInfo(song)

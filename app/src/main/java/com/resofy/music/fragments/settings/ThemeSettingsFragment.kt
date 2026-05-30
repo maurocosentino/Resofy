@@ -16,6 +16,7 @@ package com.resofy.music.fragments.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.edit
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
@@ -33,6 +34,10 @@ import com.resofy.music.fragments.NowPlayingScreen.*
 import com.resofy.music.util.PreferenceUtil
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.color.DynamicColors
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import com.resofy.music.LANGUAGE_NAME
+import com.resofy.music.extensions.installLanguageAndRecreate
 
 /**
  * @author Hemanth S (h4h13).
@@ -141,5 +146,27 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
         addPreferencesFromResource(R.xml.pref_general)
         val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
         wallpaperAccent?.isVisible = VersionUtils.hasOreoMR1() && !VersionUtils.hasS()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        PreferenceUtil.languageCode =
+            AppCompatDelegate.getApplicationLocales().toLanguageTags().ifEmpty { "auto" }
+
+        val languagePreference: Preference? = findPreference(LANGUAGE_NAME)
+        languagePreference?.setOnPreferenceChangeListener { prefs, newValue ->
+            setSummary(prefs, newValue)
+            if (newValue as? String == "auto") {
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+            } else {
+                requireActivity().installLanguageAndRecreate(newValue.toString()) {
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(newValue as? String)
+                    )
+                }
+            }
+            true
+        }
     }
 }

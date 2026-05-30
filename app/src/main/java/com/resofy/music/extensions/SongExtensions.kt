@@ -34,3 +34,5 @@ fun ArrayList<Song>.toMediaSessionQueue(): List<QueueItem> {
         QueueItem(mediaDescription, song.hashCode().toLong())
     }
 }
+
+fun Song.getDisplayText(): String = artistName

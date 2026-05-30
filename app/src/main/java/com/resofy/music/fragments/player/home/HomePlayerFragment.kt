@@ -22,6 +22,7 @@ import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import com.resofy.music.R
 import com.resofy.music.databinding.FragmentHomePlayerBinding
 import com.resofy.music.extensions.colorControlNormal
+import com.resofy.music.extensions.getDisplayText
 import com.resofy.music.fragments.base.AbsPlayerFragment
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.helper.MusicProgressViewUpdateHelper
@@ -81,7 +82,7 @@ class HomePlayerFragment : AbsPlayerFragment(R.layout.fragment_home_player),
     private fun updateSong() {
         val song = MusicPlayerRemote.currentSong
         binding.title.text = song.title
-        binding.text.text = song.artistName
+        binding.text.text = song.getDisplayText()
     }
 
     override fun toolbarIconColor(): Int {
