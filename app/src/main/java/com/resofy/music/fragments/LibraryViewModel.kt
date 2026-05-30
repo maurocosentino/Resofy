@@ -262,21 +262,11 @@ class LibraryViewModel(
     }
 
     fun artists(type: Int): LiveData<List<Artist>> = liveData(IO) {
-        when (type) {
-            TOP_ARTISTS -> emit(repository.topArtists())
-            RECENT_ARTISTS -> {
-                emit(repository.recentArtists())
-            }
-        }
+        emit(providerManager.activeProvider.artistsByType(type))
     }
 
     fun albums(type: Int): LiveData<List<Album>> = liveData(IO) {
-        when (type) {
-            TOP_ALBUMS -> emit(repository.topAlbums())
-            RECENT_ALBUMS -> {
-                emit(repository.recentAlbums())
-            }
-        }
+        emit(providerManager.activeProvider.albumsByType(type))
     }
 
     fun artist(artistId: Long): LiveData<Artist> = liveData(IO) {

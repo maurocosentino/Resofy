@@ -6,6 +6,10 @@ import com.resofy.music.model.Home
 import com.resofy.music.model.Song
 import com.resofy.music.musicprovider.MusicProvider
 import com.resofy.music.repository.RealRepository
+import com.resofy.music.TOP_ALBUMS
+import com.resofy.music.RECENT_ALBUMS
+import com.resofy.music.TOP_ARTISTS
+import com.resofy.music.RECENT_ARTISTS
 
 class LocalMusicProvider(
     private val repository: RealRepository
@@ -33,6 +37,18 @@ class LocalMusicProvider(
 
     override suspend fun songsForAlbum(albumId: Long): List<Song> =
         repository.albumByIdAsync(albumId).songs
+
+    override suspend fun albumsByType(type: Int): List<Album> = when (type) {
+        TOP_ALBUMS -> repository.topAlbums()
+        RECENT_ALBUMS -> repository.recentAlbums()
+        else -> emptyList()
+    }
+
+    override suspend fun artistsByType(type: Int): List<Artist> = when (type) {
+        TOP_ARTISTS -> repository.topArtists()
+        RECENT_ARTISTS -> repository.recentArtists()
+        else -> emptyList()
+    }
 
     override fun cachedArtistByName(name: String): Artist? = null
 }

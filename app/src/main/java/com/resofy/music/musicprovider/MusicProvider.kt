@@ -15,9 +15,9 @@ interface MusicProvider {
     suspend fun artistByName(name: String): Artist?
     suspend fun albumsForArtist(artistId: Long): List<Album>
     suspend fun songsForAlbum(albumId: Long): List<Song>
-
     suspend fun homeSections(): List<Home>
     suspend fun suggestions(): List<Song>
     fun cachedArtistByName(name: String): Artist?
-
+    suspend fun albumsByType(type: Int): List<Album>
+    suspend fun artistsByType(type: Int): List<Artist>
 }

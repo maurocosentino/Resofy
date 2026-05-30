@@ -183,6 +183,45 @@ class SubsonicMusicProvider(
     override suspend fun artistById(artistId: Long): Artist? =
         cachedArtists.find { it.id == artistId }
 
+    override suspend fun albumsByType(type: Int): List<Album> {
+        if (baseUrl.isEmpty()) return emptyList()
+        return when (type) {
+            TOP_ALBUMS -> when (val r = repository.getAlbumListByType("frequent", 50)) {
+                is Result.Success -> r.data
+                else -> emptyList()
+            }
+            RECENT_ALBUMS -> when (val r = repository.getAlbumListByType("recent", 50)) {
+                is Result.Success -> r.data
+                else -> emptyList()
+            }
+            else -> emptyList()
+        }
+    }
+
+    override suspend fun artistsByType(type: Int): List<Artist> {
+        if (baseUrl.isEmpty()) return emptyList()
+        val albumType = when (type) {
+            TOP_ARTISTS -> "frequent"
+            RECENT_ARTISTS -> "recent"
+            else -> return emptyList()
+        }
+        return try {
+            when (val r = repository.getAlbumListByType(albumType, 50)) {
+                is Result.Success -> {
+                    val artistNames = r.data.map { it.artistName }.distinct()
+                    cachedArtists.filter { it.name in artistNames }
+                        .ifEmpty {
+                            // Si no hay caché, cargar artistas
+                            artists().filter { it.name in artistNames }
+                        }
+                }
+                else -> emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
     override fun cachedArtistByName(name: String): Artist? =
         cachedArtists.find { it.name == name }
 }
