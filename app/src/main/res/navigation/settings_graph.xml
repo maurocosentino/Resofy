@@ -44,7 +44,6 @@
 
         <action
             android:id="@+id/action_mainSettingsFragment_to_otherSettingsFragment"
-            app:destination="@id/otherSettingsFragment"
             app:enterAnim="@anim/retro_fragment_open_enter"
             app:exitAnim="@anim/retro_fragment_open_exit"
             app:popEnterAnim="@anim/retro_fragment_close_enter"
@@ -100,11 +99,6 @@
         android:id="@+id/nowPlayingSettingsFragment"
         android:name="com.resofy.music.fragments.settings.NowPlayingSettingsFragment"
         android:label="Now Playing" />
-
-    <fragment
-        android:id="@+id/otherSettingsFragment"
-        android:name="com.resofy.music.fragments.settings.OtherSettingsFragment"
-        android:label="Other" />
 
     <fragment
         android:id="@+id/personalizeSettingsFragment"

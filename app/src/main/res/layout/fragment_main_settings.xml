@@ -144,15 +144,6 @@
             app:settingListItemTitle="@string/pref_header_images" />
 
         <com.resofy.music.views.SettingListItemView
-            android:id="@+id/otherSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_testing"
-            app:settingListItemIconColor="@color/md_indigo_A400"
-            app:settingListItemText="@string/other_settings_summary"
-            app:settingListItemTitle="@string/others" />
-
-        <com.resofy.music.views.SettingListItemView
             android:id="@+id/backup_restore_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
