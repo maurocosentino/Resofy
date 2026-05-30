@@ -13,7 +13,7 @@
  *
  */
 package com.resofy.music.fragments.base
-
+import com.resofy.music.musicprovider.ProviderManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentUris
@@ -76,6 +76,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.math.abs
 
@@ -83,6 +84,8 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
     Toolbar.OnMenuItemClickListener, IPaletteColorHolder, PlayerAlbumCoverFragment.Callbacks {
 
     val libraryViewModel: LibraryViewModel by activityViewModel()
+
+    private val providerManager: ProviderManager by inject()
 
     val mainActivity: MainActivity
         get() = activity as MainActivity
@@ -284,6 +287,11 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
                 libraryViewModel.insertSongs(listOf(song.toSongEntity(playlist.playListId)))
             }
             libraryViewModel.forceReload(ReloadType.Playlists)
+            if (song.data.startsWith("http")) {
+                providerManager.toggleStar(song, !isFavorite)
+            }
+            // Recargar home para reflejar cambio en favoritos
+            libraryViewModel.forceReload(ReloadType.HomeSections)
             LocalBroadcastManager.getInstance(requireContext())
                 .sendBroadcast(Intent(MusicService.FAVORITE_STATE_CHANGED))
         }

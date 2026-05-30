@@ -1,5 +1,6 @@
 package com.resofy.music.musicprovider.subsonic
 
+import com.resofy.music.FAVOURITES
 import com.resofy.music.R
 import com.resofy.music.RECENT_ALBUMS
 import com.resofy.music.RECENT_ARTISTS
@@ -122,47 +123,63 @@ class SubsonicMusicProvider(
         }
     }
 
-//    override suspend fun suggestions(): List<Song> {
-//        if (baseUrl.isEmpty()) return emptyList()
-//        return songs().shuffled().take(9)
-//    }
+override suspend fun homeSections(): List<Home> {
+    if (baseUrl.isEmpty()) return emptyList()
+    val homeSections = mutableListOf<Home>()
 
-    override suspend fun homeSections(): List<Home> {
+    // Favoritos (starred)
+    val favSongs = favoriteSongs()
+    if (favSongs.isNotEmpty())
+        homeSections.add(Home(favSongs, FAVOURITES, R.string.favorites))
+
+    val topAlbums = when (val r = repository.getAlbumListByType("frequent", 10)) {
+        is Result.Success -> r.data.ifEmpty {
+            (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
+        }
+        else -> (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
+    }
+    if (topAlbums.isNotEmpty())
+        homeSections.add(Home(topAlbums, TOP_ALBUMS, R.string.top_albums))
+
+    val recentAlbums = when (val r = repository.getAlbumListByType("recent", 10)) {
+        is Result.Success -> r.data.ifEmpty {
+            (repository.getAlbumListByType("alphabeticalByName", 10) as? Result.Success)?.data ?: emptyList()
+        }
+        else -> (repository.getAlbumListByType("alphabeticalByName", 10) as? Result.Success)?.data ?: emptyList()
+    }
+    if (recentAlbums.isNotEmpty()) {
+        homeSections.add(Home(recentAlbums, RECENT_ALBUMS, R.string.recent_albums))
+        val recentArtistNames = recentAlbums.map { it.artistName }.distinct()
+        val recentArtists = cachedArtists.filter { it.name in recentArtistNames }.take(5)
+        if (recentArtists.isNotEmpty())
+            homeSections.add(Home(recentArtists, RECENT_ARTISTS, R.string.recent_artists))
+    }
+
+    return homeSections
+}
+    private var cachedStarredSongs: List<Song> = emptyList()
+
+    override suspend fun favoriteSongs(): List<Song> {
         if (baseUrl.isEmpty()) return emptyList()
-        val homeSections = mutableListOf<Home>()
-
-        // Intentar frequent, fallback a newest
-        val topAlbums = when (val r = repository.getAlbumListByType("frequent", 10)) {
-            is Result.Success -> r.data.ifEmpty {
-                (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
+        return try {
+            when (val result = repository.getStarredSongs()) {
+                is Result.Success -> result.data.also { cachedStarredSongs = it }
+                else -> cachedStarredSongs
             }
-            else -> (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
+        } catch (e: Exception) {
+            cachedStarredSongs
         }
-        if (topAlbums.isNotEmpty())
-            homeSections.add(Home(topAlbums, TOP_ALBUMS, R.string.top_albums))
+    }
 
-        // Intentar recent, fallback a alphabeticalByName
-        val recentAlbums = when (val r = repository.getAlbumListByType("recent", 10)) {
-            is Result.Success -> r.data.ifEmpty {
-                (repository.getAlbumListByType("alphabeticalByName", 10) as? Result.Success)?.data ?: emptyList()
-            }
-            else -> (repository.getAlbumListByType("alphabeticalByName", 10) as? Result.Success)?.data ?: emptyList()
+    override suspend fun toggleStar(song: Song, isFavorite: Boolean) {
+        val subsonicId = extractSubsonicId(song) ?: return
+        if (isFavorite) {
+            repository.starSong(subsonicId)
+            cachedStarredSongs = cachedStarredSongs + song  // actualización inmediata
+        } else {
+            repository.unstarSong(subsonicId)
+            cachedStarredSongs = cachedStarredSongs.filter { it.id != song.id }
         }
-        if (recentAlbums.isNotEmpty()) {
-            homeSections.add(Home(recentAlbums, RECENT_ALBUMS, R.string.recent_albums))
-            val recentArtistNames = recentAlbums.map { it.artistName }.distinct()
-            val recentArtists = cachedArtists.filter { it.name in recentArtistNames }.take(5)
-            if (recentArtists.isNotEmpty())
-                homeSections.add(Home(recentArtists, RECENT_ARTISTS, R.string.recent_artists))
-        }
-
-        // Top artists desde top albums
-        val topArtistNames = topAlbums.map { it.artistName }.distinct()
-        val topArtists = cachedArtists.filter { it.name in topArtistNames }.take(5)
-        if (topArtists.isNotEmpty())
-            homeSections.add(Home(topArtists, TOP_ARTISTS, R.string.top_artists))
-
-        return homeSections
     }
 
     override suspend fun suggestions(): List<Song> {
@@ -220,6 +237,18 @@ class SubsonicMusicProvider(
         } catch (e: Exception) {
             emptyList()
         }
+    }
+
+    private fun extractSubsonicId(song: Song): String? {
+        return if (song.data.startsWith("http")) {
+            // data = "http://host/rest/stream?id=XXXXX&..."
+            song.data.substringAfter("id=").substringBefore("&")
+        } else null
+    }
+
+    override suspend fun scrobble(song: Song) {
+        val subsonicId = extractSubsonicId(song) ?: return
+        repository.scrobbleSong(subsonicId)
     }
 
     override fun cachedArtistByName(name: String): Artist? =

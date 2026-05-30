@@ -105,6 +105,47 @@ class SubsonicRepository(
             Result.Error(e)
         }
     }
+
+    suspend fun getStarredSongs(): Result<List<Song>> {
+        return try {
+            val response = service.getStarred()
+            val songs = response.response.starred2?.song
+                ?.map { it.toSong(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun starSong(subsonicId: String): Result<Unit> {
+        return try {
+            service.star(subsonicId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun unstarSong(subsonicId: String): Result<Unit> {
+        return try {
+            service.unstar(subsonicId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun scrobbleSong(subsonicId: String): Result<Unit> {
+        return try {
+            service.scrobble(subsonicId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+
     suspend fun testConnection(): Result<String> {
         return try {
             val response = service.search(query = "", songCount = 1)

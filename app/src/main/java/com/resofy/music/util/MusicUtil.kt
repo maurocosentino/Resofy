@@ -24,6 +24,7 @@ import com.resofy.music.helper.MusicPlayerRemote.removeFromQueue
 import com.resofy.music.model.Artist
 import com.resofy.music.model.Song
 import com.resofy.music.model.lyrics.AbsSynchronizedLyrics
+import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.repository.Repository
 import com.resofy.music.repository.SongRepository
 import kotlinx.coroutines.Dispatchers
@@ -366,15 +367,25 @@ object MusicUtil : KoinComponent {
     }
 
     private val repository = get<Repository>()
+    private val providerManager = get<ProviderManager>()
+
     suspend fun toggleFavorite(song: Song) {
         withContext(IO) {
             val playlist: PlaylistEntity = repository.favoritePlaylist()
             val songEntity = song.toSongEntity(playlist.playListId)
             val isFavorite = repository.isFavoriteSong(songEntity).isNotEmpty()
+            android.util.Log.d("Favorite", "song.data=${song.data}")
+            android.util.Log.d("Favorite", "isRemote=${song.data.startsWith("http")}")
+            android.util.Log.d("Favorite", "isFavorite=$isFavorite")
             if (isFavorite) {
                 repository.removeSongFromPlaylist(songEntity)
             } else {
                 repository.insertSongs(listOf(song.toSongEntity(playlist.playListId)))
+            }
+            if (song.data.startsWith("http")) {
+                android.util.Log.d("Favorite", "Calling toggleStar, newFavorite=${!isFavorite}")
+                providerManager.toggleStar(song, !isFavorite)
+                android.util.Log.d("Favorite", "toggleStar completed")
             }
         }
     }

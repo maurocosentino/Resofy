@@ -26,6 +26,11 @@ class LocalMusicProvider(
         repository.albumByIdAsync(albumId)
 
     override suspend fun homeSections(): List<Home> = repository.homeSections()
+
+    override suspend fun favoriteSongs(): List<Song> {
+        val home = repository.favoritePlaylistHome()
+        return home.arrayList.filterIsInstance<Song>()
+    }
     override suspend fun suggestions(): List<Song> = repository.suggestions()
     override suspend fun artistById(artistId: Long): Artist? =
         repository.artistById(artistId)

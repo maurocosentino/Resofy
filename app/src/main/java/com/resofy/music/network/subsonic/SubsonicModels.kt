@@ -14,7 +14,14 @@ data class SubsonicResponseBody(
     val artists: ArtistsResult?,
     val album: SubsonicAlbumDetail?,
     val artist: SubsonicArtistDetail?,
+    val starred2: Starred2?,
     val error: SubsonicError?
+)
+
+data class Starred2(
+    val song: List<SubsonicSong>?,
+    val album: List<SubsonicAlbum>?,
+    val artist: List<SubsonicArtist>?
 )
 
 

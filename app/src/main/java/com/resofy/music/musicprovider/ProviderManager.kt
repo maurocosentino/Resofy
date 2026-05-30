@@ -1,6 +1,7 @@
 package com.resofy.music.musicprovider
 
 import android.content.Context
+import com.resofy.music.model.Song
 import com.resofy.music.musicprovider.local.LocalMusicProvider
 import com.resofy.music.musicprovider.subsonic.SubsonicMusicProvider
 import com.resofy.music.repository.RealRepository
@@ -43,6 +44,14 @@ class ProviderManager(
     fun setProvider(type: MusicProviderType) {
         saveProviderType(type)
         _activeProviderType.value = type
+    }
+
+    suspend fun toggleStar(song: Song, isFavorite: Boolean) {
+        activeProvider.toggleStar(song, isFavorite)
+    }
+
+    suspend fun scrobble(song: Song) {
+        activeProvider.scrobble(song)
     }
 
     fun sync() {

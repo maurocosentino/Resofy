@@ -109,6 +109,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import com.resofy.music.musicprovider.ProviderManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Default
 import kotlinx.coroutines.Dispatchers.IO
@@ -850,7 +851,14 @@ class MusicService : MediaBrowserServiceCompat(),
 
     fun toggleFavorite() {
         serviceScope.launch {
-            toggleFavorite(currentSong)
+            val song = currentSong
+            val isFavorite = MusicUtil.isFavorite(song)
+            toggleFavorite(song)
+            // Enviar star/unstar a Subsonic si aplica
+            val providerManager = get<ProviderManager>(ProviderManager::class.java)
+            serviceScope.launch(IO) {
+                providerManager.toggleStar(song, !isFavorite) // !isFavorite porque toggleFavorite ya lo cambió
+            }
             LocalBroadcastManager.getInstance(this@MusicService)
                 .sendBroadcast(Intent(FAVORITE_STATE_CHANGED))
         }
@@ -1150,6 +1158,11 @@ class MusicService : MediaBrowserServiceCompat(),
                     }
                     songPlayCountHelper.notifySongChanged(currentSong)
                     storage.saveSong(currentSong)
+                    // Scrobble a Subsonic si es canción remota
+                    if (currentSong.data.startsWith("http")) {
+                        val providerManager = get<ProviderManager>(ProviderManager::class.java)
+                        providerManager.scrobble(currentSong)
+                    }
                 }
             }
 

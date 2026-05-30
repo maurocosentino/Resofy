@@ -45,6 +45,27 @@ interface SubsonicService {
         @Query("f") format: String = "json"
     ): SubsonicResponse
 
-    // Este endpoint no se llama por Retrofit — se construye la URL y va directo a ExoPlayer
-    // GET rest/stream?id={id}&v=1.16.1&c=resofy&u={user}&p={pass}&f=json
+    @GET("rest/getStarred2")
+    suspend fun getStarred(
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
+
+    @GET("rest/star")
+    suspend fun star(
+        @Query("id") songId: String,
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
+
+    @GET("rest/unstar")
+    suspend fun unstar(
+        @Query("id") songId: String,
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
+
+    @GET("rest/scrobble")
+    suspend fun scrobble(
+        @Query("id") songId: String,
+        @Query("submission") submission: Boolean = true,
+        @Query("f") format: String = "json"
+    ): SubsonicResponse
 }
