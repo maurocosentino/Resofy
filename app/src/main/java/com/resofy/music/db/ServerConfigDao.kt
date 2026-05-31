@@ -14,4 +14,10 @@ interface ServerConfigDao {
 
     @Delete
     suspend fun delete(server: ServerConfigEntity)
+
+    @Query("SELECT * FROM server_configs WHERE id = :id")
+    suspend fun getById(id: Int): ServerConfigEntity?
+
+    @Query("UPDATE server_configs SET name=:name, url=:url, username=:username, password=:password WHERE id=:id")
+    suspend fun update(id: Int, name: String, url: String, username: String, password: String)
 }

@@ -1,5 +1,6 @@
 package com.resofy.music.musicprovider
 
+import ServerConfigEntity
 import android.content.Context
 import com.resofy.music.model.Song
 import com.resofy.music.musicprovider.local.LocalMusicProvider
@@ -80,5 +81,31 @@ class ProviderManager(
             .edit()
             .putString("active_provider", type.name)
             .apply()
+    }
+
+    var activeServerId: Int
+        get() = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+            .getInt("active_server_id", -1)
+        set(value) = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+            .edit().putInt("active_server_id", value).apply()
+
+    fun setActiveServer(server: ServerConfigEntity) {
+        activeServerId = server.id
+        subsonicProvider = SubsonicMusicProvider(
+            baseUrl = server.url,
+            username = server.username,
+            password = server.password
+        )
+        _activeProviderType.value = MusicProviderType.SUBSONIC
+        saveProviderType(MusicProviderType.SUBSONIC)
+    }
+
+    fun syncServer(server: ServerConfigEntity) {
+        subsonicProvider = SubsonicMusicProvider(
+            baseUrl = server.url,
+            username = server.username,
+            password = server.password
+        )
+        _activeProviderType.value = _activeProviderType.value
     }
 }

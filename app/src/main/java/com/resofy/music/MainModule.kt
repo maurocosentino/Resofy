@@ -4,12 +4,14 @@ import androidx.room.Room
 import com.resofy.music.auto.AutoMusicProvider
 import com.resofy.music.cast.RetroWebServer
 import com.resofy.music.db.MIGRATION_23_24
+import com.resofy.music.db.MIGRATION_24_25
 import com.resofy.music.db.RetroDatabase
 import com.resofy.music.fragments.LibraryViewModel
 import com.resofy.music.fragments.albums.AlbumDetailsViewModel
 import com.resofy.music.fragments.artists.ArtistDetailsViewModel
 import com.resofy.music.fragments.genres.GenreDetailsViewModel
 import com.resofy.music.fragments.playlists.PlaylistDetailsViewModel
+import com.resofy.music.fragments.settings.MusicProvidersViewModel
 import com.resofy.music.model.Genre
 import com.resofy.music.network.logInterceptor
 import com.resofy.music.network.provideDefaultCache
@@ -48,8 +50,12 @@ private val roomModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), RetroDatabase::class.java, "playlist.db")
-            .addMigrations(MIGRATION_23_24)
+            .addMigrations(MIGRATION_23_24, MIGRATION_24_25)
             .build()
+    }
+
+    factory {
+        get<RetroDatabase>().serverConfigDao()
     }
 
     factory {
@@ -155,6 +161,9 @@ private val dataModule = module {
     single {
         ProviderManager(androidContext(), get())
     }
+    single {
+        ServerConfigRepository(get())
+    }
 }
 
 private val viewModules = module {
@@ -183,6 +192,9 @@ private val viewModules = module {
             get(),
             genre
         )
+    }
+    viewModel {
+        MusicProvidersViewModel(get())
     }
 }
 
