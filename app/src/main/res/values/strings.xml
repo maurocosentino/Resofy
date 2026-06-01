@@ -575,4 +575,27 @@
     <string name="pref_save_last_directory_title">Save Last Directory</string>
     <string name="artist_separator_helper_text">To add multiple artists, separate them with: %1$s</string>
 
+    <!-- Music Providers -->
+    <string name="active_source">Active source</string>
+    <string name="servers">Servers</string>
+    <string name="no_servers_configured">No servers configured</string>
+    <string name="add_server">+ Add server</string>
+    <string name="configure_server">Configure server</string>
+    <string name="server_name_hint">Name (optional)</string>
+    <string name="server_url_hint">Server URL</string>
+    <string name="server_username_hint">Username</string>
+    <string name="server_password_hint">Password</string>
+    <string name="cancel">Cancel</string>
+    <string name="test_connection">Test connection</string>
+    <string name="save_server">Save</string>
+    <string name="local_library">Local library</string>
+    <string name="sync_server">Sync</string>
+    <string name="server_active">Active server: %s</string>
+    <string name="syncing_server">Syncing %s…</string>
+    <string name="server_updated">Server updated</string>
+    <string name="server_added">Server added</string>
+    <string name="enter_server_url">Enter server URL</string>
+    <string name="connection_ok">✓ Connected — API v%s</string>
+    <string name="connection_error">✗ Error: %s</string>
+
 </resources>

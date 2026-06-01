@@ -68,7 +68,7 @@ class MusicProvidersFragment : Fragment() {
     private fun updateProviderUI(type: MusicProviderType) {
         val isSubsonic = type == MusicProviderType.SUBSONIC
         binding.serverListSection.isVisible = isSubsonic
-        binding.providerStatus.text = if (isSubsonic) "Subsonic / Navidrome" else "Biblioteca local"
+        binding.providerStatus.text = if (isSubsonic) "Subsonic / Navidrome" else getString(R.string.local_library)
     }
 
     private fun setupServerList() {
@@ -78,11 +78,11 @@ class MusicProvidersFragment : Fragment() {
             onSelect = { server ->
                 providerManager.setActiveServer(server)
                 serverAdapter.updateServers(viewModel.servers.value, server.id)
-                showToast("Servidor activo: ${server.name.ifEmpty { server.url }}")
+                showToast(getString(R.string.server_active, server.name.ifEmpty { server.url }))
             },
             onSync = { server ->
                 providerManager.syncServer(server)
-                showToast("Sincronizando ${server.name.ifEmpty { server.url }}...")
+                showToast(getString(R.string.syncing_server, server.name.ifEmpty { server.url }))
             },
             onEdit = { server ->
                 showServerForm(server)
@@ -123,25 +123,25 @@ class MusicProvidersFragment : Fragment() {
             val pass = binding.etServerPassword.text.toString().trim()
 
             if (url.isEmpty()) {
-                showToast("Ingresá la URL del servidor")
+                showToast(getString(R.string.enter_server_url))
                 return@setOnClickListener
             }
             viewModel.saveServer(name, url, user, pass)
             binding.serverFormCard.isVisible = false
-            showToast(if (isEditing) "Servidor actualizado" else "Servidor agregado")
+            showToast(getString(if (isEditing) R.string.server_updated else R.string.server_added))
         }
 
         binding.btnTestConnection.setOnClickListener {
             val url = binding.etServerUrl.text.toString().trim()
             val user = binding.etServerUsername.text.toString().trim()
             val pass = binding.etServerPassword.text.toString().trim()
-            if (url.isEmpty()) { showToast("Ingresá la URL"); return@setOnClickListener }
+            if (url.isEmpty()) { showToast(getString(R.string.enter_server_url)); return@setOnClickListener }
             testJob?.cancel()
             testJob = viewLifecycleOwner.lifecycleScope.launch {
                 val repo = SubsonicRepository(SubsonicClient.build(url, user, pass), url, user, pass)
                 when (val result = repo.testConnection()) {
-                    is Result.Success -> showToast("✓ Conectado — API v${result.data}")
-                    is Result.Error -> showToast("✗ Error: ${result.error.message}")
+                    is Result.Success -> showToast(getString(R.string.connection_ok, result.data))
+                    is Result.Error -> showToast(getString(R.string.connection_error, result.error.message))
                     is Result.Loading -> {}
                 }
             }

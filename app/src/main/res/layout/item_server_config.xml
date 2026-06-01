@@ -56,7 +56,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_refresh"
-            android:contentDescription="Sync" />
+            android:contentDescription="@string/sync_server" />
 
         <ImageButton
             android:id="@+id/btnEdit"
@@ -65,7 +65,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_edit"
-            android:contentDescription="Edit" />
+            android:contentDescription="@string/action_tag_editor" />
 
         <ImageButton
             android:id="@+id/btnDelete"
@@ -74,7 +74,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:padding="8dp"
             android:src="@drawable/ic_delete"
-            android:contentDescription="Delete" />
+            android:contentDescription="@string/action_delete_from_device" />
 
     </LinearLayout>
 
