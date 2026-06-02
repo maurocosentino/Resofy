@@ -259,7 +259,7 @@
     <string name="my_name">Name</string>
     <string name="my_top_tracks">Most played</string>
     <string name="never">Never</string>
-    <string name="new_music_mix">New Music Mix</string>
+    <string name="new_music_mix">Song mix</string>
     <string name="new_playlist_title">New playlist</string>
     <string name="new_start_directory">%s is the new start directory.</string>
     <string name="next_song">Next Song</string>

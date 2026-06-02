@@ -62,6 +62,7 @@ import com.resofy.music.fragments.LibraryViewModel
 import com.resofy.music.fragments.NowPlayingScreen
 import com.resofy.music.fragments.ReloadType
 import com.resofy.music.fragments.player.PlayerAlbumCoverFragment
+import com.resofy.music.fragments.player.normal.PlayerPlaybackControlsFragment
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.interfaces.IPaletteColorHolder
 import com.resofy.music.model.Song
@@ -311,6 +312,8 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
                     icon,
                     toolbarIconColor()
                 )
+
+                // Actualizar ícono en la toolbar (otros players que aún la usen)
                 if (playerToolbar() != null) {
                     playerToolbar()?.menu?.findItem(R.id.action_toggle_favorite)?.apply {
                         setIcon(drawable)
@@ -322,6 +325,16 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
                                 it.start()
                             }
                         }
+                    }
+                }
+
+                // Actualizar el botón inline en PlayerPlaybackControlsFragment (Normal player)
+                val controlsFragment = childFragmentManager
+                    .findFragmentById(R.id.playbackControlsFragment) as? PlayerPlaybackControlsFragment
+                controlsFragment?.getFavoriteButton()?.apply {
+                    setImageDrawable(drawable)
+                    if (drawable is AnimatedVectorDrawable) {
+                        drawable.start()
                     }
                 }
             }

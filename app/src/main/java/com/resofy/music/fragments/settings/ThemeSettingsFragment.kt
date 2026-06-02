@@ -52,7 +52,6 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             it.setOnPreferenceChangeListener { _, newValue ->
                 setSummary(it, newValue)
                 ThemeStore.markChanged(requireContext())
-
                 if (VersionUtils.hasNougatMR()) {
                     DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
                 }
@@ -80,7 +79,10 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             }
             return@setOnPreferenceClickListener true
         }
+
+        // black_theme: oculto, lógica mantenida para no romper nada
         val blackTheme: ATESwitchPreference? = findPreference(BLACK_THEME)
+        blackTheme?.isVisible = false
         blackTheme?.setOnPreferenceChangeListener { _, _ ->
             if (!App.isProVersion()) {
                 showProToastAndNavigate("Just Black theme")
@@ -106,10 +108,10 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             true
         }
 
+        // should_color_app_shortcuts: oculto, lógica mantenida
         val colorAppShortcuts: TwoStatePreference? = findPreference(SHOULD_COLOR_APP_SHORTCUTS)
-        if (!VersionUtils.hasNougatMR()) {
-            colorAppShortcuts?.isVisible = false
-        } else {
+        colorAppShortcuts?.isVisible = false
+        if (VersionUtils.hasNougatMR()) {
             colorAppShortcuts?.isChecked = PreferenceUtil.isColoredAppShortcuts
             colorAppShortcuts?.setOnPreferenceChangeListener { _, newValue ->
                 PreferenceUtil.isColoredAppShortcuts = newValue as Boolean
@@ -118,7 +120,10 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             }
         }
 
+        // material_you: oculto, lógica mantenida para que las dependencias
+        // de accent_color y desaturated_color sigan funcionando correctamente
         val materialYou: ATESwitchPreference? = findPreference(MATERIAL_YOU)
+        materialYou?.isVisible = false
         materialYou?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
                 DynamicColors.applyToActivitiesIfAvailable(App.getContext())
@@ -126,11 +131,13 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             restartActivity()
             true
         }
+
         val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
         wallpaperAccent?.setOnPreferenceChangeListener { _, _ ->
             restartActivity()
             true
         }
+
         val customFont: ATESwitchPreference? = findPreference(CUSTOM_FONT)
         customFont?.setOnPreferenceChangeListener { _, _ ->
             restartActivity()
