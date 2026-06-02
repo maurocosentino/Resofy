@@ -1,17 +1,3 @@
-/*
- * Copyright (c) 2020 Hemanth Savarla.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- */
 package com.resofy.music.fragments.settings
 
 import android.content.SharedPreferences
@@ -22,34 +8,31 @@ import androidx.preference.TwoStatePreference
 import com.resofy.music.*
 import com.resofy.music.util.PreferenceUtil
 
-/**
- * @author Hemanth S (h4h13).
- */
-
 class NowPlayingSettingsFragment : AbsSettingsFragment(),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
     override fun invalidateSettings() {
         updateNowPlayingScreenSummary()
-        updateAlbumCoverStyleSummary()
 
+        // Efecto carrusel: oculto
         val carouselEffect: TwoStatePreference? = findPreference(CAROUSEL_EFFECT)
-        carouselEffect?.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue as Boolean && !App.isProVersion()) {
-                showProToastAndNavigate(getString(R.string.pref_title_toggle_carousel_effect))
-                return@setOnPreferenceChangeListener false
-            }
-            return@setOnPreferenceChangeListener true
-        }
+        carouselEffect?.isVisible = false
+
+        // Efecto nieve: oculto
+        val snowfall: TwoStatePreference? = findPreference(SNOWFALL)
+        snowfall?.isVisible = false
+
+        // Estilo de álbum: oculto
+        val albumCoverStyle: Preference? = findPreference(ALBUM_COVER_STYLE)
+        albumCoverStyle?.isVisible = false
+
+        // Cantidad de desenfoque: oculto
+        val blurAmount: Preference? = findPreference(NEW_BLUR_AMOUNT)
+        blurAmount?.isVisible = false
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_now_playing_screen)
-    }
-
-    private fun updateAlbumCoverStyleSummary() {
-        val preference: Preference? = findPreference(ALBUM_COVER_STYLE)
-        preference?.setSummary(PreferenceUtil.albumCoverStyle.titleRes)
     }
 
     private fun updateNowPlayingScreenSummary() {
@@ -75,7 +58,6 @@ class NowPlayingSettingsFragment : AbsSettingsFragment(),
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         when (key) {
             NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
-            ALBUM_COVER_STYLE -> updateAlbumCoverStyleSummary()
             CIRCULAR_ALBUM_ART, CAROUSEL_EFFECT -> invalidateSettings()
         }
     }
