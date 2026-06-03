@@ -11,8 +11,8 @@
         tools:layout="@layout/fragment_main_settings">
 
         <action
-            android:id="@+id/action_mainSettingsFragment_to_themeSettingsFragment"
-            app:destination="@id/themeSettingsFragment"
+            android:id="@+id/action_mainSettingsFragment_to_appearanceSettingsFragment"
+            app:destination="@id/appearanceSettingsFragment"
             app:enterAnim="@anim/retro_fragment_open_enter"
             app:exitAnim="@anim/retro_fragment_open_exit"
             app:popEnterAnim="@anim/retro_fragment_close_enter"
@@ -27,31 +27,8 @@
             app:popExitAnim="@anim/retro_fragment_close_exit" />
 
         <action
-            android:id="@+id/action_mainSettingsFragment_to_nowPlayingSettingsFragment"
-            app:destination="@id/nowPlayingSettingsFragment"
-            app:enterAnim="@anim/retro_fragment_open_enter"
-            app:exitAnim="@anim/retro_fragment_open_exit"
-            app:popEnterAnim="@anim/retro_fragment_close_enter"
-            app:popExitAnim="@anim/retro_fragment_close_exit" />
-
-        <action
             android:id="@+id/action_mainSettingsFragment_to_audioSettings"
             app:destination="@id/audioSettings"
-            app:enterAnim="@anim/retro_fragment_open_enter"
-            app:exitAnim="@anim/retro_fragment_open_exit"
-            app:popEnterAnim="@anim/retro_fragment_close_enter"
-            app:popExitAnim="@anim/retro_fragment_close_exit" />
-
-        <action
-            android:id="@+id/action_mainSettingsFragment_to_otherSettingsFragment"
-            app:enterAnim="@anim/retro_fragment_open_enter"
-            app:exitAnim="@anim/retro_fragment_open_exit"
-            app:popEnterAnim="@anim/retro_fragment_close_enter"
-            app:popExitAnim="@anim/retro_fragment_close_exit" />
-
-        <action
-            android:id="@+id/action_mainSettingsFragment_to_personalizeSettingsFragment"
-            app:destination="@id/personalizeSettingsFragment"
             app:enterAnim="@anim/retro_fragment_open_enter"
             app:exitAnim="@anim/retro_fragment_open_exit"
             app:popEnterAnim="@anim/retro_fragment_close_enter"
@@ -86,6 +63,11 @@
     </fragment>
 
     <fragment
+        android:id="@+id/appearanceSettingsFragment"
+        android:name="com.resofy.music.fragments.settings.AppearanceSettingsFragment"
+        android:label="Appearance" />
+
+    <fragment
         android:id="@+id/audioSettings"
         android:name="com.resofy.music.fragments.settings.AudioSettings"
         android:label="Audio" />
@@ -94,16 +76,6 @@
         android:id="@+id/imageSettingFragment"
         android:name="com.resofy.music.fragments.settings.ImageSettingFragment"
         android:label="Image" />
-
-    <fragment
-        android:id="@+id/nowPlayingSettingsFragment"
-        android:name="com.resofy.music.fragments.settings.NowPlayingSettingsFragment"
-        android:label="Now Playing" />
-
-    <fragment
-        android:id="@+id/personalizeSettingsFragment"
-        android:name="com.resofy.music.fragments.settings.PersonalizeSettingsFragment"
-        android:label="Personalize" />
 
     <fragment
         android:id="@+id/themeSettingsFragment"

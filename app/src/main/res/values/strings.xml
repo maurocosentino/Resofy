@@ -576,6 +576,7 @@
     <string name="artist_separator_helper_text">To add multiple artists, separate them with: %1$s</string>
 
     <!-- Music Providers -->
+    <string name="music_providers">Music Providers</string>
     <string name="active_source">Active source</string>
     <string name="servers">Servers</string>
     <string name="no_servers_configured">No servers configured</string>

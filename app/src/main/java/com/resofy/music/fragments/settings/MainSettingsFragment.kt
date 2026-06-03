@@ -20,19 +20,16 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentMainSettingsBinding? = null
     private val binding get() = _binding!!
 
-
     override fun onClick(view: View) {
         findNavController().navigate(
             when (view.id) {
-                R.id.generalSettings -> R.id.action_mainSettingsFragment_to_themeSettingsFragment
+                R.id.generalSettings -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
                 R.id.audioSettings -> R.id.action_mainSettingsFragment_to_audioSettings
-                R.id.personalizeSettings -> R.id.action_mainSettingsFragment_to_personalizeSettingsFragment
                 R.id.imageSettings -> R.id.action_mainSettingsFragment_to_imageSettingFragment
                 R.id.aboutSettings -> R.id.action_mainSettingsFragment_to_aboutActivity
-                R.id.nowPlayingSettings -> R.id.action_mainSettingsFragment_to_nowPlayingSettingsFragment
                 R.id.backup_restore_settings -> R.id.action_mainSettingsFragment_to_backupFragment
                 R.id.serverSettings -> R.id.action_mainSettingsFragment_to_musicProvidersFragment
-                else -> R.id.action_mainSettingsFragment_to_themeSettingsFragment
+                else -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
             }
         )
     }
@@ -51,8 +48,6 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
 
         binding.generalSettings.setOnClickListener(this)
         binding.audioSettings.setOnClickListener(this)
-        binding.nowPlayingSettings.setOnClickListener(this)
-        binding.personalizeSettings.setOnClickListener(this)
         binding.imageSettings.setOnClickListener(this)
         binding.aboutSettings.setOnClickListener(this)
         binding.backupRestoreSettings.setOnClickListener(this)
