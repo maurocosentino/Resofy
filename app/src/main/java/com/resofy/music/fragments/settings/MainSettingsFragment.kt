@@ -29,6 +29,7 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
                 R.id.aboutSettings -> R.id.action_mainSettingsFragment_to_aboutActivity
                 R.id.backup_restore_settings -> R.id.action_mainSettingsFragment_to_backupFragment
                 R.id.serverSettings -> R.id.action_mainSettingsFragment_to_musicProvidersFragment
+                R.id.languageSettings -> R.id.action_mainSettingsFragment_to_languageSettingsFragment
                 else -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
             }
         )
@@ -52,6 +53,7 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
         binding.aboutSettings.setOnClickListener(this)
         binding.backupRestoreSettings.setOnClickListener(this)
         binding.serverSettings.setOnClickListener(this)
+        binding.languageSettings.setOnClickListener(this)
 
         binding.buyProContainer.apply {
             isGone = App.isProVersion()

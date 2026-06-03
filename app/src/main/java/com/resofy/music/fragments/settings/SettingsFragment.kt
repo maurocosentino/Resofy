@@ -62,6 +62,7 @@ class SettingsFragment : Fragment(R.layout.fragment_settings), ColorCallback {
             R.id.themeSettingsFragment -> R.string.general_settings_title
             R.id.aboutActivity -> R.string.action_about
             R.id.backup_fragment -> R.string.backup_restore_title
+            R.id.languageSettingsFragment -> R.string.pref_language_name
             R.id.musicProvidersFragment -> R.string.music_providers
             else -> R.id.action_settings
         }
