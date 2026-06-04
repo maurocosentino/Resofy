@@ -2,7 +2,8 @@
 <resources>
 
     <color name="window_color">@android:color/black</color>
-
+    <color name="cardColorDark">#141414</color>
+    <color name="settingCardBackground">#111111</color>
     <color name="bottomSheetColor">#202020</color>
     <color name="widget_md3_bg_color">@color/darkerColorSurface</color>
 </resources>

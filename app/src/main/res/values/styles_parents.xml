@@ -7,6 +7,7 @@
         <item name="rectSelector">@drawable/rect_selector</item>
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
         <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
+        <item name="colorSurfaceVariant">@color/settingCardBackground</item>
         <item name="materialButtonStyle">@style/MaterialButtonTheme</item>
         <item name="popupMenuStyle">@style/MaterialPopupMenuStyle</item>
         <item name="popupWindowStyle">@style/MaterialPopupMenuStyle</item>
@@ -23,6 +24,7 @@
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
         <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
         <item name="materialButtonStyle">@style/MaterialButtonTheme</item>
+        <item name="colorSurfaceVariant">@color/settingCardBackgroundDark</item>
         <item name="colorSurface">@color/darkColorSurface</item>
         <item name="android:windowBackground">?colorSurface</item>
         <item name="popupMenuStyle">@style/MaterialPopupMenuStyle</item>
@@ -53,6 +55,7 @@
         <item name="rectSelector">@drawable/rect_selector</item>
         <item name="toolbarPopupTheme">@style/ThemeOverlay.Material3.Light</item>
         <item name="android:windowBackground">?colorSurface</item>
+        <item name="colorSurfaceVariant">@color/settingCardBackground</item>
         <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
         <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
         <item name="materialButtonStyle">@style/MaterialButtonTheme</item>
