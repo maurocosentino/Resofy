@@ -29,6 +29,22 @@
     <color name="settingCardBackground">#EBEBEB</color>
     <color name="settingCardBackgroundDark">#111111</color>
 
+    <!-- Gruvbox Dark Soft -->
+    <color name="gruvbox_bg">#32302f</color>
+    <color name="gruvbox_bg_hard">#1d2021</color>
+    <color name="gruvbox_bg1">#3c3836</color>
+    <color name="gruvbox_bg2">#504945</color>
+    <color name="gruvbox_fg">#ebdbb2</color>
+    <color name="gruvbox_fg2">#d5c4a1</color>
+    <color name="gruvbox_gray">#928374</color>
+    <color name="gruvbox_yellow">#d79921</color>
+    <color name="gruvbox_orange">#d65d0e</color>
+    <color name="gruvbox_aqua">#689d6a</color>
+    <color name="gruvbox_blue">#458588</color>
+    <color name="gruvbox_purple">#b16286</color>
+    <color name="gruvbox_red">#cc241d</color>
+    <color name="gruvbox_green">#98971a</color>
+
 
     <color name="progress_gray">#FFD8D8D8</color>
     <color name="default_blue_light">#ff33b5e5</color>

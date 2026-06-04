@@ -66,12 +66,14 @@
         <item>@string/light_theme_name</item>
         <item>@string/dark_theme_name</item>
         <item>@string/follow_system</item>
+        <item>Gruvbox</item>
     </string-array>
 
     <string-array name="pref_general_theme_list_values">
         <item>light</item>
         <item>dark</item>
         <item>auto</item>
+        <item>gruvbox</item>
     </string-array>
 
     <string-array name="pref_home_grid_style_list_titles">

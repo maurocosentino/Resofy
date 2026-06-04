@@ -66,6 +66,33 @@
         <item name="windowActionModeOverlay">true</item>
     </style>
 
+    <style name="Theme.Resofy.Base.Gruvbox" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="toolbarPopupTheme">@style/ThemeOverlay.Material3.Dark</item>
+        <item name="roundSelector">@drawable/round_selector</item>
+        <item name="rectSelector">@drawable/rect_selector</item>
+        <item name="android:actionOverflowButtonStyle">@style/Widget.ActionButton.Overflow</item>
+        <item name="materialAlertDialogTheme">@style/MaterialAlertDialogTheme</item>
+        <item name="materialButtonStyle">@style/MaterialButtonTheme</item>
+        <item name="colorSurface">@color/gruvbox_bg</item>
+        <item name="colorSurfaceVariant">@color/gruvbox_bg1</item>
+        <item name="colorOnSurface">@color/gruvbox_fg</item>
+        <item name="colorOnSurfaceVariant">@color/gruvbox_fg2</item>
+        <item name="colorPrimary">@color/gruvbox_yellow</item>
+        <item name="colorOnPrimary">@color/gruvbox_bg_hard</item>
+        <item name="colorSecondary">@color/gruvbox_aqua</item>
+        <item name="colorOnSecondary">@color/gruvbox_bg_hard</item>
+        <item name="colorTertiary">@color/gruvbox_orange</item>
+        <item name="android:colorBackground">@color/gruvbox_bg</item>
+        <item name="android:windowBackground">@color/gruvbox_bg</item>
+        <item name="android:textColorPrimary">@color/gruvbox_fg</item>
+        <item name="android:textColorSecondary">@color/gruvbox_gray</item>
+        <item name="popupMenuStyle">@style/MaterialPopupMenuStyle</item>
+        <item name="materialCardViewStyle">@style/Widget.Material3.CardView.Elevated</item>
+        <item name="elevationOverlayColor">@color/gruvbox_bg1</item>
+        <item name="popupMenuBackground">@drawable/popup_background</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
     <style name="MusicProgressSliderParent">
         <item name="android:progressDrawable">@android:color/transparent</item>
         <item name="android:layout_width">match_parent</item>

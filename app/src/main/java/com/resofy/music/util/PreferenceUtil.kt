@@ -196,6 +196,7 @@ object PreferenceUtil {
                     "light" -> ThemeMode.LIGHT
                     "dark" -> ThemeMode.DARK
                     "auto" -> ThemeMode.AUTO
+                    "gruvbox" -> ThemeMode.GRUVBOX
                     else -> ThemeMode.AUTO
                 }
             }
@@ -533,6 +534,7 @@ object PreferenceUtil {
         return when (themePrefValue) {
             "light" -> R.style.Theme_Resofy_Light
             "dark" -> R.style.Theme_Resofy
+            "gruvbox" -> R.style.Theme_Resofy_Gruvbox
             else -> R.style.Theme_Resofy
         }
     }
