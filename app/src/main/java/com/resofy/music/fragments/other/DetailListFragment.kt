@@ -49,6 +49,8 @@ import com.resofy.music.musicprovider.ProviderManager
 import org.koin.android.ext.android.inject
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_detail),
     IArtistClickListener, IAlbumClickListener {
@@ -117,9 +119,12 @@ class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_de
         if (providerManager.activeProvider is com.resofy.music.musicprovider.subsonic.SubsonicMusicProvider) {
             viewLifecycleOwner.lifecycleScope.launch {
                 val albums = providerManager.activeProvider.albumsByType(LAST_ADDED_PLAYLIST)
-                val songs = albums.flatMap { album ->
-                    providerManager.activeProvider.songsForAlbum(album.id)
-                }
+                val songs = albums
+                    .map { album ->
+                        async { providerManager.activeProvider.songsForAlbum(album.id) }
+                    }
+                    .awaitAll()
+                    .flatten()
                 songAdapter.swapDataSet(songs)
             }
         } else {
