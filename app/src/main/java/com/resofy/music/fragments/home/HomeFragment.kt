@@ -28,7 +28,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import code.name.monkey.appthemehelper.common.ATHToolbarActivity
-import code.name.monkey.appthemehelper.util.ColorUtil
 import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import com.resofy.music.*
 import com.resofy.music.adapter.HomeAdapter
@@ -42,9 +41,7 @@ import com.resofy.music.extensions.setUpMediaRouteButton
 import com.resofy.music.fragments.ReloadType
 import com.resofy.music.fragments.base.AbsMainActivityFragment
 import com.resofy.music.glide.RetroGlideExtension
-import com.resofy.music.glide.RetroGlideExtension.profileBannerOptions
 import com.resofy.music.glide.RetroGlideExtension.songCoverOptions
-import com.resofy.music.glide.RetroGlideExtension.userProfileOptions
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.interfaces.IScrollHelper
 import com.resofy.music.model.Song
@@ -87,8 +84,6 @@ class HomeFragment :
             }
         }
 
-//        binding.titleWelcome.text = String.format("%s", userName)
-
         enterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
         reenterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
 
@@ -106,7 +101,6 @@ class HomeFragment :
             homeAdapter.swapData(it)
         }
 
-//        loadProfile()
         setupTitle()
         colorButtons()
         postponeEnterTransition()
@@ -121,22 +115,12 @@ class HomeFragment :
             listOf(binding.history, binding.lastAdded, binding.topPlayed, binding.actionShuffle)
         buttons.maxOf { it.lineCount }.let { maxLineCount ->
             buttons.forEach { button ->
-                // Set the highest line count to every button for consistency
                 button.setLines(maxLineCount)
             }
         }
     }
 
     private fun setupListeners() {
-//        binding.bannerImage?.setOnClickListener {
-//            findNavController().navigate(
-//                R.id.user_info_fragment, null, null, FragmentNavigatorExtras(
-//                    binding.userImage to "user_image"
-//                )
-//            )
-//            reenterTransition = null
-//        }
-
         binding.lastAdded.setOnClickListener {
             findNavController().navigate(
                 R.id.detailListFragment,
@@ -165,18 +149,8 @@ class HomeFragment :
             setSharedAxisYTransitions()
         }
 
-//        binding.userImage.setOnClickListener {
-//            findNavController().navigate(
-//                R.id.user_info_fragment, null, null, FragmentNavigatorExtras(
-//                    binding.userImage to "user_image"
-//                )
-//            )
-//        }
-        // Reload suggestions
         binding.suggestions.refreshButton.setOnClickListener {
-            libraryViewModel.forceReload(
-                ReloadType.Suggestions
-            )
+            libraryViewModel.forceReload(ReloadType.Suggestions)
         }
     }
 
@@ -188,19 +162,6 @@ class HomeFragment :
         val appName = "Resofy <font color=$hexColor>Music</font>".parseAsHtml()
         binding.appBarLayout.title = appName
     }
-
-//    private fun loadProfile() {
-//        binding.bannerImage?.let {
-//            Glide.with(requireContext())
-//                .load(RetroGlideExtension.getBannerModel())
-//                .profileBannerOptions(RetroGlideExtension.getBannerModel())
-//                .into(it)
-//        }
-//        Glide.with(requireActivity())
-//            .load(RetroGlideExtension.getUserModel())
-//            .userProfileOptions(RetroGlideExtension.getUserModel(), requireContext())
-//            .into(binding.userImage)
-//    }
 
     fun colorButtons() {
         binding.history.elevatedAccentColor()
@@ -229,7 +190,6 @@ class HomeFragment :
             menu,
             ATHToolbarActivity.getToolbarBackgroundColor(binding.toolbar)
         )
-        //Setting up cast button
         requireContext().setUpMediaRouteButton(menu)
     }
 
@@ -255,47 +215,57 @@ class HomeFragment :
             binding.suggestions.root.isVisible = false
             return
         }
-        val images = listOf(
-            binding.suggestions.image1,
-            binding.suggestions.image2,
-            binding.suggestions.image3,
-            binding.suggestions.image4,
-            binding.suggestions.image5,
-            binding.suggestions.image6,
-            binding.suggestions.image7,
-            binding.suggestions.image8
+
+        // Container (whole item row) + image for Glide + title + artist
+        val songViews = listOf(
+            listOf(binding.suggestions.song1, binding.suggestions.image1, binding.suggestions.title1, binding.suggestions.artist1),
+            listOf(binding.suggestions.song2, binding.suggestions.image2, binding.suggestions.title2, binding.suggestions.artist2),
+            listOf(binding.suggestions.song3, binding.suggestions.image3, binding.suggestions.title3, binding.suggestions.artist3),
+            listOf(binding.suggestions.song4, binding.suggestions.image4, binding.suggestions.title4, binding.suggestions.artist4),
+            listOf(binding.suggestions.song5, binding.suggestions.image5, binding.suggestions.title5, binding.suggestions.artist5),
+            listOf(binding.suggestions.song6, binding.suggestions.image6, binding.suggestions.title6, binding.suggestions.artist6),
+            listOf(binding.suggestions.song7, binding.suggestions.image7, binding.suggestions.title7, binding.suggestions.artist7),
+            listOf(binding.suggestions.song8, binding.suggestions.image8, binding.suggestions.title8, binding.suggestions.artist8),
         )
-        val color = accentColor()
-        binding.suggestions.message.apply {
-            setTextColor(color)
-            setOnClickListener {
-                it.isClickable = false
-                it.postDelayed({ it.isClickable = true }, 500)
-                MusicPlayerRemote.playNext(songs.subList(0, 8))
-                if (!MusicPlayerRemote.isPlaying) {
-                    MusicPlayerRemote.playNextSong()
-                }
+
+        // Shuffle button — plays all 8 songs
+        binding.suggestions.shuffleButton.setOnClickListener {
+            it.isClickable = false
+            it.postDelayed({ it.isClickable = true }, 500)
+            MusicPlayerRemote.playNext(songs.subList(0, 8))
+            if (!MusicPlayerRemote.isPlaying) {
+                MusicPlayerRemote.playNextSong()
             }
         }
-        binding.suggestions.card6.setCardBackgroundColor(ColorUtil.withAlpha(color, 0.12f))
-        images.forEachIndexed { index, imageView ->
-            imageView.setOnClickListener {
+
+        songViews.forEachIndexed { index, views ->
+            val container = views[0]  // song1…song8 — the clickable row
+            val imageView = views[1] as androidx.appcompat.widget.AppCompatImageView
+            val titleView = views[2] as com.google.android.material.textview.MaterialTextView
+            val artistView = views[3] as com.google.android.material.textview.MaterialTextView
+            val song = songs[index]
+
+            titleView.text = song.title
+            artistView.text = song.artistName
+
+            // Click on the whole item row, not just the image
+            container.setOnClickListener {
                 it.isClickable = false
                 it.postDelayed({ it.isClickable = true }, 500)
-                MusicPlayerRemote.playNext(songs[index])
+                MusicPlayerRemote.playNext(song)
                 if (!MusicPlayerRemote.isPlaying) {
                     MusicPlayerRemote.playNextSong()
                 }
             }
+
             Glide.with(this)
-                .load(RetroGlideExtension.getSongModel(songs[index]))
-                .songCoverOptions(songs[index])
+                .load(RetroGlideExtension.getSongModel(song))
+                .songCoverOptions(song)
                 .into(imageView)
         }
     }
 
     companion object {
-
         const val TAG: String = "BannerHomeFragment"
 
         @JvmStatic
@@ -311,12 +281,10 @@ class HomeFragment :
                 null,
                 navOptions
             )
-
             R.id.action_import_playlist -> ImportPlaylistDialog().show(
                 childFragmentManager,
                 "ImportPlaylist"
             )
-
             R.id.action_add_to_playlist -> CreatePlaylistDialog.create(emptyList()).show(
                 childFragmentManager,
                 "ShowCreatePlaylistDialog"
