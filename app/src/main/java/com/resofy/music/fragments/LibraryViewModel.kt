@@ -12,6 +12,7 @@ import com.resofy.music.fragments.search.Filter
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.interfaces.IMusicServiceEventListener
 import com.resofy.music.model.*
+import com.resofy.music.musicprovider.MusicProviderType
 import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.repository.RealRepository
 import com.resofy.music.util.DensityUtil
@@ -116,8 +117,35 @@ class LibraryViewModel(
 
     fun search(query: String?, filter: Filter) =
         viewModelScope.launch(IO) {
-            val result = repository.search(query, filter)
-            searchResults.postValue(result)
+            if (providerManager.activeProviderType.value == MusicProviderType.SUBSONIC) {
+                val results = mutableListOf<Any>()
+                if (!query.isNullOrEmpty()) {
+                    val songs = providerManager.activeProvider.songs()
+                        .filter { it.title.contains(query, ignoreCase = true) ||
+                                it.artistName.contains(query, ignoreCase = true) }
+                    if (songs.isNotEmpty()) {
+                        results.add(App.getContext().getString(R.string.songs))
+                        results.addAll(songs)
+                    }
+                    val albums = providerManager.activeProvider.albums()
+                        .filter { it.title.contains(query, ignoreCase = true) ||
+                                it.artistName.contains(query, ignoreCase = true) }
+                    if (albums.isNotEmpty()) {
+                        results.add(App.getContext().getString(R.string.albums))
+                        results.addAll(albums)
+                    }
+                    val artists = providerManager.activeProvider.artists()
+                        .filter { it.name.contains(query, ignoreCase = true) }
+                    if (artists.isNotEmpty()) {
+                        results.add(App.getContext().getString(R.string.artists))
+                        results.addAll(artists)
+                    }
+                }
+                searchResults.postValue(results)
+            } else {
+                val result = repository.search(query, filter)
+                searchResults.postValue(result)
+            }
         }
 
     fun forceReload(reloadType: ReloadType) = viewModelScope.launch(IO) {

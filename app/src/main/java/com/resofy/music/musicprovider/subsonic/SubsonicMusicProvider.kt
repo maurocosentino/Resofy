@@ -17,6 +17,8 @@ import com.resofy.music.musicprovider.MusicProvider
 import com.resofy.music.network.Result
 import com.resofy.music.network.subsonic.SubsonicClient
 import com.resofy.music.repository.SubsonicRepository
+import kotlin.collections.emptyList
+
 class SubsonicMusicProvider(
     private val baseUrl: String,
     private val username: String,
@@ -138,22 +140,6 @@ class SubsonicMusicProvider(
         }
         if (topAlbums.isNotEmpty())
             homeSections.add(Home(topAlbums, TOP_ALBUMS, R.string.top_albums))
-
-        // Historial (reproducidos recientemente)
-//        val recentAlbums = when (val r = repository.getAlbumListByType("recent", 10)) {
-//            is Result.Success -> r.data
-//            else -> emptyList()
-//        }
-//        if (recentAlbums.isNotEmpty())
-//            homeSections.add(Home(recentAlbums, HISTORY_PLAYLIST, R.string.history))
-
-        // Últimos agregados
-//        val newestAlbums = when (val r = repository.getAlbumListByType("newest", 10)) {
-//            is Result.Success -> r.data
-//            else -> emptyList()
-//        }
-//        if (newestAlbums.isNotEmpty())
-//            homeSections.add(Home(newestAlbums, LAST_ADDED_PLAYLIST, R.string.last_added))
 
         // Favoritos (starred)
         val favSongs = favoriteSongs()
