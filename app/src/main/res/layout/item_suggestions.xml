@@ -20,203 +20,461 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.resofy.music.views.AccentIcon
+        android:id="@+id/shuffle_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/round_selector"
+        android:padding="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/title"
+        app:layout_constraintStart_toEndOf="@+id/title"
+        app:layout_constraintTop_toTopOf="@+id/title"
+        app:srcCompat="@drawable/ic_play_circle" />
+
+    <com.resofy.music.views.AccentIcon
         android:id="@+id/refresh_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/round_selector"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/card7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/round_selector"
         app:srcCompat="@drawable/ic_refresh" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card1"
+    <HorizontalScrollView
+        android:id="@+id/suggestions_scroll"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card2"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card6">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image4"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card3"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@id/card1"
-        app:layout_constraintTop_toBottomOf="@id/card6">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image5"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card4"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@id/card2"
-        app:layout_constraintTop_toBottomOf="@id/card6">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image6"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card4"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card5"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@id/card3"
-        app:layout_constraintTop_toBottomOf="@id/card6">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image7"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:clipToPadding="false"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@id/card4"
-        app:layout_constraintTop_toBottomOf="@id/card6">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image8"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card6"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardBackgroundColor="?attr/colorSurface"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardElevation="0dp"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card7"
-        app:layout_constraintHorizontal_weight="4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title">
+        app:layout_constraintTop_toBottomOf="@+id/title">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:autoSizeTextType="uniform"
-            android:padding="8dp"
-            android:text="@string/new_music_mix"
-            android:textAppearance="@style/TextViewNormal"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            app:autoSizeMaxTextSize="32sp"
-            app:autoSizeMinTextSize="24sp"
-            app:autoSizeStepGranularity="1sp" />
-    </com.google.android.material.card.MaterialCardView>
+        <!-- Vertical stack of 4 rows, each row has 2 songs side by side -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="32dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card7"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card8"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@id/card6"
-        app:layout_constraintTop_toTopOf="@id/card6">
+            <!-- Row 1: song1 | song5 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
+                <LinearLayout
+                    android:id="@+id/song1"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card8"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="4"
-        app:layout_constraintStart_toEndOf="@id/card7"
-        app:layout_constraintTop_toTopOf="@id/card7">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:cardCornerRadius="@dimen/m3_card_corner_radius"
-        app:cardUseCompatPadding="true"
-        app:layout_constraintDimensionRatio="1,1"
-        app:layout_constraintEnd_toStartOf="@id/card8"
-        app:layout_constraintHorizontal_weight="2"
-        app:layout_constraintStart_toEndOf="@id/card6"
-        app:layout_constraintTop_toBottomOf="@id/card7">
+                <LinearLayout
+                    android:id="@+id/song5"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/image3"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            tools:src="@tools:sample/avatars" />
-    </com.google.android.material.card.MaterialCardView>
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image5"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Row 2: song2 | song6 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/song2"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/song6"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image6"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist6"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Row 3: song3 | song7 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/song3"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/song7"
+                    android:layout_width="220dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image7"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist7"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Row 4: song4 | song8 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/song4"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image4"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/song8"
+                    android:layout_width="290dp"
+                    android:layout_height="wrap_content"
+                    android:background="?rectSelector"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="horizontal"
+                    android:padding="8dp">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="@dimen/m3_card_corner_radius"
+                        app:cardUseCompatPadding="false">
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/image8"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            tools:src="@tools:sample/avatars" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/title8"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewBody1"
+                            tools:text="Song Title" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/artist8"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:textAppearance="@style/TextViewNormal"
+                            android:textColor="?android:attr/textColorSecondary"
+                            tools:text="Artist Name" />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </HorizontalScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
