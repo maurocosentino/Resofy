@@ -279,20 +279,26 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
 
     protected open fun toggleFavorite(song: Song) {
         lifecycleScope.launch(IO) {
-            val playlist: PlaylistEntity = libraryViewModel.favoritePlaylist()
-            val songEntity = song.toSongEntity(playlist.playListId)
-            val isFavorite = libraryViewModel.isSongFavorite(song.id)
-            if (isFavorite) {
-                libraryViewModel.removeSongFromPlaylist(songEntity)
-            } else {
-                libraryViewModel.insertSongs(listOf(song.toSongEntity(playlist.playListId)))
-            }
-            libraryViewModel.forceReload(ReloadType.Playlists)
-            if (song.data.startsWith("http")) {
+            val isSubsonicSong = song.data.startsWith("http")
+
+            if (isSubsonicSong) {
+                // Subsonic: solo star/unstar en el servidor, Room no se toca
+                val isFavorite = providerManager.activeProvider.favoriteSongs().any { it.id == song.id }
                 providerManager.toggleStar(song, !isFavorite)
+                libraryViewModel.forceReload(ReloadType.HomeSections)
+            } else {
+                // Local: comportamiento original con Room
+                val playlist: PlaylistEntity = libraryViewModel.favoritePlaylist()
+                val songEntity = song.toSongEntity(playlist.playListId)
+                val isFavorite = libraryViewModel.isSongFavorite(song.id)
+                if (isFavorite) {
+                    libraryViewModel.removeSongFromPlaylist(songEntity)
+                } else {
+                    libraryViewModel.insertSongs(listOf(songEntity))
+                }
+                libraryViewModel.forceReload(ReloadType.Playlists)
             }
-            // Recargar home para reflejar cambio en favoritos
-            libraryViewModel.forceReload(ReloadType.HomeSections)
+
             LocalBroadcastManager.getInstance(requireContext())
                 .sendBroadcast(Intent(MusicService.FAVORITE_STATE_CHANGED))
         }
@@ -300,6 +306,8 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
 
     fun updateIsFavorite(animate: Boolean = false) {
         lifecycleScope.launch(IO) {
+            val currentSong = MusicPlayerRemote.currentSong
+            if (currentSong.id == -1L) return@launch
             val isFavorite: Boolean =
                 libraryViewModel.isSongFavorite(MusicPlayerRemote.currentSong.id)
             withContext(Main) {

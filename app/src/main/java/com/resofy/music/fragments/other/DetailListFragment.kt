@@ -190,9 +190,19 @@ class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_de
             adapter = songAdapter
             layoutManager = linearLayoutManager()
         }
-        libraryViewModel.favorites().observe(viewLifecycleOwner) { songEntities ->
-            val songs = songEntities.map { songEntity -> songEntity.toSong() }
-            songAdapter.swapDataSet(songs)
+
+        if (providerManager.activeProviderType.value == MusicProviderType.SUBSONIC) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val songs = providerManager.activeProvider.favoriteSongs()
+                songAdapter.swapDataSet(songs)
+                binding.empty.isVisible = songs.isEmpty()
+            }
+        } else {
+            libraryViewModel.favorites().observe(viewLifecycleOwner) { songEntities ->
+                val songs = songEntities.map { it.toSong() }
+                songAdapter.swapDataSet(songs)
+                binding.empty.isVisible = songs.isEmpty()
+            }
         }
     }
 

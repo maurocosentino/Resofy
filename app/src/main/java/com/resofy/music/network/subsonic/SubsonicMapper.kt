@@ -21,16 +21,16 @@ object SubsonicMapper {
     fun SubsonicSong.toSong(baseUrl: String, username: String, password: String): Song {
         val coverUrl = buildCoverUrl(baseUrl, coverArt, username, password) ?: ""
         return Song(
-            id = id.hashCode().toLong().let { if (it < 0) -it else it },
+            id = subsonicIdToLong(id),
             title = title,
             trackNumber = track ?: 0,
             year = year ?: 0,
             duration = ((duration ?: 0) * 1000).toLong(),
             data = buildStreamUrl(baseUrl, id, username, password),
             dateModified = 0L,
-            albumId = albumId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
+            albumId = albumId?.let { subsonicIdToLong(it) } ?: 0L,
             albumName = album ?: "",
-            artistId = artistId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
+            artistId = artistId?.let { subsonicIdToLong(it) } ?: 0L,
             artistName = artist ?: "",
             composer = null,
             albumArtist = coverUrl
@@ -39,7 +39,7 @@ object SubsonicMapper {
 
     fun SubsonicAlbum.toAlbum(baseUrl: String, username: String, password: String): Album {
         val coverUrl = buildCoverUrl(baseUrl, coverArt, username, password) ?: ""
-        val albumLongId = id.hashCode().toLong().let { if (it < 0) -it else it }
+        val albumLongId = subsonicIdToLong(id)
         val dummySong = Song(
             id = albumLongId,
             title = id,  //guarda el Subsonic ID temporalmente
@@ -50,7 +50,7 @@ object SubsonicMapper {
             dateModified = 0L,
             albumId = albumLongId,
             albumName = name,
-            artistId = artistId?.hashCode()?.toLong()?.let { if (it < 0) -it else it } ?: 0L,
+            artistId = artistId?.let { subsonicIdToLong(it) } ?: 0L,
             artistName = artist ?: "",
             composer = coverUrl,
             albumArtist = artist ?: ""
@@ -59,7 +59,7 @@ object SubsonicMapper {
     }
 
     fun SubsonicArtist.toArtist(): Artist {
-        val artistLongId = id.hashCode().toLong().let { if (it < 0) -it else it }
+        val artistLongId = subsonicIdToLong(id)
         val dummyAlbum = Album(
             id = artistLongId,
             songs = listOf(
@@ -84,5 +84,13 @@ object SubsonicMapper {
             artistName = name,
             albums = listOf(dummyAlbum)
         )
+    }
+
+    private fun subsonicIdToLong(id: String): Long {
+        var hash = 0L
+        for (ch in id) {
+            hash = hash * 31 + ch.code
+        }
+        return if (hash < 0) hash and Long.MAX_VALUE else hash
     }
 }

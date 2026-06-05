@@ -100,7 +100,11 @@ class LibraryViewModel(
     }
 
     private suspend fun fetchPlaylists() {
-        playlists.postValue(repository.fetchPlaylistWithSongs())
+        if (providerManager.activeProviderType.value == MusicProviderType.LOCAL) {
+            playlists.postValue(repository.fetchPlaylistWithSongs())
+        } else {
+            playlists.postValue(emptyList())
+        }
     }
 
     private suspend fun fetchGenres() {
@@ -232,7 +236,15 @@ class LibraryViewModel(
     suspend fun artistById(id: Long) = repository.artistById(id)
     suspend fun favoritePlaylist() = repository.favoritePlaylist()
     suspend fun isFavoriteSong(song: SongEntity) = repository.isFavoriteSong(song)
-    suspend fun isSongFavorite(songId: Long) = repository.isSongFavorite(songId)
+    suspend fun isSongFavorite(songId: Long): Boolean {
+        return if (providerManager.activeProviderType.value == MusicProviderType.SUBSONIC) {
+            val favs = providerManager.activeProvider.favoriteSongs()
+            android.util.Log.d("Favorites", "Checking subsonic favs: ${favs.size} songs, looking for $songId")
+            favs.any { it.id == songId }
+        } else {
+            repository.isSongFavorite(songId)
+        }
+    }
     suspend fun insertSongs(songs: List<SongEntity>) = repository.insertSongs(songs)
     suspend fun removeSongFromPlaylist(songEntity: SongEntity) =
         repository.removeSongFromPlaylist(songEntity)

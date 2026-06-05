@@ -56,9 +56,8 @@ Resofy is a fork of [Retro Music Player](https://github.com/RetroMusicPlayer/Ret
 - Searches songs, albums and artists
 
 ### 🎨 Themes
-- **Kinda Dark** — dark theme with warm tones
-- **Clearly White** — clean light theme
-- **Just Black** — pure AMOLED black
+- **Dark** — dark theme with warm tones
+- **Light** — clean light theme
 - **Gruvbox Dark Soft** — retro warm color scheme inspired by the popular Gruvbox palette
 - Material You support on Android 12+
 - Adaptive color from album art

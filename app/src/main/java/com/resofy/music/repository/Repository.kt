@@ -247,7 +247,13 @@ class RealRepository(
         roomRepository.deletePlaylistSongs(playlists)
 
     override suspend fun favoritePlaylist(): PlaylistEntity =
-        roomRepository.favoritePlaylist(context.getString(R.string.favorites))
+        roomRepository.favoritePlaylist(FAVORITES_PLAYLIST_NAME)
+
+    override suspend fun favoritePlaylistSongs(): List<SongEntity> =
+        roomRepository.favoritePlaylistSongs(FAVORITES_PLAYLIST_NAME)
+
+    override fun favorites(): LiveData<List<SongEntity>> =
+        roomRepository.favoritePlaylistLiveData(FAVORITES_PLAYLIST_NAME)
 
     override suspend fun isFavoriteSong(songEntity: SongEntity): List<SongEntity> =
         roomRepository.isFavoriteSong(songEntity)
@@ -255,8 +261,8 @@ class RealRepository(
     override suspend fun upsertSongInHistory(currentSong: Song) =
         roomRepository.upsertSongInHistory(currentSong)
 
-    override suspend fun favoritePlaylistSongs(): List<SongEntity> =
-        roomRepository.favoritePlaylistSongs(context.getString(R.string.favorites))
+//    override suspend fun favoritePlaylistSongs(): List<SongEntity> =
+//        roomRepository.favoritePlaylistSongs(context.getString(R.string.favorites))
 
     override suspend fun recentSongs(): List<Song> = lastAddedRepository.recentSongs()
 
@@ -289,8 +295,8 @@ class RealRepository(
     override fun historySong(): List<HistoryEntity> =
         roomRepository.historySongs()
 
-    override fun favorites(): LiveData<List<SongEntity>> =
-        roomRepository.favoritePlaylistLiveData(context.getString(R.string.favorites))
+//    override fun favorites(): LiveData<List<SongEntity>> =
+//        roomRepository.favoritePlaylistLiveData(context.getString(R.string.favorites))
 
     override suspend fun suggestions(): List<Song> {
         return NotPlayedPlaylist().songs().shuffled().takeIf {
