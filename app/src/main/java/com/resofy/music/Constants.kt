@@ -23,7 +23,7 @@ object Constants {
         "https://play.google.com/store/apps/details?id=com.resofy.music"
     const val TRANSLATE = "https://crowdin.com/project/com.resofy.music"
     const val WEBSITE = "https://com.resofy.music.app"
-    const val GITHUB_PROJECT = "https://github.com/Resofy/Resofy"
+    const val GITHUB_PROJECT = "https://github.com/maurocosentino/Resofy"
     const val TELEGRAM_CHANGE_LOG = "https://t.me/com.resofy.musiclog"
     const val USER_PROFILE = "profile.jpg"
     const val USER_BANNER = "banner.jpg"
