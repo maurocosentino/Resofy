@@ -1,148 +1,129 @@
 <p align="center">
-  <a href="https://retromusic.app">
-    <img src="app\src\main\ic_launcher-web.png" height="128">
-    <h1 align="center">Resofy Player 🎵</h1>
-  </a>
-</p>
+  <h1 align="center">Resofy Music 🎵</h1>
+  <p align="center">A modern Material Design music player for Android with support for local libraries, Navidrome and Subsonic servers.</p>
+
 <p align="center">
-  <a href="https://github.com/Resofy/Resofy" style="text-decoration:none" area-label="Android">
+  <a href="https://github.com/maurocosentino/Resofy">
     <img src="https://img.shields.io/badge/Platform-Android-green.svg">
   </a>
-  <a href="https://github.com/Resofy/Resofy/actions/workflows/android.yml" style="text-decoration:none" area-label="Build Status">
-    <img src="https://github.com/Resofy/Resofy/actions/workflows/android.yml/badge.svg">
-  </a>
-  <a href="https://github.com/Resofy/Resofy" style="text-decoration:none" area-label="Min API: 21">
-    <img src="https://img.shields.io/badge/minSdkVersion-21-green.svg">
-  </a>
-  <a href="https://play.google.com/store/apps/details?id=music" style="text-decoration:none" area-label="Play Store">
-    <img src="https://img.shields.io/badge/Download-Google_Play-green.svg">
-  </a>
-  <a href="https://github.com/Resofy/Resofy/blob/master/LICENSE.md" style="text-decoration:none" area-label="License: GPL v3">
+  <a href="https://github.com/maurocosentino/Resofy/blob/master/LICENSE.md">
     <img src="https://img.shields.io/badge/License-GPL%20v3-blue.svg">
   </a>
-  <a href="https://twitter.com/retromusicapp" style="text-decoration:none" area-label="Twitter Follow">
-    <img src="https://img.shields.io/twitter/follow/retromusicapp?style=social">
+  <a href="https://github.com/maurocosentino/Resofy/releases">
+    <img src="https://img.shields.io/badge/Download-GitHub_Releases-black.svg">
   </a>
-  <a href="https://crowdin.com/project/retromusicplayer" style="text-decoration:none" area-label="Crowdin">
-    <img src="https://badges.crowdin.net/retromusicplayer/localized.svg">
-  </a>
-
+  <img src="https://img.shields.io/badge/minSdkVersion-21-green.svg">
 </p>
 
-___
-# We're looking for more contributors and maintainers!
-# If you'd like to be a maintainer, please DM us on [Telegram](https://telegram.me/Daksh777) or [Twitter](https://twitter.com/0xDPJ)
-# All contributions are welcome!
-___
-
-## 🆕 Material You Design Music Player for Android music lovers 
-
-## Download
-| Play Store | F-Droid |
-|:-:|:-:|
-| [<img src="assets/google-play-badge.png" height="80">](https://play.google.com/store/apps/details?id=music) | [<img src="https://f-droid.org/badge/get-it-on.png" height="80">](https://f-droid.org/en/packages/music/) |
-
-or get it from the [GitHub Releases](https://github.com/Resofy/Resofy/releases).
-
-## ⚠ Join [@retromusiclog](https://telegram.me/retromusiclog) on Telegram for important updates.
-___
+---
 
 ## 📱 Screenshots
-### App Themes
-| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="200"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" width="200"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" width="200"/> |
+
+| Home | Player | Settings |
 |:---:|:---:|:---:|
-|Clearly white| Kinda dark | Just black|
+| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/home.png" width="220"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/player2.png" width="220"/> | <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/settings.png" width="220"/> |
 
-### Player screen
-| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/5.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/6.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/7.jpg" width="200"/>| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/8.jpg" width="200"/>|
-|:---:|:---:|:---:|:---:|:---:|
-| Home | Songs | Albums | Artists | Settings |
+---
 
-### Synced lyrics screen (Over Cover)
-| <img src="screenshots/synced_over_light.jpg" width="200"/>| <img src="screenshots/synced_over_dark.jpg" width="200"/>| <img src="screenshots/synced_over_black.jpg" width="200"/>|
-|:---:|:---:|:---:|
-| Synced Over Cover light | Synced Over Cover dark | Synced Over Cover black |
+## ✨ What is Resofy?
 
-### Synced lyrics screen (Replace Cover)
-| <img src="screenshots/synced_replace_light.jpg" width="200"/>| <img src="screenshots/synced_replace_dark.jpg" width="200"/>| <img src="screenshots/synced_replace_black.jpg" width="200"/>|
-|:---:|:---:|:---:|
-| Synced Replace Cover light | Synced Replace Cover dark | Synced Replace Cover black |
+Resofy is a fork of [Retro Music Player](https://github.com/RetroMusicPlayer/RetroMusicPlayer) with a focus on combining local music playback with self-hosted streaming servers. It brings together your local library and your Navidrome or Subsonic server in a single, polished Material Design app.
 
-### 10+ Now playing themes
-| <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" width="200"/>	|<img src="screenshots/fit.jpg" width="200"/>|   <img src="screenshots/flat.jpg" width="200"/>  	|    <img src="screenshots/color.jpg" width="200"/> 	|     <img src="screenshots/material.jpg" width="200"/>	|
-|:-----:	|:-----:	|:-----:	|:-----:	|:-----:	|
-| Normal 	| Fit 	| Flat 	| Color 	| Material 	|
+---
 
-| <img src="screenshots/classic.jpg" width="200"/>	|<img src="screenshots/adaptive.jpg" width="200"/>|   <img src="screenshots/blur.jpg" width="200"/>  	|    <img src="screenshots/tiny.jpg" width="200"/> 	|     <img src="screenshots/peek.jpg" width="200"/>	|
-|:-----:	|:-----:	|:-----:	|:-----:	|:-----:	|
-| Classic 	| Adaptive 	| Blur 	| Tiny 	| Peek 	|
+## 📦 Features
 
-___
+### 🎵 Music Sources
+- Local library playback (songs, albums, artists, playlists, genres, folders)
+- **Subsonic / Navidrome server support** — browse and stream your self-hosted music library
+- Switch between local and server mode instantly from settings
+- Multiple server configurations with connection testing
 
-## 🧭 Navigation never been made easier 
-Self-explanatory interface without overloaded menus.
+### 🏠 Home
+- Personalized suggestions refreshed daily
+- Top albums section (most played)
+- Last added albums from your server
+- Favorites section with starred songs
+- Suggested artists of the day
 
-## 🎨 Colorful
-You can choose between three different main themes: Clearly White, Kinda
-Dark and Just Black for AMOLED displays. Select your favorite accent
-color from a color palette.
+### ❤️ Favorites
+- Star/unstar songs directly from home cards
+- Syncs favorites with your Navidrome/Subsonic server via the star API
+- Favorite heart icon overlay on album art cards
 
-## 🏠 Home
-Where you can view your recently/top played artists, albums and
-favorite songs. No other music player has this feature.
+### 🔍 Search
+- Works across both local library and Subsonic server
+- Searches songs, albums and artists
 
-## 📦 Included Features
--  Base 3 themes (Clearly White, Kinda Dark and Just Black)
--  Chromecast support
--  Choose from 10+ now playing themes
--  Driving Mode
--  Headset/Bluetooth support
--  Music duration filter
--  Android Auto support
--  Wallpaper accent picker on Android 8.1+
--  Material You support on Android 12+
--  Monet themed icon support on Android 13+
--  Folder support - Play songs by folder
--  Gapless playback
--  Volume controls
--  Carousel effect for album covers
--  Home screen widgets
--  Lock screen playback controls
--  Lyrics screen (download and sync with music)
--  Sleep timer
--  Easy drag to sort playlist & play queue
--  Tag editor
--  Create, edit and import playlists
--  Playing queue with reorder
--  User profile
--  30+ languages support (help translate the project: [Crowdin](https://crowdin.com/project/retromusicplayer)
--  Browse and play your music by songs, albums, artists, playlists and
-  genre
--  Smart Auto Playlists - Recently played, most played and history
--  Build your playlist on the go
+### 🎨 Themes
+- **Kinda Dark** — dark theme with warm tones
+- **Clearly White** — clean light theme
+- **Just Black** — pure AMOLED black
+- **Gruvbox Dark Soft** — retro warm color scheme inspired by the popular Gruvbox palette
+- Material You support on Android 12+
+- Adaptive color from album art
+- Custom accent color picker
 
-We are trying our best to bring you the best user experience. The app is regularly updated for bug fixes and new features.
+### 🎧 Now Playing
+- 10+ now playing screen styles (Normal, Fit, Flat, Color, Material, Classic, Adaptive, Blur, Tiny, Peek and more)
+- Adaptive color background from album art
+- Synced and unsynced lyrics support
+- Sleep timer
+- Playback speed and pitch control
+- Crossfade support
+- Gapless playback
 
-___
+### 📚 Library
+- Browse by songs, albums, artists, playlists, genres and folders
+- Smart auto playlists: Last added, History, Most played
+- Create, edit and import playlists
+- Reorderable play queue
+- Tag editor
+- Scrobble support (Last.fm compatible via Subsonic API)
 
+### ⚙️ Other
+- Android Auto support
+- Chromecast support
+- Home screen widgets
+- Lock screen playback controls
+- Headset / Bluetooth support
+- Driving mode
+- Folder-based browsing
+- Blacklist folders
+- 6 language support: English, Spanish, Portuguese, Japanese, German, French
 
-## ❓ FAQ
-Please read the FAQ [here](https://retromusic.app/faq.html)
+---
 
-In any case, if you find or notice any bugs please report them by creating an issue or by contacting us in the [Telegram help & feedback group](https://t.me/retromusicapp).
-If you have any feature suggestions, please create an issue with detailed information or by contacting us in the [Telegram suggestions group](https://t.me/retro_music_suggestion).
+## ⬇️ Download
 
-## 🔗 Social links
-**Telegram:** https://t.me/retromusicapp <br>
-**Crowdin**: https://crowdin.com/project/retromusicplayer <br>
-**Pinterest:** https://pinterest.com/retromusicapp <br>
-**Twitter:** https://twitter.com/retromusicapp <br>
+Get the latest release from [GitHub Releases](https://github.com/maurocosentino/Resofy/releases).
+
+---
+
+## 🛠️ Building
+
+```bash
+git clone https://github.com/maurocosentino/Resofy.git
+cd Resofy
+./gradlew assembleDebug
+```
+
+Requires Android Studio Hedgehog or newer and JDK 17.
+
+---
 
 ## 🗂️ License
 
-Resofy Player is released under the GNU General Public License v3.0
-(GPLv3), which can be found [here](LICENSE.md)
+Resofy is released under the GNU General Public License v3.0 (GPLv3).
 
+This project is a fork of [Retro Music Player](https://github.com/RetroMusicPlayer/RetroMusicPlayer) by Hemanth Savarala, also licensed under GPL v3.
 
->Please note: Resofy Player is a local music player app. It
->doesn't support music downloading or online music streaming.
+See [LICENSE.md](LICENSE.md) for the full license text.
+
+---
+
+## 🙏 Credits
+
+- Original app: [Retro Music Player](https://github.com/RetroMusicPlayer/RetroMusicPlayer) by [@h4h13](https://github.com/h4h13) and contributors
+- Subsonic API: [subsonic.org](http://www.subsonic.org)
+- Navidrome: [navidrome.org](https://www.navidrome.org)
