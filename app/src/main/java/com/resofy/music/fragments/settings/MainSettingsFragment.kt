@@ -14,13 +14,21 @@ import com.resofy.music.R
 import com.resofy.music.databinding.FragmentMainSettingsBinding
 import com.resofy.music.extensions.drawAboveSystemBarsWithPadding
 import com.resofy.music.extensions.goToProVersion
-
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.resofy.music.extensions.installLanguageAndRecreate
+import com.resofy.music.util.PreferenceUtil
 class MainSettingsFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentMainSettingsBinding? = null
     private val binding get() = _binding!!
 
     override fun onClick(view: View) {
+        if (view.id == R.id.languageSettings) {
+            showLanguageDialog()
+            return
+        }
         findNavController().navigate(
             when (view.id) {
                 R.id.generalSettings -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
@@ -29,10 +37,37 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
                 R.id.aboutSettings -> R.id.action_mainSettingsFragment_to_aboutActivity
                 R.id.backup_restore_settings -> R.id.action_mainSettingsFragment_to_backupFragment
                 R.id.serverSettings -> R.id.action_mainSettingsFragment_to_musicProvidersFragment
-                R.id.languageSettings -> R.id.action_mainSettingsFragment_to_languageSettingsFragment
                 else -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
             }
         )
+    }
+
+    private fun showLanguageDialog() {
+        val names = resources.getStringArray(R.array.pref_language_names)
+        val codes = resources.getStringArray(R.array.pref_language_codes)
+
+        val currentCode = AppCompatDelegate.getApplicationLocales()
+            .toLanguageTags().ifEmpty { "auto" }
+        val currentIndex = codes.indexOf(currentCode).takeIf { it >= 0 } ?: 0
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.pref_language_name)
+            .setSingleChoiceItems(names, currentIndex) { dialog, which ->
+                val selected = codes[which]
+                PreferenceUtil.languageCode = selected
+                if (selected == "auto") {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                } else {
+                    requireActivity().installLanguageAndRecreate(selected) {
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.forLanguageTags(selected)
+                        )
+                    }
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun onCreateView(
