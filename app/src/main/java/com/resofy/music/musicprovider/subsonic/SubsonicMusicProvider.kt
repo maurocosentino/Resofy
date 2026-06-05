@@ -4,6 +4,7 @@ import com.resofy.music.FAVOURITES
 import com.resofy.music.R
 import com.resofy.music.RECENT_ALBUMS
 import com.resofy.music.RECENT_ARTISTS
+import com.resofy.music.SUGGESTED_ARTISTS
 import com.resofy.music.TOP_ALBUMS
 import com.resofy.music.TOP_ARTISTS
 import com.resofy.music.model.Album
@@ -123,40 +124,37 @@ class SubsonicMusicProvider(
         }
     }
 
-override suspend fun homeSections(): List<Home> {
-    if (baseUrl.isEmpty()) return emptyList()
-    val homeSections = mutableListOf<Home>()
+    override suspend fun homeSections(): List<Home> {
+        if (baseUrl.isEmpty()) return emptyList()
+        val homeSections = mutableListOf<Home>()
 
-    // Favoritos (starred)
-    val favSongs = favoriteSongs()
-    if (favSongs.isNotEmpty())
-        homeSections.add(Home(favSongs, FAVOURITES, R.string.favorites))
-
-    val topAlbums = when (val r = repository.getAlbumListByType("frequent", 10)) {
-        is Result.Success -> r.data.ifEmpty {
-            (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
+        // Top albums
+        val topAlbums = when (val r = repository.getAlbumListByType("frequent", 10)) {
+            is Result.Success -> r.data.ifEmpty {
+                (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
+            }
+            else -> (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
         }
-        else -> (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
-    }
-    if (topAlbums.isNotEmpty())
-        homeSections.add(Home(topAlbums, TOP_ALBUMS, R.string.top_albums))
+        if (topAlbums.isNotEmpty())
+            homeSections.add(Home(topAlbums, TOP_ALBUMS, R.string.top_albums))
 
-    val recentAlbums = when (val r = repository.getAlbumListByType("recent", 10)) {
-        is Result.Success -> r.data.ifEmpty {
-            (repository.getAlbumListByType("alphabeticalByName", 10) as? Result.Success)?.data ?: emptyList()
+        // Favoritos (starred)
+        val favSongs = favoriteSongs()
+        if (favSongs.isNotEmpty())
+            homeSections.add(Home(favSongs, FAVOURITES, R.string.favorites))
+
+        // Artistas sugeridos — 5 aleatorios del día
+        val allArtists = cachedArtists.ifEmpty { artists() }
+        if (allArtists.isNotEmpty()) {
+            val seed = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
+            val suggested = allArtists
+                .shuffled(kotlin.random.Random(seed))
+                .take(5)
+            homeSections.add(Home(suggested, SUGGESTED_ARTISTS, R.string.suggested_artists))
         }
-        else -> (repository.getAlbumListByType("alphabeticalByName", 10) as? Result.Success)?.data ?: emptyList()
-    }
-    if (recentAlbums.isNotEmpty()) {
-        homeSections.add(Home(recentAlbums, RECENT_ALBUMS, R.string.recent_albums))
-        val recentArtistNames = recentAlbums.map { it.artistName }.distinct()
-        val recentArtists = cachedArtists.filter { it.name in recentArtistNames }.take(5)
-        if (recentArtists.isNotEmpty())
-            homeSections.add(Home(recentArtists, RECENT_ARTISTS, R.string.recent_artists))
-    }
 
-    return homeSections
-}
+        return homeSections
+    }
     private var cachedStarredSongs: List<Song> = emptyList()
 
     override suspend fun favoriteSongs(): List<Song> {

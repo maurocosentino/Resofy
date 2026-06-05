@@ -47,6 +47,7 @@ interface Repository {
     suspend fun recentAlbumsHome(): Home
     suspend fun favoritePlaylistHome(): Home
     suspend fun suggestions(): List<Song>
+    suspend fun suggestedArtistsHome(): Home
     suspend fun genresHome(): Home
     suspend fun playlists(): Home
     suspend fun homeSections(): List<Home>
@@ -188,8 +189,7 @@ class RealRepository(
         val sections: List<Home> = listOf(
             topArtistsHome(),
             topAlbumsHome(),
-            recentArtistsHome(),
-            recentAlbumsHome(),
+            suggestedArtistsHome(),
             favoritePlaylistHome()
         )
         for (section in sections) {
@@ -326,6 +326,14 @@ class RealRepository(
     override suspend fun topArtistsHome(): Home {
         val artists = topPlayedRepository.topArtists().take(5)
         return Home(artists, TOP_ARTISTS, R.string.top_artists)
+    }
+
+    override suspend fun suggestedArtistsHome(): Home {
+        val seed = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
+        val artists = artistRepository.artists()
+            .shuffled(kotlin.random.Random(seed))
+            .take(5)
+        return Home(artists, SUGGESTED_ARTISTS, R.string.suggested_artists)
     }
 
     override suspend fun favoritePlaylistHome(): Home {

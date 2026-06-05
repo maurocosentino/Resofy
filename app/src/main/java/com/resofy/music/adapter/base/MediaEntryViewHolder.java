@@ -74,6 +74,9 @@ public class MediaEntryViewHolder extends AbstractDraggableSwipeableItemViewHold
     @Nullable
     public TextView title;
 
+    @Nullable
+    public ImageView favoriteIcon;
+
     public MediaEntryViewHolder(@NonNull View itemView) {
         super(itemView);
         title = itemView.findViewById(R.id.title);
@@ -91,6 +94,7 @@ public class MediaEntryViewHolder extends AbstractDraggableSwipeableItemViewHold
         menu = itemView.findViewById(R.id.menu);
         dragView = itemView.findViewById(R.id.drag_view);
         paletteColorContainer = itemView.findViewById(R.id.paletteColorContainer);
+        favoriteIcon = itemView.findViewById(R.id.favoriteIcon);
         mask = itemView.findViewById(R.id.mask);
         dummyContainer = itemView.findViewById(R.id.dummy_view);
 
