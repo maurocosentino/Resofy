@@ -24,7 +24,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-
+import android.view.WindowManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class MusicProvidersFragment : Fragment() {
 
     private var _binding: FragmentMusicProvidersBinding? = null
@@ -46,7 +47,6 @@ class MusicProvidersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupProviderToggle()
         setupServerList()
-        setupServerForm()
         observeViewModel()
     }
 
@@ -107,50 +107,74 @@ class MusicProvidersFragment : Fragment() {
 
     private fun showServerForm(server: ServerConfigEntity?) {
         isEditing = server != null
-        binding.serverFormCard.isVisible = true
-        binding.etServerName.setText(server?.name ?: "")
-        binding.etServerUrl.setText(server?.url ?: "")
-        binding.etServerUsername.setText(server?.username ?: "")
-        binding.etServerPassword.setText(server?.password ?: "")
         if (server != null) viewModel.selectServer(server) else viewModel.clearSelection()
-    }
 
-    private fun setupServerForm() {
-        binding.btnSaveServer.setOnClickListener {
-            val name = binding.etServerName.text.toString().trim()
-            val url = binding.etServerUrl.text.toString().trim()
-            val user = binding.etServerUsername.text.toString().trim()
-            val pass = binding.etServerPassword.text.toString().trim()
+        val dialogView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.dialog_server_form, null)
 
-            if (url.isEmpty()) {
-                showToast(getString(R.string.enter_server_url))
-                return@setOnClickListener
+        val etName = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etServerName)
+        val etUrl = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etServerUrl)
+        val etUser = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etServerUsername)
+        val etPass = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etServerPassword)
+
+        etName.setText(server?.name ?: "")
+        etUrl.setText(server?.url ?: "")
+        etUser.setText(server?.username ?: "")
+        etPass.setText(server?.password ?: "")
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(if (isEditing) R.string.action_edit else R.string.add_server)
+            .setView(dialogView)
+            .setNegativeButton(R.string.cancel) { d, _ ->
+                viewModel.clearSelection()
+                d.dismiss()
             }
-            viewModel.saveServer(name, url, user, pass)
-            binding.serverFormCard.isVisible = false
-            showToast(getString(if (isEditing) R.string.server_updated else R.string.server_added))
-        }
+            .setNeutralButton(R.string.test_connection, null)
+            .setPositiveButton(R.string.save, null)
+            .create()
 
-        binding.btnTestConnection.setOnClickListener {
-            val url = binding.etServerUrl.text.toString().trim()
-            val user = binding.etServerUsername.text.toString().trim()
-            val pass = binding.etServerPassword.text.toString().trim()
-            if (url.isEmpty()) { showToast(getString(R.string.enter_server_url)); return@setOnClickListener }
-            testJob?.cancel()
-            testJob = viewLifecycleOwner.lifecycleScope.launch {
-                val repo = SubsonicRepository(SubsonicClient.build(url, user, pass), url, user, pass)
-                when (val result = repo.testConnection()) {
-                    is Result.Success -> showToast(getString(R.string.connection_ok, result.data))
-                    is Result.Error -> showToast(getString(R.string.connection_error, result.error.message))
-                    is Result.Loading -> {}
+        dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
+
+        dialog.setOnShowListener {
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                val url = etUrl.text.toString().trim()
+                if (url.isEmpty()) {
+                    showToast(getString(R.string.enter_server_url))
+                    return@setOnClickListener
+                }
+                viewModel.saveServer(
+                    etName.text.toString().trim(),
+                    url,
+                    etUser.text.toString().trim(),
+                    etPass.text.toString().trim()
+                )
+                showToast(getString(if (isEditing) R.string.server_updated else R.string.server_added))
+                dialog.dismiss()
+            }
+
+            dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL).setOnClickListener {
+                val url = etUrl.text.toString().trim()
+                val user = etUser.text.toString().trim()
+                val pass = etPass.text.toString().trim()
+                if (url.isEmpty()) {
+                    showToast(getString(R.string.enter_server_url))
+                    return@setOnClickListener
+                }
+                testJob?.cancel()
+                testJob = viewLifecycleOwner.lifecycleScope.launch {
+                    val repo = SubsonicRepository(
+                        SubsonicClient.build(url, user, pass), url, user, pass
+                    )
+                    when (val result = repo.testConnection()) {
+                        is Result.Success -> showToast(getString(R.string.connection_ok, result.data))
+                        is Result.Error -> showToast(getString(R.string.connection_error, result.error.message))
+                        is Result.Loading -> {}
+                    }
                 }
             }
         }
 
-        binding.btnCancelForm.setOnClickListener {
-            binding.serverFormCard.isVisible = false
-            viewModel.clearSelection()
-        }
+        dialog.show()
     }
 
     private fun observeViewModel() {
