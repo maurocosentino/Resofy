@@ -124,100 +124,27 @@
 
 
     <string-array name="pref_language_names">
-        <item>System default</item>
-        <item>Arabic</item>
-        <item>Basque</item>
-        <item>Bulgarian</item>
-        <item>Burmese</item>
-        <item>Catalan</item>
-        <item>Simplified Chinese</item>
-        <item>Traditional Chinese(Hong Kong)</item>
-        <item>Traditional Chinese(Taiwan)</item>
-        <item>Croatian</item>
-        <item>Czech</item>
-        <item>Danish</item>
-        <item>Dutch</item>
+<!--        <item>System default</item>-->
         <item>English</item>
-        <item>Filipino</item>
-        <item>French</item>
-        <item>German</item>
-        <item>Greek</item>
-        <item>Hindi</item>
-        <item>Hungarian</item>
-        <item>Indonesian</item>
-        <item>Italian</item>
-        <item>Japanese</item>
-        <item>Kannada</item>
-        <item>Korean</item>
-        <item>Kurmanji Kurdish</item>
-        <item>Latvian</item>
-        <item>Malayalam</item>
-        <item>Odia</item>
-        <item>Persian</item>
-        <item>Polish</item>
-        <item>Portuguese(Brazil)</item>
-        <item>Portuguese(Portugal)</item>
-        <item>Romanian</item>
-        <item>Russian</item>
-        <item>Serbian</item>
-        <item>Sorani Kurdish</item>
         <item>Spanish</item>
-        <item>Spanish(Latin America)</item>
-        <item>Swedish</item>
-        <item>Tamil</item>
-        <item>Telugu</item>
-        <item>Thai</item>
-        <item>Turkish</item>
-        <item>Ukrainian</item>
-        <item>Vietnamese</item>
+        <item>Spanish (Latin America)</item>
+        <item>Portuguese (Brazil)</item>
+        <item>Portuguese (Portugal)</item>
+        <item>Japanese</item>
+        <item>German</item>
+        <item>French</item>
     </string-array>
+
     <string-array name="pref_language_codes">
-        <item>auto</item>
-        <item>ar-SA</item>
-        <item>eu-ES</item>
-        <item>bg-BG</item>
-        <item>my-MM</item>
-        <item>ca-ES</item>
-        <item>zh-CN</item>
-        <item>zh-HK</item>
-        <item>zh-TW</item>
-        <item>hr</item>
-        <item>cs-cz</item>
-        <item>da-DK</item>
-        <item>nl-NL</item>
+<!--        <item>auto</item>-->
         <item>en</item>
-        <item>fil-PH</item>
-        <item>fr</item>
-        <item>de</item>
-        <item>el</item>
-        <item>hi</item>
-        <item>hu</item>
-        <item>in</item>
-        <item>it</item>
-        <item>ja</item>
-        <item>kn</item>
-        <item>ko</item>
-        <item>kmr-TR</item>
-        <item>lv-LV</item>
-        <item>ml</item>
-        <item>or-IN</item>
-        <item>fa</item>
-        <item>pl</item>
-        <item>pt-BR</item>
-        <item>pt-PT</item>
-        <item>ro</item>
-        <item>ru</item>
-        <item>sr</item>
-        <item>ckb-IR</item>
         <item>es</item>
         <item>es-419</item>
-        <item>sv</item>
-        <item>ta</item>
-        <item>te</item>
-        <item>th-TH</item>
-        <item>tr</item>
-        <item>uk</item>
-        <item>vi</item>
+        <item>pt-BR</item>
+        <item>pt-PT</item>
+        <item>ja</item>
+        <item>de</item>
+        <item>fr</item>
     </string-array>
     <string-array name="image_settings_options">
         <item>@string/choose_image</item>
