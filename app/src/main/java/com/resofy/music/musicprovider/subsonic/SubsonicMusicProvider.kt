@@ -1,6 +1,8 @@
 package com.resofy.music.musicprovider.subsonic
 
 import com.resofy.music.FAVOURITES
+import com.resofy.music.HISTORY_PLAYLIST
+import com.resofy.music.LAST_ADDED_PLAYLIST
 import com.resofy.music.R
 import com.resofy.music.RECENT_ALBUMS
 import com.resofy.music.RECENT_ARTISTS
@@ -15,7 +17,6 @@ import com.resofy.music.musicprovider.MusicProvider
 import com.resofy.music.network.Result
 import com.resofy.music.network.subsonic.SubsonicClient
 import com.resofy.music.repository.SubsonicRepository
-
 class SubsonicMusicProvider(
     private val baseUrl: String,
     private val username: String,
@@ -128,7 +129,7 @@ class SubsonicMusicProvider(
         if (baseUrl.isEmpty()) return emptyList()
         val homeSections = mutableListOf<Home>()
 
-        // Top albums
+        // Top albums (más reproducidos)
         val topAlbums = when (val r = repository.getAlbumListByType("frequent", 10)) {
             is Result.Success -> r.data.ifEmpty {
                 (repository.getAlbumListByType("newest", 10) as? Result.Success)?.data ?: emptyList()
@@ -138,12 +139,28 @@ class SubsonicMusicProvider(
         if (topAlbums.isNotEmpty())
             homeSections.add(Home(topAlbums, TOP_ALBUMS, R.string.top_albums))
 
+        // Historial (reproducidos recientemente)
+//        val recentAlbums = when (val r = repository.getAlbumListByType("recent", 10)) {
+//            is Result.Success -> r.data
+//            else -> emptyList()
+//        }
+//        if (recentAlbums.isNotEmpty())
+//            homeSections.add(Home(recentAlbums, HISTORY_PLAYLIST, R.string.history))
+
+        // Últimos agregados
+//        val newestAlbums = when (val r = repository.getAlbumListByType("newest", 10)) {
+//            is Result.Success -> r.data
+//            else -> emptyList()
+//        }
+//        if (newestAlbums.isNotEmpty())
+//            homeSections.add(Home(newestAlbums, LAST_ADDED_PLAYLIST, R.string.last_added))
+
         // Favoritos (starred)
         val favSongs = favoriteSongs()
         if (favSongs.isNotEmpty())
             homeSections.add(Home(favSongs, FAVOURITES, R.string.favorites))
 
-        // Artistas sugeridos — 5 aleatorios del día
+        // Artistas sugeridos
         val allArtists = cachedArtists.ifEmpty { artists() }
         if (allArtists.isNotEmpty()) {
             val seed = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
@@ -206,6 +223,10 @@ class SubsonicMusicProvider(
                 else -> emptyList()
             }
             RECENT_ALBUMS -> when (val r = repository.getAlbumListByType("recent", 50)) {
+                is Result.Success -> r.data
+                else -> emptyList()
+            }
+            LAST_ADDED_PLAYLIST -> when (val r = repository.getAlbumListByType("newest", 50)) {
                 is Result.Success -> r.data
                 else -> emptyList()
             }

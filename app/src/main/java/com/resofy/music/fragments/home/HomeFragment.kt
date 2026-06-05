@@ -75,11 +75,13 @@ class HomeFragment :
                 val isLocal = type == MusicProviderType.LOCAL
                 if (isLocal) {
                     binding.absPlaylists.root.visibility = View.VISIBLE
+                    binding.topPlayed.visibility = View.VISIBLE
                 } else {
+                    binding.absPlaylists.root.visibility = View.VISIBLE
                     binding.history.visibility = View.GONE
-                    binding.lastAdded.visibility = View.GONE
+                    binding.lastAdded.visibility = View.VISIBLE
                     binding.topPlayed.visibility = View.GONE
-                    binding.absPlaylists.root.visibility = View.GONE
+                    binding.actionShuffle.visibility = View.GONE
                 }
             }
         }

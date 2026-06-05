@@ -57,6 +57,7 @@ class HomeAdapter(private val activity: AppCompatActivity) :
             RECENT_ARTISTS, TOP_ARTISTS -> ArtistViewHolder(layout)
             SUGGESTED_ARTISTS -> SuggestedArtistsViewHolder(layout)
             FAVOURITES -> PlaylistViewHolder(layout)
+            HISTORY_PLAYLIST, LAST_ADDED_PLAYLIST -> RecentAlbumsViewHolder(layout)
             TOP_ALBUMS, RECENT_ALBUMS -> AlbumViewHolder(layout)
             else -> ArtistViewHolder(layout)
         }
@@ -124,6 +125,14 @@ class HomeAdapter(private val activity: AppCompatActivity) :
                         bundleOf("type" to FAVOURITES)
                     )
                 }
+            }
+            HISTORY_PLAYLIST -> {
+                val viewHolder = holder as RecentAlbumsViewHolder
+                viewHolder.bindView(home)
+            }
+            LAST_ADDED_PLAYLIST -> {
+                val viewHolder = holder as RecentAlbumsViewHolder
+                viewHolder.bindView(home)
             }
         }
     }
@@ -205,6 +214,21 @@ class HomeAdapter(private val activity: AppCompatActivity) :
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    private inner class RecentAlbumsViewHolder(view: View) : AbsHomeViewItem(view) {
+        fun bindView(home: Home) {
+            title.setText(home.titleRes)
+            recyclerView.apply {
+                adapter = AlbumAdapter(
+                    activity,
+                    home.arrayList as List<Album>,
+                    R.layout.item_favourite_card,
+                    this@HomeAdapter
+                )
+                layoutManager = gridLayoutManager()
+            }
+        }
+    }
     open class AbsHomeViewItem(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
         val title: AppCompatTextView = itemView.findViewById(R.id.title)
