@@ -18,6 +18,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import code.name.monkey.appthemehelper.util.ATHUtil
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.resofy.music.extensions.accentColor
 import com.resofy.music.extensions.addAlpha
 import com.resofy.music.extensions.setItemColors
@@ -32,7 +33,7 @@ class TintedNavigationRailView @JvmOverloads constructor(
 
     init {
         if (!isInEditMode) {
-            labelVisibilityMode = PreferenceUtil.tabTitleMode
+            labelVisibilityMode = BottomNavigationView.LABEL_VISIBILITY_LABELED
 
             if (!PreferenceUtil.materialYou) {
                 val iconColor = ATHUtil.resolveColor(context, android.R.attr.colorControlNormal)

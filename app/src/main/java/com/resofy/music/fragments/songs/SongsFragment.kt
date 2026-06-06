@@ -346,7 +346,9 @@ class SongsFragment : AbsRecyclerViewCustomGridSizeFragment<SongAdapter, GridLay
 
     override fun onResume() {
         super.onResume()
-        libraryViewModel.forceReload(ReloadType.Songs)
+        if (adapter?.dataSet.isNullOrEmpty()) {
+            libraryViewModel.forceReload(ReloadType.Songs)
+        }
     }
 
     override fun onPause() {
