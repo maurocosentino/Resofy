@@ -956,9 +956,29 @@ class MusicService : MediaBrowserServiceCompat(),
                         SAVED_POSITION_IN_TRACK, -1
                     )
                 if (restoredQueue.size > 0 && restoredQueue.size == restoredOriginalQueue.size && restoredPosition != -1) {
-                    originalPlayingQueue = ArrayList(restoredOriginalQueue)
-                    playingQueue = ArrayList(restoredQueue)
-                    position = restoredPosition
+
+                    // Filtrar dummy songs de Subsonic — tienen data que empieza con "https://subsonic-"
+                    val validQueue = restoredQueue.filter { song ->
+                        !song.data.startsWith("https://subsonic-album-id:") &&
+                                !song.data.startsWith("https://subsonic-artist-id:")
+                    }
+                    val validOriginalQueue = restoredOriginalQueue.filter { song ->
+                        !song.data.startsWith("https://subsonic-album-id:") &&
+                                !song.data.startsWith("https://subsonic-artist-id:")
+                    }
+
+                    if (validQueue.isEmpty()) {
+                        queuesRestored = true
+                        return@withContext
+                    }
+
+                    // Ajustar posición si el filtrado cambió el tamaño
+                    val adjustedPosition = restoredPosition.coerceAtMost(validQueue.size - 1)
+
+                    originalPlayingQueue = ArrayList(validOriginalQueue)
+                    playingQueue = ArrayList(validQueue)
+                    position = adjustedPosition
+
                     withContext(Main) {
                         openCurrent {
                             prepareNext()
@@ -973,7 +993,6 @@ class MusicService : MediaBrowserServiceCompat(),
                             receivedHeadsetConnected = false
                         }
                     }
-
                     sendChangeInternal(QUEUE_CHANGED)
                     mediaSession?.setQueueTitle(getString(R.string.now_playing_queue))
                     mediaSession?.setQueue(playingQueue.toMediaSessionQueue())
