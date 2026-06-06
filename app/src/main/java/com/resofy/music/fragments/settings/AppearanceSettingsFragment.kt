@@ -85,38 +85,38 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
         }
 
         // ocultos pero con lógica mantenida para no romper dependencias
-        val blackTheme: ATESwitchPreference? = findPreference(BLACK_THEME)
-        blackTheme?.isVisible = false
-        blackTheme?.setOnPreferenceChangeListener { _, _ ->
-            ThemeStore.markChanged(requireContext())
-            if (VersionUtils.hasNougatMR()) {
-                requireActivity().setTheme(PreferenceUtil.themeResFromPrefValue("black"))
-                DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
-            }
-            restartActivity()
-            true
-        }
-
-        val materialYou: ATESwitchPreference? = findPreference(MATERIAL_YOU)
-        materialYou?.isVisible = false
-        materialYou?.setOnPreferenceChangeListener { _, newValue ->
-            if (newValue as Boolean) {
-                DynamicColors.applyToActivitiesIfAvailable(App.getContext())
-            }
-            restartActivity()
-            true
-        }
-
-        val colorAppShortcuts: TwoStatePreference? = findPreference(SHOULD_COLOR_APP_SHORTCUTS)
-        colorAppShortcuts?.isVisible = false
-        if (VersionUtils.hasNougatMR()) {
-            colorAppShortcuts?.isChecked = PreferenceUtil.isColoredAppShortcuts
-            colorAppShortcuts?.setOnPreferenceChangeListener { _, newValue ->
-                PreferenceUtil.isColoredAppShortcuts = newValue as Boolean
-                DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
-                true
-            }
-        }
+//        val blackTheme: ATESwitchPreference? = findPreference(BLACK_THEME)
+//        blackTheme?.isVisible = false
+//        blackTheme?.setOnPreferenceChangeListener { _, _ ->
+//            ThemeStore.markChanged(requireContext())
+//            if (VersionUtils.hasNougatMR()) {
+//                requireActivity().setTheme(PreferenceUtil.themeResFromPrefValue("black"))
+//                DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
+//            }
+//            restartActivity()
+//            true
+//        }
+//
+//        val materialYou: ATESwitchPreference? = findPreference(MATERIAL_YOU)
+//        materialYou?.isVisible = false
+//        materialYou?.setOnPreferenceChangeListener { _, newValue ->
+//            if (newValue as Boolean) {
+//                DynamicColors.applyToActivitiesIfAvailable(App.getContext())
+//            }
+//            restartActivity()
+//            true
+//        }
+//
+//        val colorAppShortcuts: TwoStatePreference? = findPreference(SHOULD_COLOR_APP_SHORTCUTS)
+//        colorAppShortcuts?.isVisible = false
+//        if (VersionUtils.hasNougatMR()) {
+//            colorAppShortcuts?.isChecked = PreferenceUtil.isColoredAppShortcuts
+//            colorAppShortcuts?.setOnPreferenceChangeListener { _, newValue ->
+//                PreferenceUtil.isColoredAppShortcuts = newValue as Boolean
+//                DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
+//                true
+//            }
+//        }
 
         // ── Color desaturado ──
         val desaturatedColor: ATESwitchPreference? = findPreference(DESATURATED_COLOR)
@@ -206,6 +206,15 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_appearance)
+
+        requireContext().getSharedPreferences(
+            "${requireContext().packageName}_preferences",
+            android.content.Context.MODE_PRIVATE
+        ).edit()
+            .putBoolean(MATERIAL_YOU, false)
+            .putBoolean(BLACK_THEME, false)
+            .apply()
+
         val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
         wallpaperAccent?.isVisible = VersionUtils.hasOreoMR1() && !VersionUtils.hasS()
     }
