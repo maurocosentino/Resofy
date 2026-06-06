@@ -117,7 +117,7 @@
                 app:settingListItemIcon="@drawable/avd_music_note"
                 app:settingListItemIconColor="@color/lrc_current_text_color"
                 app:settingListItemText="Local · Navidrome · Subsonic"
-                app:settingListItemTitle="Music Providers" />
+                app:settingListItemTitle="@string/music_providers" />
 
         </com.google.android.material.card.MaterialCardView>
 

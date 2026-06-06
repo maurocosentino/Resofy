@@ -127,9 +127,7 @@
 <!--        <item>System default</item>-->
         <item>English</item>
         <item>Spanish</item>
-        <item>Spanish (Latin America)</item>
-        <item>Portuguese (Brazil)</item>
-        <item>Portuguese (Portugal)</item>
+        <item>Portuguese</item>
         <item>Japanese</item>
         <item>German</item>
         <item>French</item>
@@ -139,8 +137,6 @@
 <!--        <item>auto</item>-->
         <item>en</item>
         <item>es</item>
-        <item>es-419</item>
-        <item>pt-BR</item>
         <item>pt-PT</item>
         <item>ja</item>
         <item>de</item>

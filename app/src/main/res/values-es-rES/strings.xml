@@ -144,7 +144,7 @@
     <string name="currently_listening_to_x_by_x">Actualmente estás escuchando %1$s de %2$s.</string>
     <string name="custom_artist_images">Imágenes de artista personalizadas</string>
     <string name="customactivityoncrash_error_activity_error_details_share">Compartir informe de error</string>
-    <string name="dark_theme_name">Un poco oscuro</string>
+    <string name="dark_theme_name">Modo oscuro</string>
     <string name="delete_playlist_title">Eliminar lista de reproducción</string>
     <string name="delete_playlist_x"><![CDATA[¿Eliminar la lista de reproducción <b>%1$s</b>?]]></string>
     <string name="delete_playlists_title">Eliminar listas de reproducción</string>
@@ -237,13 +237,12 @@
     <string name="lets_go">¡Vamos!</string>
     <string name="library_categories">Categorías de la Biblioteca</string>
     <string name="licenses">Licencias</string>
-    <string name="light_theme_name">Claramente Blanco</string>
+    <string name="light_theme_name">Modo claro</string>
     <string name="listeners_label">Oyentes</string>
     <string name="listing_files">Listando archivos</string>
     <string name="loading_products">Cargando productos…</string>
     <string name="login">Iniciar sesión</string>
     <string name="lyrics">Letras</string>
-    <string name="made_with_love">Hecho con ❤️ en India</string>
     <string name="material">Material</string>
     <string name="md_error_label">Error</string>
     <string name="md_storage_perm_error">Error de permisos</string>
@@ -325,6 +324,7 @@
     <string name="pref_header_general">Tema</string>
     <string name="pref_header_images">Imágenes</string>
     <string name="pref_header_library">Biblioteca</string>
+    <string name="suggested_artists">Artistas Sugeridos</string>
     <string name="pref_header_lockscreen">Pantalla de bloqueo</string>
     <string name="pref_header_playlists">Listas de reproducción</string>
     <string name="pref_keep_pause_on_zero_volume_summary">Pausa la canción cuando el volumen disminuye a cero y vuelve a reproducir cuando se aumenta el volumen. También funciona fuera de la aplicación</string>
@@ -454,6 +454,28 @@
     <string name="permission_alarm_summary">La aplicación necesita permiso para programar alarmas exactas y establecer temporizadores de sueño</string>
     <string name="permission_alarm_title">Alarma (Opcional)</string>
     <string name="saf_delete_failed">La eliminación del archivo: %s falló</string>
+    <!-- Music Providers -->
+    <string name="music_providers">Fuentes de Música</string>
+    <string name="active_source">Fuente activa</string>
+    <string name="servers">Servidores</string>
+    <string name="no_servers_configured">No hay servidores configurados</string>
+    <string name="add_server">+ Agregar servidor</string>
+    <string name="configure_server">Configurar servidor</string>
+    <string name="server_name_hint">Nombre (opcional)</string>
+    <string name="server_url_hint">URL del servidor</string>
+    <string name="server_username_hint">Usuario</string>
+    <string name="server_password_hint">Contraseña</string>
+    <string name="test_connection">Probar conexión</string>
+    <string name="save_server">Guardar</string>
+    <string name="local_library">Biblioteca local</string>
+    <string name="sync_server">Sincronizar</string>
+    <string name="server_active">Servidor activo: %s</string>
+    <string name="syncing_server">Sincronizando %s…</string>
+    <string name="server_updated">Servidor actualizado</string>
+    <string name="server_added">Servidor agregado</string>
+    <string name="enter_server_url">Ingresá la URL del servidor</string>
+    <string name="connection_ok">✓ Conectado — API v%s</string>
+    <string name="connection_error">✗ Error: %s</string>
     <!-- SAF -->
     <string name="saf_error_uri">No se puede obtener SAF URI</string>
     <string name="saf_guide_slide1_description">Abrir el cajón de navegación</string>
