@@ -55,7 +55,7 @@ class ArtistsFragment : AbsRecyclerViewCustomGridSizeFragment<ArtistAdapter, Gri
         get() = R.string.no_artists
 
     override val isShuffleVisible: Boolean
-        get() = true
+        get() = false
 
     override fun onShuffleClicked() {
         libraryViewModel.getArtists().value?.let {

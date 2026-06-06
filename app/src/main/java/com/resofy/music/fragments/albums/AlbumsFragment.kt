@@ -54,7 +54,7 @@ class AlbumsFragment : AbsRecyclerViewCustomGridSizeFragment<AlbumAdapter, GridL
         get() = R.string.no_albums
 
     override val isShuffleVisible: Boolean
-        get() = true
+        get() = false
 
     override fun onShuffleClicked() {
         libraryViewModel.getAlbums().value?.let {
