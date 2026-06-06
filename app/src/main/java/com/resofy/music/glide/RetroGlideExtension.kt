@@ -115,10 +115,13 @@ object RetroGlideExtension {
             .signature(createSignature(artist))
     }
 
-    fun <T> RequestBuilder<T>.songCoverOptions(
-        song: Song
-    ): RequestBuilder<T> {
-        return diskCacheStrategy(DEFAULT_DISK_CACHE_STRATEGY)
+    fun <T> RequestBuilder<T>.songCoverOptions(song: Song): RequestBuilder<T> {
+        val cacheStrategy = if (song.data.startsWith("http")) {
+            DiskCacheStrategy.ALL
+        } else {
+            DEFAULT_DISK_CACHE_STRATEGY  // local: NONE, usa MediaStore
+        }
+        return diskCacheStrategy(cacheStrategy)
             .error(getDrawable(DEFAULT_SONG_IMAGE))
             .placeholder(getDrawable(DEFAULT_SONG_IMAGE))
             .signature(createSignature(song))
@@ -131,10 +134,13 @@ object RetroGlideExtension {
             .signature(createSignature(song))
     }
 
-    fun <T> RequestBuilder<T>.albumCoverOptions(
-        song: Song
-    ): RequestBuilder<T> {
-        return diskCacheStrategy(DEFAULT_DISK_CACHE_STRATEGY)
+    fun <T> RequestBuilder<T>.albumCoverOptions(song: Song): RequestBuilder<T> {
+        val cacheStrategy = if (song.data.startsWith("http")) {
+            DiskCacheStrategy.ALL
+        } else {
+            DEFAULT_DISK_CACHE_STRATEGY
+        }
+        return diskCacheStrategy(cacheStrategy)
             .error(ContextCompat.getDrawable(getContext(), DEFAULT_ALBUM_IMAGE))
             .placeholder(ContextCompat.getDrawable(getContext(), DEFAULT_ALBUM_IMAGE))
             .signature(createSignature(song))
@@ -165,7 +171,12 @@ object RetroGlideExtension {
     }
 
     private fun createSignature(song: Song): Key {
-        return MediaStoreSignature("", song.dateModified, 0)
+        return if (song.data.startsWith("http")) {
+            // URL como signature — el caché se invalida solo si cambia la URL
+            com.bumptech.glide.signature.ObjectKey(song.albumArtist ?: song.data)
+        } else {
+            MediaStoreSignature("", song.dateModified, 0)
+        }
     }
 
     private fun createSignature(file: File): Key {
