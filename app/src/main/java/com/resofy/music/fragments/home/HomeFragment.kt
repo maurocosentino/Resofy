@@ -218,7 +218,10 @@ class HomeFragment :
             return
         }
 
-        // Container (whole item row) + image for Glide + title + artist
+        // Tomar hasta 8 canciones — no crashear si hay menos
+        val availableSongs = songs.take(8)
+        binding.suggestions.root.isVisible = true
+
         val songViews = listOf(
             listOf(binding.suggestions.song1, binding.suggestions.image1, binding.suggestions.title1, binding.suggestions.artist1),
             listOf(binding.suggestions.song2, binding.suggestions.image2, binding.suggestions.title2, binding.suggestions.artist2),
@@ -230,34 +233,27 @@ class HomeFragment :
             listOf(binding.suggestions.song8, binding.suggestions.image8, binding.suggestions.title8, binding.suggestions.artist8),
         )
 
-        // Shuffle button — plays all 8 songs
-        binding.suggestions.shuffleButton.setOnClickListener {
-            it.isClickable = false
-            it.postDelayed({ it.isClickable = true }, 500)
-            MusicPlayerRemote.playNext(songs.subList(0, 8))
-            if (!MusicPlayerRemote.isPlaying) {
-                MusicPlayerRemote.playNextSong()
-            }
-        }
-
+        // Ocultar filas que no tienen canción
         songViews.forEachIndexed { index, views ->
-            val container = views[0]  // song1…song8 — the clickable row
+            val container = views[0]
+            if (index >= availableSongs.size) {
+                container.isVisible = false
+                return@forEachIndexed
+            }
+            container.isVisible = true
             val imageView = views[1] as androidx.appcompat.widget.AppCompatImageView
             val titleView = views[2] as com.google.android.material.textview.MaterialTextView
             val artistView = views[3] as com.google.android.material.textview.MaterialTextView
-            val song = songs[index]
+            val song = availableSongs[index]
 
             titleView.text = song.title
             artistView.text = song.artistName
 
-            // Click on the whole item row, not just the image
             container.setOnClickListener {
                 it.isClickable = false
                 it.postDelayed({ it.isClickable = true }, 500)
                 MusicPlayerRemote.playNext(song)
-                if (!MusicPlayerRemote.isPlaying) {
-                    MusicPlayerRemote.playNextSong()
-                }
+                if (!MusicPlayerRemote.isPlaying) MusicPlayerRemote.playNextSong()
             }
 
             Glide.with(this)
@@ -265,6 +261,15 @@ class HomeFragment :
                 .songCoverOptions(song)
                 .into(imageView)
         }
+
+        // Shuffle con las canciones disponibles
+        binding.suggestions.shuffleButton.setOnClickListener {
+            it.isClickable = false
+            it.postDelayed({ it.isClickable = true }, 500)
+            MusicPlayerRemote.playNext(availableSongs)
+            if (!MusicPlayerRemote.isPlaying) MusicPlayerRemote.playNextSong()
+        }
+
     }
 
     companion object {

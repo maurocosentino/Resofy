@@ -57,15 +57,15 @@ class LibraryViewModel(
 
     private fun loadLibraryContent() {
         viewModelScope.launch(IO) {
-            fetchHomeSections()
             awaitAll(
-                async { fetchSuggestions() },
-                async { fetchSongs() },
+                async { fetchHomeSections() },
                 async { fetchAlbums() },
                 async { fetchArtists() },
                 async { fetchGenres() },
                 async { fetchPlaylists() },
             )
+            fetchSongs()
+            fetchSuggestions()
         }
     }
 
@@ -116,7 +116,9 @@ class LibraryViewModel(
     }
 
     private suspend fun fetchSuggestions() {
-        suggestions.postValue(providerManager.activeProvider.suggestions())
+        val result = providerManager.activeProvider.suggestions()
+        android.util.Log.d("Suggestions", "fetchSuggestions got ${result.size} songs")
+        suggestions.postValue(result)
     }
 
     fun search(query: String?, filter: Filter) =

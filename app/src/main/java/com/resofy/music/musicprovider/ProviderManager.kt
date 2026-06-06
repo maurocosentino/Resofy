@@ -6,6 +6,7 @@ import com.resofy.music.model.Song
 import com.resofy.music.musicprovider.local.LocalMusicProvider
 import com.resofy.music.musicprovider.subsonic.SubsonicMusicProvider
 import com.resofy.music.repository.RealRepository
+import com.resofy.music.repository.ServerConfigRepository
 import com.resofy.music.util.ServerPreferences
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,9 +14,33 @@ import kotlinx.coroutines.flow.StateFlow
 class ProviderManager(
     private val context: Context,
     private val localRepository: RealRepository,
+    private val serverConfigRepository: ServerConfigRepository,
 ) {
-    private val serverPrefs = ServerPreferences(context)
 
+    init {
+        // Al arrancar, si el provider activo es SUBSONIC y hay servidor guardado,
+        // restaurar las credenciales desde Room
+        if (loadSavedProviderType() == MusicProviderType.SUBSONIC) {
+            val prefs = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+            val savedUrl = prefs.getString("active_server_url", "") ?: ""
+            if (savedUrl.isEmpty()) {
+                // Las credenciales no están en provider_config — restaurar desde Room
+                val savedId = prefs.getInt("active_server_id", -1)
+                if (savedId != -1) {
+                    kotlinx.coroutines.runBlocking {
+                        val server = serverConfigRepository.getById(savedId)
+                        if (server != null) {
+                            prefs.edit()
+                                .putString("active_server_url", server.url)
+                                .putString("active_server_username", server.username)
+                                .putString("active_server_password", server.password)
+                                .apply()
+                        }
+                    }
+                }
+            }
+        }
+    }
     private val _activeProviderType = MutableStateFlow(loadSavedProviderType())
     val activeProviderType: StateFlow<MusicProviderType> = _activeProviderType
 
@@ -29,12 +54,68 @@ class ProviderManager(
     private fun getOrCreateSubsonicProvider(): SubsonicMusicProvider {
         val current = subsonicProvider
         if (current != null) return current
+        // Leer credenciales desde provider_config, no desde ServerPreferences
+        val prefs = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+        val url = prefs.getString("active_server_url", "") ?: ""
+        val username = prefs.getString("active_server_username", "") ?: ""
+        val password = prefs.getString("active_server_password", "") ?: ""
         return SubsonicMusicProvider(
-            baseUrl = serverPrefs.serverUrl,
-            username = serverPrefs.username,
-            password = serverPrefs.password,
+            baseUrl = url,
+            username = username,
+            password = password,
+            context = context,
         ).also { subsonicProvider = it }
     }
+
+    fun setActiveServer(server: ServerConfigEntity) {
+        activeServerId = server.id
+        // Guardar credenciales en provider_config
+        context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+            .edit()
+            .putString("active_server_url", server.url)
+            .putString("active_server_username", server.username)
+            .putString("active_server_password", server.password)
+            .apply()
+        subsonicProvider = SubsonicMusicProvider(
+            baseUrl = server.url,
+            username = server.username,
+            password = server.password,
+            context = context,
+        )
+        _activeProviderType.value = MusicProviderType.SUBSONIC
+        saveProviderType(MusicProviderType.SUBSONIC)
+    }
+
+    fun syncServer(server: ServerConfigEntity) {
+        // Actualizar credenciales guardadas también
+        context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+            .edit()
+            .putString("active_server_url", server.url)
+            .putString("active_server_username", server.username)
+            .putString("active_server_password", server.password)
+            .apply()
+        subsonicProvider = SubsonicMusicProvider(
+            baseUrl = server.url,
+            username = server.username,
+            password = server.password,
+            context = context,
+        )
+        _activeProviderType.value = _activeProviderType.value
+    }
+
+//    fun sync() {
+//        val prefs = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
+//        val url = prefs.getString("active_server_url", "") ?: ""
+//        val username = prefs.getString("active_server_username", "") ?: ""
+//        val password = prefs.getString("active_server_password", "") ?: ""
+//        subsonicProvider = SubsonicMusicProvider(
+//            baseUrl = url,
+//            username = username,
+//            password = password,
+//            context = context,
+//        )
+//        _activeProviderType.value = _activeProviderType.value
+//    }
 
     val activeProvider: MusicProvider
         get() = when (_activeProviderType.value) {
@@ -55,16 +136,6 @@ class ProviderManager(
         activeProvider.scrobble(song)
     }
 
-    fun sync() {
-        // Fuerza recreación del SubsonicProvider para refrescar credenciales
-        subsonicProvider = SubsonicMusicProvider(
-            baseUrl = serverPrefs.serverUrl,
-            username = serverPrefs.username,
-            password = serverPrefs.password,
-        )
-        // Dispara reload en LibraryViewModel
-        _activeProviderType.value = _activeProviderType.value
-    }
 
     private fun loadSavedProviderType(): MusicProviderType {
         val prefs = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
@@ -89,23 +160,4 @@ class ProviderManager(
         set(value) = context.getSharedPreferences("provider_config", Context.MODE_PRIVATE)
             .edit().putInt("active_server_id", value).apply()
 
-    fun setActiveServer(server: ServerConfigEntity) {
-        activeServerId = server.id
-        subsonicProvider = SubsonicMusicProvider(
-            baseUrl = server.url,
-            username = server.username,
-            password = server.password
-        )
-        _activeProviderType.value = MusicProviderType.SUBSONIC
-        saveProviderType(MusicProviderType.SUBSONIC)
-    }
-
-    fun syncServer(server: ServerConfigEntity) {
-        subsonicProvider = SubsonicMusicProvider(
-            baseUrl = server.url,
-            username = server.username,
-            password = server.password
-        )
-        _activeProviderType.value = _activeProviderType.value
-    }
 }

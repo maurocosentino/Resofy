@@ -159,7 +159,7 @@ private val dataModule = module {
     } bind LocalDataRepository::class
 
     single {
-        ProviderManager(androidContext(), get())
+        ProviderManager(androidContext(), get(), get())
     }
     single {
         ServerConfigRepository(get())
