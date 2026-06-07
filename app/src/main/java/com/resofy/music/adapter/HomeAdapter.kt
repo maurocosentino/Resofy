@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.findFragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -54,11 +55,11 @@ class HomeAdapter(private val activity: AppCompatActivity) :
             LayoutInflater.from(activity).inflate(R.layout.section_recycler_view, parent, false)
         return when (viewType) {
             RECENT_ARTISTS, TOP_ARTISTS -> ArtistViewHolder(layout)
+            SUGGESTED_ARTISTS -> SuggestedArtistsViewHolder(layout)
             FAVOURITES -> PlaylistViewHolder(layout)
+            HISTORY_PLAYLIST, LAST_ADDED_PLAYLIST -> RecentAlbumsViewHolder(layout)
             TOP_ALBUMS, RECENT_ALBUMS -> AlbumViewHolder(layout)
-            else -> {
-                ArtistViewHolder(layout)
-            }
+            else -> ArtistViewHolder(layout)
         }
     }
 
@@ -109,6 +110,11 @@ class HomeAdapter(private val activity: AppCompatActivity) :
                     )
                 }
             }
+            SUGGESTED_ARTISTS -> {
+                val viewHolder = holder as SuggestedArtistsViewHolder
+                viewHolder.bindView(home)
+                // No clickableArea navigation — cada artista navega individualmente
+            }
             FAVOURITES -> {
                 val viewHolder = holder as PlaylistViewHolder
                 viewHolder.bindView(home)
@@ -119,6 +125,14 @@ class HomeAdapter(private val activity: AppCompatActivity) :
                         bundleOf("type" to FAVOURITES)
                     )
                 }
+            }
+            HISTORY_PLAYLIST -> {
+                val viewHolder = holder as RecentAlbumsViewHolder
+                viewHolder.bindView(home)
+            }
+            LAST_ADDED_PLAYLIST -> {
+                val viewHolder = holder as RecentAlbumsViewHolder
+                viewHolder.bindView(home)
             }
         }
     }
@@ -138,7 +152,12 @@ class HomeAdapter(private val activity: AppCompatActivity) :
         fun bindView(home: Home) {
             title.setText(home.titleRes)
             recyclerView.apply {
-                adapter = albumAdapter(home.arrayList as List<Album>)
+                adapter = AlbumAdapter(
+                    activity,
+                    home.arrayList as List<Album>,
+                    R.layout.item_favourite_card,
+                    this@HomeAdapter
+                )
                 layoutManager = gridLayoutManager()
             }
         }
@@ -156,14 +175,38 @@ class HomeAdapter(private val activity: AppCompatActivity) :
     }
 
     @Suppress("UNCHECKED_CAST")
+    private inner class SuggestedArtistsViewHolder(view: View) : AbsHomeViewItem(view) {
+        fun bindView(home: Home) {
+            title.setText(home.titleRes)
+            recyclerView.apply {
+                layoutManager = linearLayoutManager()
+                adapter = ArtistAdapter(
+                    activity,
+                    home.arrayList as List<Artist>,
+                    R.layout.item_artist,
+                    this@HomeAdapter
+                )
+            }
+        }
+    }
+
+    private inner class FavouriteSongAdapter(
+        activity: AppCompatActivity,
+        songs: MutableList<Song>,
+    ) : SongAdapter(activity, songs, R.layout.item_favourite_card) {
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            super.onBindViewHolder(holder, position)
+            holder.favoriteIcon?.isVisible = true
+        }
+    }
+    @Suppress("UNCHECKED_CAST")
     private inner class PlaylistViewHolder(view: View) : AbsHomeViewItem(view) {
         fun bindView(home: Home) {
             title.setText(home.titleRes)
             recyclerView.apply {
-                val songAdapter = SongAdapter(
+                val songAdapter = FavouriteSongAdapter(
                     activity,
-                    home.arrayList as MutableList<Song>,
-                    R.layout.item_favourite_card
+                    home.arrayList as MutableList<Song>
                 )
                 layoutManager = linearLayoutManager()
                 adapter = songAdapter
@@ -171,6 +214,21 @@ class HomeAdapter(private val activity: AppCompatActivity) :
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
+    private inner class RecentAlbumsViewHolder(view: View) : AbsHomeViewItem(view) {
+        fun bindView(home: Home) {
+            title.setText(home.titleRes)
+            recyclerView.apply {
+                adapter = AlbumAdapter(
+                    activity,
+                    home.arrayList as List<Album>,
+                    R.layout.item_favourite_card,
+                    this@HomeAdapter
+                )
+                layoutManager = gridLayoutManager()
+            }
+        }
+    }
     open class AbsHomeViewItem(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val recyclerView: RecyclerView = itemView.findViewById(R.id.recyclerView)
         val title: AppCompatTextView = itemView.findViewById(R.id.title)

@@ -277,4 +277,12 @@ abstract class AbsPlayerControlsFragment(@LayoutRes layout: Int) : AbsMusicServi
     companion object {
         const val SLIDER_ANIMATION_TIME: Long = 400
     }
+
+    protected fun getSongText(song: com.resofy.music.model.Song): String {
+        return if (song.albumName.isNotEmpty() && song.albumName != song.title) {
+            String.format("%s • %s", song.artistName, song.albumName)
+        } else {
+            song.artistName
+        }
+    }
 }

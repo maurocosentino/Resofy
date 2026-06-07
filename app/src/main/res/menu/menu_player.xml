@@ -20,7 +20,7 @@
         android:icon="@drawable/ic_favorite"
         android:orderInCategory="2"
         android:title="@string/favorites"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/now_playing"
         android:icon="@drawable/ic_queue_music"

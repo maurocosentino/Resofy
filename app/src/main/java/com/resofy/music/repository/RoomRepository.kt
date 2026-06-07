@@ -3,6 +3,7 @@ package com.resofy.music.repository
 import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.resofy.music.FAVORITES_PLAYLIST_NAME
 import com.resofy.music.R
 import com.resofy.music.db.*
 import com.resofy.music.helper.SortOrder.PlaylistSortOrder.Companion.PLAYLIST_A_Z
@@ -175,8 +176,7 @@ class RealRoomRepository(
 
     override suspend fun isSongFavorite(context: Context, songId: Long): Boolean {
         return playlistDao.isSongExistsInPlaylist(
-            playlistDao.playlist(context.getString(R.string.favorites)).firstOrNull()?.playListId
-                ?: -1,
+            playlistDao.playlist(FAVORITES_PLAYLIST_NAME).firstOrNull()?.playListId ?: -1,
             songId
         ).isNotEmpty()
     }

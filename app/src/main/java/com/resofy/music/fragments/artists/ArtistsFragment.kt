@@ -55,7 +55,7 @@ class ArtistsFragment : AbsRecyclerViewCustomGridSizeFragment<ArtistAdapter, Gri
         get() = R.string.no_artists
 
     override val isShuffleVisible: Boolean
-        get() = true
+        get() = false
 
     override fun onShuffleClicked() {
         libraryViewModel.getArtists().value?.let {
@@ -333,6 +333,8 @@ class ArtistsFragment : AbsRecyclerViewCustomGridSizeFragment<ArtistAdapter, Gri
 
     override fun onResume() {
         super.onResume()
-        libraryViewModel.forceReload(ReloadType.Artists)
+        if (adapter?.dataSet.isNullOrEmpty()) {
+            libraryViewModel.forceReload(ReloadType.Artists)
+        }
     }
 }

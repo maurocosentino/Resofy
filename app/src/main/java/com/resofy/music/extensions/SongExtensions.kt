@@ -4,10 +4,24 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat.QueueItem
 import com.resofy.music.model.Song
 import com.resofy.music.util.MusicUtil
+import android.net.Uri
+import com.resofy.music.util.MusicUtil.getMediaStoreAlbumCoverUri
 
-val Song.uri get() = MusicUtil.getSongFileUri(songId = id)
+val Song.uri: Uri
+    get() = if (data.startsWith("http://") || data.startsWith("https://")) {
+        Uri.parse(data)
+    } else {
+        MusicUtil.getSongFileUri(songId = id)
+    }
 
 val Song.albumArtUri get() = MusicUtil.getMediaStoreAlbumCoverUri(albumId)
+
+val Song.coverUri: Any
+    get() = if (data.startsWith("http://") || data.startsWith("https://")) {
+        albumArtist ?: ""
+    } else {
+        getMediaStoreAlbumCoverUri(albumId)
+    }
 
 fun ArrayList<Song>.toMediaSessionQueue(): List<QueueItem> {
     return map { song ->
@@ -20,3 +34,5 @@ fun ArrayList<Song>.toMediaSessionQueue(): List<QueueItem> {
         QueueItem(mediaDescription, song.hashCode().toLong())
     }
 }
+
+fun Song.getDisplayText(): String = artistName

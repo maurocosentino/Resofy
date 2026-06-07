@@ -140,21 +140,66 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
             loadBiography(artist.name)
         }
         binding.artistTitle.text = artist.name
-        binding.text.text = String.format(
-            "%s • %s",
-            MusicUtil.getArtistInfoString(requireContext(), artist),
-            MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(artist.songs))
-        )
-        val songText = resources.getQuantityString(
-            R.plurals.albumSongs, artist.songCount, artist.songCount
-        )
-        val albumText = resources.getQuantityString(
-            R.plurals.albums, artist.songCount, artist.songCount
-        )
-        binding.fragmentArtistContent.songTitle.text = songText
-        binding.fragmentArtistContent.albumTitle.text = albumText
-        songAdapter.swapDataSet(artist.sortedSongs)
-        albumAdapter.swapDataSet(artist.albums)
+
+        // Cargar álbumes reales si el provider los tiene
+        artistId?.let { id ->
+            detailsViewModel.getAlbumsForArtist(id).observe(viewLifecycleOwner) { albums ->
+                if (albums.isNotEmpty()) {
+                    // Actualizar artista con álbumes
+                    val songs = albums.flatMap { it.songs }
+                    albumAdapter.swapDataSet(albums)
+                    if (songs.isNotEmpty()) songAdapter.swapDataSet(songs)
+
+                    // contadores
+                    val totalSongs = songs.size
+                    val totalAlbums = albums.size
+                    val duration = MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(songs))
+                    binding.text.text = "$totalAlbums ${if (totalAlbums == 1) getString(R.string.album) else getString(R.string.albums)} • $totalSongs ${if (totalSongs == 1) getString(R.string.song) else getString(R.string.songs)} • $duration"
+                    val songText = resources.getQuantityString(
+                        R.plurals.albumSongs, songs.size, songs.size
+                    )
+                    val albumText = resources.getQuantityString(
+                        R.plurals.albums, albums.size, albums.size
+                    )
+                    binding.fragmentArtistContent.songTitle.text = songText
+                    binding.fragmentArtistContent.albumTitle.text = albumText
+                } else {
+                    // Fallback con datos del artista local
+                    binding.text.text = String.format(
+                        "%s • %s",
+                        MusicUtil.getArtistInfoString(requireContext(), artist),
+                        MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(artist.songs))
+                    )
+                    val songText = resources.getQuantityString(
+                        R.plurals.albumSongs, artist.songCount, artist.songCount
+                    )
+                    val albumText = resources.getQuantityString(
+                        R.plurals.albums, artist.albumCount, artist.albumCount
+                    )
+                    binding.fragmentArtistContent.songTitle.text = songText
+                    binding.fragmentArtistContent.albumTitle.text = albumText
+                    songAdapter.swapDataSet(artist.sortedSongs)
+                    albumAdapter.swapDataSet(artist.albums)
+                }
+            }
+        } ?: run {
+            // Sin artistId — mostrar datos locales directamente
+            binding.text.text = String.format(
+                "%s • %s",
+                MusicUtil.getArtistInfoString(requireContext(), artist),
+                MusicUtil.getReadableDurationString(MusicUtil.getTotalDuration(artist.songs))
+            )
+            val songText = resources.getQuantityString(
+                R.plurals.albumSongs, artist.songCount, artist.songCount
+            )
+            val albumText = resources.getQuantityString(
+                R.plurals.albums, artist.albumCount, artist.albumCount
+            )
+            binding.fragmentArtistContent.songTitle.text = songText
+            binding.fragmentArtistContent.albumTitle.text = albumText
+            songAdapter.swapDataSet(artist.sortedSongs)
+            albumAdapter.swapDataSet(artist.albums)
+        }
     }
 
     private fun loadBiography(

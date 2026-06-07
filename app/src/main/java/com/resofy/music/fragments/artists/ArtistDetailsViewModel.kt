@@ -1,22 +1,10 @@
-/*
- * Copyright (c) 2020 Hemanth Savarla.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- */
 package com.resofy.music.fragments.artists
 
 import androidx.lifecycle.*
 import com.resofy.music.interfaces.IMusicServiceEventListener
+import com.resofy.music.model.Album
 import com.resofy.music.model.Artist
+import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.network.Result
 import com.resofy.music.network.model.LastFmArtist
 import com.resofy.music.repository.RealRepository
@@ -25,9 +13,11 @@ import kotlinx.coroutines.launch
 
 class ArtistDetailsViewModel(
     private val realRepository: RealRepository,
+    private val providerManager: ProviderManager,
     private val artistId: Long?,
     private val artistName: String?
 ) : ViewModel(), IMusicServiceEventListener {
+
     private val artistDetails = MutableLiveData<Artist>()
 
     init {
@@ -36,17 +26,35 @@ class ArtistDetailsViewModel(
 
     private fun fetchArtist() {
         viewModelScope.launch(IO) {
-            artistId?.let { artistDetails.postValue(realRepository.artistById(it)) }
-
-            artistName?.let { artistDetails.postValue(realRepository.albumArtistByName(it)) }
+            if (artistId != null) {
+                val artist = providerManager.activeProvider.artistById(artistId)
+                    ?: realRepository.artistById(artistId)
+                artistDetails.postValue(artist)
+            } else if (artistName != null) {
+                try {
+                    val cached = providerManager.activeProvider.artistByName(artistName)
+                    if (cached != null) {
+                        artistDetails.postValue(cached)
+                    } else {
+                        artistDetails.postValue(realRepository.albumArtistByName(artistName))
+                    }
+                } catch (e: Exception) {
+                    artistDetails.postValue(Artist.empty)
+                }
+            }
         }
     }
 
-    fun refreshArtistInfo(){
+    fun refreshArtistInfo() {
         fetchArtist()
     }
 
     fun getArtist(): LiveData<Artist> = artistDetails
+
+    fun getAlbumsForArtist(artistId: Long): LiveData<List<Album>> = liveData(IO) {
+        val albums = providerManager.activeProvider.albumsForArtist(artistId)
+        if (albums.isNotEmpty()) emit(albums)
+    }
 
     fun getArtistInfo(
         name: String,
@@ -54,14 +62,10 @@ class ArtistDetailsViewModel(
         cache: String?
     ): LiveData<Result<LastFmArtist>> = liveData(IO) {
         emit(Result.Loading)
-        val info = realRepository.artistInfo(name, lang, cache)
-        emit(info)
+        emit(realRepository.artistInfo(name, lang, cache))
     }
 
-    override fun onMediaStoreChanged() {
-        fetchArtist()
-    }
-
+    override fun onMediaStoreChanged() { fetchArtist() }
     override fun onServiceConnected() {}
     override fun onServiceDisconnected() {}
     override fun onQueueChanged() {}

@@ -49,6 +49,10 @@ import com.resofy.music.util.RetroUtil
 import com.resofy.music.util.color.MediaNotificationProcessor
 import com.bumptech.glide.Glide
 import me.zhanghai.android.fastscroll.PopupTextProvider
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Created by hemanths on 13/08/17.
@@ -131,6 +135,34 @@ open class SongAdapter(
         val landscape = RetroUtil.isLandscape
         if ((PreferenceUtil.songGridSize > 2 && !landscape) || (PreferenceUtil.songGridSizeLand > 5 && landscape)) {
             holder.menu?.isVisible = false
+        }
+
+        // Favorite icon — solo visible en item_favourite_card
+        holder.favoriteIcon?.let { icon ->
+            icon.isVisible = true
+            val scope = (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycleScope
+                ?: return@let
+            scope.launch(kotlinx.coroutines.Dispatchers.IO) {
+                val isFav = MusicUtil.isFavorite(song)
+                withContext(kotlinx.coroutines.Dispatchers.Main) {
+                    icon.setImageResource(
+                        if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+                    )
+                }
+            }
+            icon.setOnClickListener {
+                val scope2 = (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycleScope
+                    ?: return@setOnClickListener
+                scope2.launch(kotlinx.coroutines.Dispatchers.IO) {
+                    MusicUtil.toggleFavorite(song)
+                    val isFav = MusicUtil.isFavorite(song)
+                    withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        icon.setImageResource(
+                            if (isFav) R.drawable.ic_favorite else R.drawable.ic_favorite_border
+                        )
+                    }
+                }
+            }
         }
     }
 

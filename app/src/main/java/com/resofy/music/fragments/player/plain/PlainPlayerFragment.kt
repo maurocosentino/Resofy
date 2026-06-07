@@ -22,6 +22,7 @@ import com.resofy.music.R
 import com.resofy.music.databinding.FragmentPlainPlayerBinding
 import com.resofy.music.extensions.colorControlNormal
 import com.resofy.music.extensions.drawAboveSystemBars
+import com.resofy.music.extensions.getDisplayText
 import com.resofy.music.extensions.whichFragment
 import com.resofy.music.fragments.base.AbsPlayerFragment
 import com.resofy.music.fragments.base.goToAlbum
@@ -52,7 +53,7 @@ class PlainPlayerFragment : AbsPlayerFragment(R.layout.fragment_plain_player) {
     private fun updateSong() {
         val song = MusicPlayerRemote.currentSong
         binding.title.text = song.title
-        binding.text.text = song.artistName
+        binding.text.text = song.getDisplayText()
     }
 
     override fun onServiceConnected() {

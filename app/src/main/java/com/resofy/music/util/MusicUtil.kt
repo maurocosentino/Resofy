@@ -24,6 +24,7 @@ import com.resofy.music.helper.MusicPlayerRemote.removeFromQueue
 import com.resofy.music.model.Artist
 import com.resofy.music.model.Song
 import com.resofy.music.model.lyrics.AbsSynchronizedLyrics
+import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.repository.Repository
 import com.resofy.music.repository.SongRepository
 import kotlinx.coroutines.Dispatchers
@@ -366,20 +367,36 @@ object MusicUtil : KoinComponent {
     }
 
     private val repository = get<Repository>()
+    private val providerManager = get<ProviderManager>()
+
     suspend fun toggleFavorite(song: Song) {
         withContext(IO) {
-            val playlist: PlaylistEntity = repository.favoritePlaylist()
-            val songEntity = song.toSongEntity(playlist.playListId)
-            val isFavorite = repository.isFavoriteSong(songEntity).isNotEmpty()
-            if (isFavorite) {
-                repository.removeSongFromPlaylist(songEntity)
+            val isSubsonic = song.data.startsWith("http")
+            if (isSubsonic) {
+                // Subsonic: solo star/unstar en servidor, no tocar Room
+                val isFavorite = providerManager.activeProvider.favoriteSongs().any { it.id == song.id }
+                providerManager.toggleStar(song, !isFavorite)
             } else {
-                repository.insertSongs(listOf(song.toSongEntity(playlist.playListId)))
+                // Local: comportamiento original con Room
+                val playlist: PlaylistEntity = repository.favoritePlaylist()
+                val songEntity = song.toSongEntity(playlist.playListId)
+                val isFavorite = repository.isFavoriteSong(songEntity).isNotEmpty()
+                if (isFavorite) {
+                    repository.removeSongFromPlaylist(songEntity)
+                } else {
+                    repository.insertSongs(listOf(song.toSongEntity(playlist.playListId)))
+                }
             }
         }
     }
 
-    suspend fun isFavorite(song: Song) = repository.isSongFavorite(song.id)
+    suspend fun isFavorite(song: Song): Boolean {
+        return if (song.data.startsWith("http")) {
+            providerManager.activeProvider.favoriteSongs().any { it.id == song.id }
+        } else {
+            repository.isSongFavorite(song.id)
+        }
+    }
 
     fun deleteTracks(
         activity: FragmentActivity,

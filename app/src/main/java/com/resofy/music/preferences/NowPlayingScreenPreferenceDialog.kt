@@ -1,16 +1,3 @@
-/*
- * Copyright (c) 2019 Hemanth Savarala.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by
- *  the Free Software Foundation either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- */
 
 package com.resofy.music.preferences
 
@@ -32,10 +19,17 @@ import com.resofy.music.R
 import com.resofy.music.databinding.PreferenceNowPlayingScreenItemBinding
 import com.resofy.music.extensions.*
 import com.resofy.music.fragments.NowPlayingScreen
-import com.resofy.music.fragments.NowPlayingScreen.*
 import com.resofy.music.util.PreferenceUtil
 import com.resofy.music.util.ViewUtil
 import com.bumptech.glide.Glide
+
+// Únicos temas disponibles
+private val AVAILABLE_SCREENS = listOf(
+    NowPlayingScreen.Normal,
+    NowPlayingScreen.Peek,
+    NowPlayingScreen.Gradient,
+    NowPlayingScreen.Material
+)
 
 class NowPlayingScreenPreference @JvmOverloads constructor(
     context: Context,
@@ -62,11 +56,9 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), ViewPager.OnPageChang
 
     private var viewPagerPosition: Int = 0
 
-    override fun onPageScrollStateChanged(state: Int) {
-    }
+    override fun onPageScrollStateChanged(state: Int) {}
 
-    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    }
+    override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
 
     override fun onPageSelected(position: Int) {
         this.viewPagerPosition = position
@@ -76,24 +68,20 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), ViewPager.OnPageChang
         val view = layoutInflater
             .inflate(R.layout.preference_dialog_now_playing_screen, null)
         val viewPager = view.findViewById<ViewPager>(R.id.now_playing_screen_view_pager)
-            ?: throw  IllegalStateException("Dialog view must contain a ViewPager with id 'now_playing_screen_view_pager'")
+            ?: throw IllegalStateException("Dialog view must contain a ViewPager with id 'now_playing_screen_view_pager'")
+
         viewPager.adapter = NowPlayingScreenAdapter(requireContext())
         viewPager.addOnPageChangeListener(this)
         viewPager.pageMargin = ViewUtil.convertDpToPixel(32f, resources).toInt()
-        viewPager.currentItem = PreferenceUtil.nowPlayingScreen.ordinal
+
+        // Posicionar en el tema actual; si no está en la lista, empezar en 0
+        val currentIndex = AVAILABLE_SCREENS.indexOf(PreferenceUtil.nowPlayingScreen)
+        viewPager.currentItem = if (currentIndex >= 0) currentIndex else 0
 
         return materialDialog(R.string.pref_title_now_playing_screen_appearance)
             .setCancelable(false)
             .setPositiveButton(R.string.set) { _, _ ->
-                val nowPlayingScreen = values()[viewPagerPosition]
-                if (isNowPlayingThemes(nowPlayingScreen)) {
-                    val result =
-                        "${getString(nowPlayingScreen.titleRes)} theme is Pro version feature."
-                    showToast(result)
-                    requireContext().goToProVersion()
-                } else {
-                    PreferenceUtil.nowPlayingScreen = nowPlayingScreen
-                }
+                PreferenceUtil.nowPlayingScreen = AVAILABLE_SCREENS[viewPagerPosition]
             }
             .setView(view)
             .create()
@@ -110,42 +98,24 @@ class NowPlayingScreenPreferenceDialog : DialogFragment(), ViewPager.OnPageChang
 private class NowPlayingScreenAdapter(private val context: Context) : PagerAdapter() {
 
     override fun instantiateItem(collection: ViewGroup, position: Int): Any {
-        val nowPlayingScreen = values()[position]
+        val nowPlayingScreen = AVAILABLE_SCREENS[position]
 
         val inflater = LayoutInflater.from(context)
         val binding = PreferenceNowPlayingScreenItemBinding.inflate(inflater, collection, true)
         Glide.with(context).load(nowPlayingScreen.drawableResId).into(binding.image)
         binding.title.setText(nowPlayingScreen.titleRes)
-        if (isNowPlayingThemes(nowPlayingScreen)) {
-            binding.proText.show()
-            binding.proText.setText(R.string.pro)
-        } else {
-            binding.proText.hide()
-        }
+        binding.proText.hide()
         return binding.root
     }
 
-    override fun destroyItem(
-        collection: ViewGroup,
-        position: Int,
-        view: Any
-    ) {
+    override fun destroyItem(collection: ViewGroup, position: Int, view: Any) {
         collection.removeView(view as View)
     }
 
-    override fun getCount(): Int {
-        return values().size
-    }
+    override fun getCount(): Int = AVAILABLE_SCREENS.size
 
-    override fun isViewFromObject(view: View, instance: Any): Boolean {
-        return view === instance
-    }
+    override fun isViewFromObject(view: View, instance: Any): Boolean = view === instance
 
-    override fun getPageTitle(position: Int): CharSequence {
-        return context.getString(values()[position].titleRes)
-    }
-}
-
-private fun isNowPlayingThemes(screen: NowPlayingScreen): Boolean {
-    return (screen == Full || screen == Card || screen == Plain || screen == Blur || screen == Color || screen == Simple || screen == BlurCard || screen == Circle || screen == Adaptive) && !App.isProVersion()
+    override fun getPageTitle(position: Int): CharSequence =
+        context.getString(AVAILABLE_SCREENS[position].titleRes)
 }

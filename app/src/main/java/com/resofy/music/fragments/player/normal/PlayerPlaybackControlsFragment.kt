@@ -19,6 +19,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import code.name.monkey.appthemehelper.util.ATHUtil
 import code.name.monkey.appthemehelper.util.ColorUtil
 import code.name.monkey.appthemehelper.util.MaterialValueHelper
@@ -27,6 +28,7 @@ import com.resofy.music.R
 import com.resofy.music.databinding.FragmentPlayerPlaybackControlsBinding
 import com.resofy.music.extensions.*
 import com.resofy.music.fragments.base.AbsPlayerControlsFragment
+import com.resofy.music.fragments.base.AbsPlayerFragment
 import com.resofy.music.fragments.base.goToAlbum
 import com.resofy.music.fragments.base.goToArtist
 import com.resofy.music.helper.MusicPlayerRemote
@@ -74,7 +76,29 @@ class PlayerPlaybackControlsFragment :
         binding.text.setOnClickListener {
             goToArtist(requireActivity())
         }
+        setupFavoriteButton()
+        setupMenuButton()
     }
+
+    private fun setupFavoriteButton() {
+        binding.songFavoriteButton.setOnClickListener {
+            (parentFragment as? AbsPlayerFragment)?.onFavoriteToggled()
+        }
+    }
+
+    private fun setupMenuButton() {
+        binding.playerMenu.setOnClickListener { view ->
+            val popup = PopupMenu(requireContext(), view)
+            popup.menuInflater.inflate(R.menu.menu_player_inline, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                (parentFragment as? AbsPlayerFragment)?.onMenuItemClick(item) ?: false
+            }
+            popup.show()
+        }
+    }
+
+    /** Expuesto para que AbsPlayerFragment actualice el ícono de favorito */
+    fun getFavoriteButton(): ImageButton = binding.songFavoriteButton
 
     override fun setColor(color: MediaNotificationProcessor) {
         val colorBg = ATHUtil.resolveColor(requireContext(), android.R.attr.colorBackground)
@@ -117,14 +141,20 @@ class PlayerPlaybackControlsFragment :
         binding.title.text = song.title
         binding.text.text = song.artistName
 
-        if (PreferenceUtil.isSongInfo) {
-            binding.songInfo.text = getSongInfo(song)
-            binding.songInfo.show()
-        } else {
-            binding.songInfo.hide()
+        when {
+            PreferenceUtil.isSongInfo -> {
+                binding.songInfo.text = getSongInfo(song)
+                binding.songInfo.show()
+            }
+            song.albumName.isNotEmpty() -> {
+                binding.songInfo.text = song.albumName
+                binding.songInfo.show()
+            }
+            else -> {
+                binding.songInfo.hide()
+            }
         }
     }
-
 
     override fun onServiceConnected() {
         updatePlayPauseDrawableState()

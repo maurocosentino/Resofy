@@ -47,6 +47,7 @@ interface Repository {
     suspend fun recentAlbumsHome(): Home
     suspend fun favoritePlaylistHome(): Home
     suspend fun suggestions(): List<Song>
+    suspend fun suggestedArtistsHome(): Home
     suspend fun genresHome(): Home
     suspend fun playlists(): Home
     suspend fun homeSections(): List<Home>
@@ -188,8 +189,7 @@ class RealRepository(
         val sections: List<Home> = listOf(
             topArtistsHome(),
             topAlbumsHome(),
-            recentArtistsHome(),
-            recentAlbumsHome(),
+            suggestedArtistsHome(),
             favoritePlaylistHome()
         )
         for (section in sections) {
@@ -247,7 +247,13 @@ class RealRepository(
         roomRepository.deletePlaylistSongs(playlists)
 
     override suspend fun favoritePlaylist(): PlaylistEntity =
-        roomRepository.favoritePlaylist(context.getString(R.string.favorites))
+        roomRepository.favoritePlaylist(FAVORITES_PLAYLIST_NAME)
+
+    override suspend fun favoritePlaylistSongs(): List<SongEntity> =
+        roomRepository.favoritePlaylistSongs(FAVORITES_PLAYLIST_NAME)
+
+    override fun favorites(): LiveData<List<SongEntity>> =
+        roomRepository.favoritePlaylistLiveData(FAVORITES_PLAYLIST_NAME)
 
     override suspend fun isFavoriteSong(songEntity: SongEntity): List<SongEntity> =
         roomRepository.isFavoriteSong(songEntity)
@@ -255,8 +261,8 @@ class RealRepository(
     override suspend fun upsertSongInHistory(currentSong: Song) =
         roomRepository.upsertSongInHistory(currentSong)
 
-    override suspend fun favoritePlaylistSongs(): List<SongEntity> =
-        roomRepository.favoritePlaylistSongs(context.getString(R.string.favorites))
+//    override suspend fun favoritePlaylistSongs(): List<SongEntity> =
+//        roomRepository.favoritePlaylistSongs(context.getString(R.string.favorites))
 
     override suspend fun recentSongs(): List<Song> = lastAddedRepository.recentSongs()
 
@@ -289,8 +295,8 @@ class RealRepository(
     override fun historySong(): List<HistoryEntity> =
         roomRepository.historySongs()
 
-    override fun favorites(): LiveData<List<SongEntity>> =
-        roomRepository.favoritePlaylistLiveData(context.getString(R.string.favorites))
+//    override fun favorites(): LiveData<List<SongEntity>> =
+//        roomRepository.favoritePlaylistLiveData(context.getString(R.string.favorites))
 
     override suspend fun suggestions(): List<Song> {
         return NotPlayedPlaylist().songs().shuffled().takeIf {
@@ -326,6 +332,14 @@ class RealRepository(
     override suspend fun topArtistsHome(): Home {
         val artists = topPlayedRepository.topArtists().take(5)
         return Home(artists, TOP_ARTISTS, R.string.top_artists)
+    }
+
+    override suspend fun suggestedArtistsHome(): Home {
+        val seed = java.util.Calendar.getInstance().get(java.util.Calendar.DAY_OF_YEAR)
+        val artists = artistRepository.artists()
+            .shuffled(kotlin.random.Random(seed))
+            .take(5)
+        return Home(artists, SUGGESTED_ARTISTS, R.string.suggested_artists)
     }
 
     override suspend fun favoritePlaylistHome(): Home {

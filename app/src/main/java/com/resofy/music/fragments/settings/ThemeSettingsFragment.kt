@@ -16,6 +16,7 @@ package com.resofy.music.fragments.settings
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.edit
 import androidx.preference.Preference
 import androidx.preference.TwoStatePreference
@@ -33,6 +34,10 @@ import com.resofy.music.fragments.NowPlayingScreen.*
 import com.resofy.music.util.PreferenceUtil
 import com.afollestad.materialdialogs.color.colorChooser
 import com.google.android.material.color.DynamicColors
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import com.resofy.music.LANGUAGE_NAME
+import com.resofy.music.extensions.installLanguageAndRecreate
 
 /**
  * @author Hemanth S (h4h13).
@@ -47,7 +52,6 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             it.setOnPreferenceChangeListener { _, newValue ->
                 setSummary(it, newValue)
                 ThemeStore.markChanged(requireContext())
-
                 if (VersionUtils.hasNougatMR()) {
                     DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
                 }
@@ -75,7 +79,10 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             }
             return@setOnPreferenceClickListener true
         }
+
+        // black_theme: oculto, lógica mantenida para no romper nada
         val blackTheme: ATESwitchPreference? = findPreference(BLACK_THEME)
+        blackTheme?.isVisible = false
         blackTheme?.setOnPreferenceChangeListener { _, _ ->
             if (!App.isProVersion()) {
                 showProToastAndNavigate("Just Black theme")
@@ -101,10 +108,10 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             true
         }
 
+        // should_color_app_shortcuts: oculto, lógica mantenida
         val colorAppShortcuts: TwoStatePreference? = findPreference(SHOULD_COLOR_APP_SHORTCUTS)
-        if (!VersionUtils.hasNougatMR()) {
-            colorAppShortcuts?.isVisible = false
-        } else {
+        colorAppShortcuts?.isVisible = false
+        if (VersionUtils.hasNougatMR()) {
             colorAppShortcuts?.isChecked = PreferenceUtil.isColoredAppShortcuts
             colorAppShortcuts?.setOnPreferenceChangeListener { _, newValue ->
                 PreferenceUtil.isColoredAppShortcuts = newValue as Boolean
@@ -113,7 +120,10 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             }
         }
 
+        // material_you: oculto, lógica mantenida para que las dependencias
+        // de accent_color y desaturated_color sigan funcionando correctamente
         val materialYou: ATESwitchPreference? = findPreference(MATERIAL_YOU)
+        materialYou?.isVisible = false
         materialYou?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
                 DynamicColors.applyToActivitiesIfAvailable(App.getContext())
@@ -121,11 +131,13 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
             restartActivity()
             true
         }
+
         val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
         wallpaperAccent?.setOnPreferenceChangeListener { _, _ ->
             restartActivity()
             true
         }
+
         val customFont: ATESwitchPreference? = findPreference(CUSTOM_FONT)
         customFont?.setOnPreferenceChangeListener { _, _ ->
             restartActivity()
@@ -141,5 +153,27 @@ class ThemeSettingsFragment : AbsSettingsFragment() {
         addPreferencesFromResource(R.xml.pref_general)
         val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
         wallpaperAccent?.isVisible = VersionUtils.hasOreoMR1() && !VersionUtils.hasS()
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        PreferenceUtil.languageCode =
+            AppCompatDelegate.getApplicationLocales().toLanguageTags().ifEmpty { "auto" }
+
+        val languagePreference: Preference? = findPreference(LANGUAGE_NAME)
+        languagePreference?.setOnPreferenceChangeListener { prefs, newValue ->
+            setSummary(prefs, newValue)
+            if (newValue as? String == "auto") {
+                AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+            } else {
+                requireActivity().installLanguageAndRecreate(newValue.toString()) {
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(newValue as? String)
+                    )
+                }
+            }
+            true
+        }
     }
 }

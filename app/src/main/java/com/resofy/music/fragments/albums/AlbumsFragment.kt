@@ -54,7 +54,7 @@ class AlbumsFragment : AbsRecyclerViewCustomGridSizeFragment<AlbumAdapter, GridL
         get() = R.string.no_albums
 
     override val isShuffleVisible: Boolean
-        get() = true
+        get() = false
 
     override fun onShuffleClicked() {
         libraryViewModel.getAlbums().value?.let {
@@ -327,7 +327,9 @@ class AlbumsFragment : AbsRecyclerViewCustomGridSizeFragment<AlbumAdapter, GridL
 
     override fun onResume() {
         super.onResume()
-        libraryViewModel.forceReload(ReloadType.Albums)
+        if (adapter?.dataSet.isNullOrEmpty()) {
+            libraryViewModel.forceReload(ReloadType.Albums)
+        }
     }
 
     override fun onPause() {

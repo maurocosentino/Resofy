@@ -13,7 +13,7 @@
  *
  */
 package com.resofy.music.fragments.base
-
+import com.resofy.music.musicprovider.ProviderManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentUris
@@ -62,6 +62,7 @@ import com.resofy.music.fragments.LibraryViewModel
 import com.resofy.music.fragments.NowPlayingScreen
 import com.resofy.music.fragments.ReloadType
 import com.resofy.music.fragments.player.PlayerAlbumCoverFragment
+import com.resofy.music.fragments.player.normal.PlayerPlaybackControlsFragment
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.interfaces.IPaletteColorHolder
 import com.resofy.music.model.Song
@@ -76,6 +77,7 @@ import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.get
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.math.abs
 
@@ -83,6 +85,8 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
     Toolbar.OnMenuItemClickListener, IPaletteColorHolder, PlayerAlbumCoverFragment.Callbacks {
 
     val libraryViewModel: LibraryViewModel by activityViewModel()
+
+    private val providerManager: ProviderManager by inject()
 
     val mainActivity: MainActivity
         get() = activity as MainActivity
@@ -275,15 +279,26 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
 
     protected open fun toggleFavorite(song: Song) {
         lifecycleScope.launch(IO) {
-            val playlist: PlaylistEntity = libraryViewModel.favoritePlaylist()
-            val songEntity = song.toSongEntity(playlist.playListId)
-            val isFavorite = libraryViewModel.isSongFavorite(song.id)
-            if (isFavorite) {
-                libraryViewModel.removeSongFromPlaylist(songEntity)
+            val isSubsonicSong = song.data.startsWith("http")
+
+            if (isSubsonicSong) {
+                // Subsonic: solo star/unstar en el servidor, Room no se toca
+                val isFavorite = providerManager.activeProvider.favoriteSongs().any { it.id == song.id }
+                providerManager.toggleStar(song, !isFavorite)
+                libraryViewModel.forceReload(ReloadType.HomeSections)
             } else {
-                libraryViewModel.insertSongs(listOf(song.toSongEntity(playlist.playListId)))
+                // Local: comportamiento original con Room
+                val playlist: PlaylistEntity = libraryViewModel.favoritePlaylist()
+                val songEntity = song.toSongEntity(playlist.playListId)
+                val isFavorite = libraryViewModel.isSongFavorite(song.id)
+                if (isFavorite) {
+                    libraryViewModel.removeSongFromPlaylist(songEntity)
+                } else {
+                    libraryViewModel.insertSongs(listOf(songEntity))
+                }
+                libraryViewModel.forceReload(ReloadType.Playlists)
             }
-            libraryViewModel.forceReload(ReloadType.Playlists)
+
             LocalBroadcastManager.getInstance(requireContext())
                 .sendBroadcast(Intent(MusicService.FAVORITE_STATE_CHANGED))
         }
@@ -291,6 +306,8 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
 
     fun updateIsFavorite(animate: Boolean = false) {
         lifecycleScope.launch(IO) {
+            val currentSong = MusicPlayerRemote.currentSong
+            if (currentSong.id == -1L) return@launch
             val isFavorite: Boolean =
                 libraryViewModel.isSongFavorite(MusicPlayerRemote.currentSong.id)
             withContext(Main) {
@@ -303,6 +320,8 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
                     icon,
                     toolbarIconColor()
                 )
+
+                // Actualizar ícono en la toolbar (otros players que aún la usen)
                 if (playerToolbar() != null) {
                     playerToolbar()?.menu?.findItem(R.id.action_toggle_favorite)?.apply {
                         setIcon(drawable)
@@ -314,6 +333,16 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
                                 it.start()
                             }
                         }
+                    }
+                }
+
+                // Actualizar el botón inline en PlayerPlaybackControlsFragment (Normal player)
+                val controlsFragment = childFragmentManager
+                    .findFragmentById(R.id.playbackControlsFragment) as? PlayerPlaybackControlsFragment
+                controlsFragment?.getFavoriteButton()?.apply {
+                    setImageDrawable(drawable)
+                    if (drawable is AnimatedVectorDrawable) {
+                        drawable.start()
                     }
                 }
             }

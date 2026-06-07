@@ -44,12 +44,19 @@ import com.resofy.music.util.RetroUtil
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.transition.MaterialSharedAxis
-
+import com.resofy.music.musicprovider.MusicProviderType
+import com.resofy.music.musicprovider.ProviderManager
+import org.koin.android.ext.android.inject
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 
 class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_detail),
     IArtistClickListener, IAlbumClickListener {
     private val args by navArgs<DetailListFragmentArgs>()
     private var _binding: FragmentPlaylistDetailBinding? = null
+    private val providerManager: ProviderManager by inject()
     private val binding get() = _binding!!
     private var showClearHistoryOption = false
 
@@ -109,8 +116,21 @@ class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_de
             layoutManager = linearLayoutManager()
             scheduleLayoutAnimation()
         }
-        libraryViewModel.recentSongs().observe(viewLifecycleOwner) { songs ->
-            songAdapter.swapDataSet(songs)
+        if (providerManager.activeProvider is com.resofy.music.musicprovider.subsonic.SubsonicMusicProvider) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val albums = providerManager.activeProvider.albumsByType(LAST_ADDED_PLAYLIST)
+                val songs = albums
+                    .map { album ->
+                        async { providerManager.activeProvider.songsForAlbum(album.id) }
+                    }
+                    .awaitAll()
+                    .flatten()
+                songAdapter.swapDataSet(songs)
+            }
+        } else {
+            libraryViewModel.recentSongs().observe(viewLifecycleOwner) { songs ->
+                songAdapter.swapDataSet(songs)
+            }
         }
     }
 
@@ -132,7 +152,6 @@ class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_de
 
     private fun loadHistory() {
         binding.toolbar.setTitle(R.string.history)
-
         val songAdapter = ShuffleButtonSongAdapter(
             requireActivity(),
             mutableListOf(),
@@ -142,12 +161,22 @@ class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_de
             adapter = songAdapter
             layoutManager = linearLayoutManager()
         }
-
-        libraryViewModel.observableHistorySongs().observe(viewLifecycleOwner) {
-            songAdapter.swapDataSet(it)
-            binding.empty.isVisible = it.isEmpty()
+        if (providerManager.activeProvider is com.resofy.music.musicprovider.subsonic.SubsonicMusicProvider) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val albums = providerManager.activeProvider.albumsByType(RECENT_ALBUMS)
+                val songs = albums.flatMap { album ->
+                    providerManager.activeProvider.songsForAlbum(album.id)
+                }
+                songAdapter.swapDataSet(songs)
+                binding.empty.isVisible = songs.isEmpty()
+            }
+        } else {
+            libraryViewModel.observableHistorySongs().observe(viewLifecycleOwner) {
+                songAdapter.swapDataSet(it)
+                binding.empty.isVisible = it.isEmpty()
+            }
+            showClearHistoryOption = true
         }
-
     }
 
     private fun loadFavorite() {
@@ -161,9 +190,19 @@ class DetailListFragment : AbsMainActivityFragment(R.layout.fragment_playlist_de
             adapter = songAdapter
             layoutManager = linearLayoutManager()
         }
-        libraryViewModel.favorites().observe(viewLifecycleOwner) { songEntities ->
-            val songs = songEntities.map { songEntity -> songEntity.toSong() }
-            songAdapter.swapDataSet(songs)
+
+        if (providerManager.activeProviderType.value == MusicProviderType.SUBSONIC) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                val songs = providerManager.activeProvider.favoriteSongs()
+                songAdapter.swapDataSet(songs)
+                binding.empty.isVisible = songs.isEmpty()
+            }
+        } else {
+            libraryViewModel.favorites().observe(viewLifecycleOwner) { songEntities ->
+                val songs = songEntities.map { it.toSong() }
+                songAdapter.swapDataSet(songs)
+                binding.empty.isVisible = songs.isEmpty()
+            }
         }
     }
 

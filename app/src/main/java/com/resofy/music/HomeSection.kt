@@ -24,7 +24,10 @@ import androidx.annotation.IntDef
     SUGGESTIONS,
     FAVOURITES,
     GENRES,
-    PLAYLISTS
+    PLAYLISTS,
+    SUGGESTED_ARTISTS,
+    LAST_ADDED_PLAYLIST,
+    HISTORY_PLAYLIST
 )
 @Retention(AnnotationRetention.SOURCE)
 annotation class HomeSection
@@ -40,3 +43,4 @@ const val PLAYLISTS = 7
 const val HISTORY_PLAYLIST = 8
 const val LAST_ADDED_PLAYLIST = 9
 const val TOP_PLAYED_PLAYLIST = 10
+const val SUGGESTED_ARTISTS = 11

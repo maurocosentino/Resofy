@@ -1,17 +1,3 @@
-/*
- * Copyright (c) 2020 Hemanth Savarla.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- */
 package com.resofy.music.fragments
 
 import android.animation.ValueAnimator
@@ -26,6 +12,8 @@ import com.resofy.music.fragments.search.Filter
 import com.resofy.music.helper.MusicPlayerRemote
 import com.resofy.music.interfaces.IMusicServiceEventListener
 import com.resofy.music.model.*
+import com.resofy.music.musicprovider.MusicProviderType
+import com.resofy.music.musicprovider.ProviderManager
 import com.resofy.music.repository.RealRepository
 import com.resofy.music.util.DensityUtil
 import com.resofy.music.util.PreferenceUtil
@@ -40,6 +28,7 @@ import java.io.File
 
 class LibraryViewModel(
     private val repository: RealRepository,
+    private val providerManager: ProviderManager,
 ) : ViewModel(), IMusicServiceEventListener {
 
     private val _paletteColor = MutableLiveData<Int>()
@@ -58,20 +47,25 @@ class LibraryViewModel(
     val paletteColor: LiveData<Int> = _paletteColor
 
     init {
-        loadLibraryContent()
+        // Observar cambios de provider y recargar
+        viewModelScope.launch {
+            providerManager.activeProviderType.collect {
+                loadLibraryContent()
+            }
+        }
     }
 
     private fun loadLibraryContent() {
         viewModelScope.launch(IO) {
-            fetchHomeSections()
             awaitAll(
-                async { fetchSuggestions() },
-                async { fetchSongs() },
+                async { fetchHomeSections() },
                 async { fetchAlbums() },
                 async { fetchArtists() },
                 async { fetchGenres() },
                 async { fetchPlaylists() },
             )
+            fetchSongs()
+            fetchSuggestions()
         }
     }
 
@@ -94,23 +88,23 @@ class LibraryViewModel(
     fun getFabMargin(): LiveData<Int> = fabMargin
 
     private suspend fun fetchSongs() {
-        songs.postValue(repository.allSongs())
+        songs.postValue(providerManager.activeProvider.songs())
     }
 
     private suspend fun fetchAlbums() {
-        albums.postValue(repository.fetchAlbums())
+        albums.postValue(providerManager.activeProvider.albums())
     }
 
     private suspend fun fetchArtists() {
-        if (PreferenceUtil.albumArtistsOnly) {
-            artists.postValue(repository.albumArtists())
-        } else {
-            artists.postValue(repository.fetchArtists())
-        }
+        artists.postValue(providerManager.activeProvider.artists())
     }
 
     private suspend fun fetchPlaylists() {
-        playlists.postValue(repository.fetchPlaylistWithSongs())
+        if (providerManager.activeProviderType.value == MusicProviderType.LOCAL) {
+            playlists.postValue(repository.fetchPlaylistWithSongs())
+        } else {
+            playlists.postValue(emptyList())
+        }
     }
 
     private suspend fun fetchGenres() {
@@ -118,17 +112,46 @@ class LibraryViewModel(
     }
 
     private suspend fun fetchHomeSections() {
-        home.postValue(repository.homeSections())
+        home.postValue(providerManager.activeProvider.homeSections())
     }
 
     private suspend fun fetchSuggestions() {
-        suggestions.postValue(repository.suggestions())
+        val result = providerManager.activeProvider.suggestions()
+        android.util.Log.d("Suggestions", "fetchSuggestions got ${result.size} songs")
+        suggestions.postValue(result)
     }
 
     fun search(query: String?, filter: Filter) =
         viewModelScope.launch(IO) {
-            val result = repository.search(query, filter)
-            searchResults.postValue(result)
+            if (providerManager.activeProviderType.value == MusicProviderType.SUBSONIC) {
+                val results = mutableListOf<Any>()
+                if (!query.isNullOrEmpty()) {
+                    val songs = providerManager.activeProvider.songs()
+                        .filter { it.title.contains(query, ignoreCase = true) ||
+                                it.artistName.contains(query, ignoreCase = true) }
+                    if (songs.isNotEmpty()) {
+                        results.add(App.getContext().getString(R.string.songs))
+                        results.addAll(songs)
+                    }
+                    val albums = providerManager.activeProvider.albums()
+                        .filter { it.title.contains(query, ignoreCase = true) ||
+                                it.artistName.contains(query, ignoreCase = true) }
+                    if (albums.isNotEmpty()) {
+                        results.add(App.getContext().getString(R.string.albums))
+                        results.addAll(albums)
+                    }
+                    val artists = providerManager.activeProvider.artists()
+                        .filter { it.name.contains(query, ignoreCase = true) }
+                    if (artists.isNotEmpty()) {
+                        results.add(App.getContext().getString(R.string.artists))
+                        results.addAll(artists)
+                    }
+                }
+                searchResults.postValue(results)
+            } else {
+                val result = repository.search(query, filter)
+                searchResults.postValue(result)
+            }
         }
 
     fun forceReload(reloadType: ReloadType) = viewModelScope.launch(IO) {
@@ -186,7 +209,7 @@ class LibraryViewModel(
     }
 
     fun shuffleSongs() = viewModelScope.launch(IO) {
-        val songs = repository.allSongs()
+        val songs = providerManager.activeProvider.shuffle()
         withContext(Main) {
             MusicPlayerRemote.openAndShuffleQueue(songs, true)
         }
@@ -215,7 +238,15 @@ class LibraryViewModel(
     suspend fun artistById(id: Long) = repository.artistById(id)
     suspend fun favoritePlaylist() = repository.favoritePlaylist()
     suspend fun isFavoriteSong(song: SongEntity) = repository.isFavoriteSong(song)
-    suspend fun isSongFavorite(songId: Long) = repository.isSongFavorite(songId)
+    suspend fun isSongFavorite(songId: Long): Boolean {
+        return if (providerManager.activeProviderType.value == MusicProviderType.SUBSONIC) {
+            val favs = providerManager.activeProvider.favoriteSongs()
+            android.util.Log.d("Favorites", "Checking subsonic favs: ${favs.size} songs, looking for $songId")
+            favs.any { it.id == songId }
+        } else {
+            repository.isSongFavorite(songId)
+        }
+    }
     suspend fun insertSongs(songs: List<SongEntity>) = repository.insertSongs(songs)
     suspend fun removeSongFromPlaylist(songEntity: SongEntity) =
         repository.removeSongFromPlaylist(songEntity)
@@ -273,21 +304,11 @@ class LibraryViewModel(
     }
 
     fun artists(type: Int): LiveData<List<Artist>> = liveData(IO) {
-        when (type) {
-            TOP_ARTISTS -> emit(repository.topArtists())
-            RECENT_ARTISTS -> {
-                emit(repository.recentArtists())
-            }
-        }
+        emit(providerManager.activeProvider.artistsByType(type))
     }
 
     fun albums(type: Int): LiveData<List<Album>> = liveData(IO) {
-        when (type) {
-            TOP_ALBUMS -> emit(repository.topAlbums())
-            RECENT_ALBUMS -> {
-                emit(repository.recentAlbums())
-            }
-        }
+        emit(providerManager.activeProvider.albumsByType(type))
     }
 
     fun artist(artistId: Long): LiveData<Artist> = liveData(IO) {
@@ -321,7 +342,6 @@ class LibraryViewModel(
         }
         songHistory.value = emptyList()
     }
-
 
     fun restoreHistory() {
         viewModelScope.launch(IO) {

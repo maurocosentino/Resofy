@@ -196,6 +196,7 @@ object PreferenceUtil {
                     "light" -> ThemeMode.LIGHT
                     "dark" -> ThemeMode.DARK
                     "auto" -> ThemeMode.AUTO
+                    "gruvbox" -> ThemeMode.GRUVBOX
                     else -> ThemeMode.AUTO
                 }
             }
@@ -533,6 +534,7 @@ object PreferenceUtil {
         return when (themePrefValue) {
             "light" -> R.style.Theme_Resofy_Light
             "dark" -> R.style.Theme_Resofy
+            "gruvbox" -> R.style.Theme_Resofy_Gruvbox
             else -> R.style.Theme_Resofy
         }
     }
@@ -569,7 +571,7 @@ object PreferenceUtil {
     val tabTitleMode: Int
         get() {
             return when (sharedPreferences.getStringOrDefault(
-                TAB_TEXT_MODE, "0"
+                TAB_TEXT_MODE, "1"
             ).toInt()) {
                 0 -> BottomNavigationView.LABEL_VISIBILITY_AUTO
                 1 -> BottomNavigationView.LABEL_VISIBILITY_LABELED
@@ -832,7 +834,7 @@ object PreferenceUtil {
         set(value) = sharedPreferences.edit { putFloat(PLAYBACK_PITCH, value) }
 
     val appBarMode: TopAppBarLayout.AppBarMode
-        get() = if (sharedPreferences.getString(APPBAR_MODE, "1") == "0") {
+        get() = if (sharedPreferences.getString(APPBAR_MODE, "0") == "0") {
             TopAppBarLayout.AppBarMode.COLLAPSING
         } else {
             TopAppBarLayout.AppBarMode.SIMPLE

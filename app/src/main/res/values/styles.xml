@@ -6,6 +6,8 @@
 
     <style name="Theme.Resofy.Black" parent="Theme.Resofy.Base.Black" />
 
+    <style name="Theme.Resofy.Gruvbox" parent="Theme.Resofy.Base.Gruvbox" />
+
     <style name="Theme.Resofy.FollowSystem" parent="Theme.Resofy.Base.Adaptive">
         <item name="android:windowBackground">?colorSurface</item>
     </style>

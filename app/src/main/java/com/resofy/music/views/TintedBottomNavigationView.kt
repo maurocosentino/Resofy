@@ -49,7 +49,7 @@ class TintedBottomNavigationView @JvmOverloads constructor(
                 }
             }
 
-            labelVisibilityMode = PreferenceUtil.tabTitleMode
+            labelVisibilityMode = BottomNavigationView.LABEL_VISIBILITY_LABELED
 
             if (!PreferenceUtil.materialYou) {
                 val iconColor = ATHUtil.resolveColor(context, android.R.attr.colorControlNormal)

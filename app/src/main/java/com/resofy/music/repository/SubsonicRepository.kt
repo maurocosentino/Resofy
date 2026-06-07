@@ -1,0 +1,162 @@
+package com.resofy.music.repository
+
+import com.resofy.music.model.Album
+import com.resofy.music.model.Artist
+import com.resofy.music.model.Song
+import com.resofy.music.network.Result
+import com.resofy.music.network.subsonic.SubsonicMapper.toAlbum
+import com.resofy.music.network.subsonic.SubsonicMapper.toArtist
+import com.resofy.music.network.subsonic.SubsonicMapper.toSong
+import com.resofy.music.network.subsonic.SubsonicService
+import kotlin.collections.emptyList
+
+class SubsonicRepository(
+    private val service: SubsonicService,
+    private val baseUrl: String,
+    private val username: String,
+    private val password: String
+) {
+    suspend fun getSongs(): Result<List<Song>> {
+        return try {
+            val response = service.search(query = "", songCount = 500)
+            val songs = response.response.searchResult3?.song
+                ?.map { it.toSong(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getAlbums(): Result<List<Album>> {
+        return try {
+            val response = service.getAlbumList()
+//            android.util.Log.d("Subsonic", "albums status=${response.response.status}")
+//            android.util.Log.d("Subsonic", "albums error=${response.response.error}")
+//            android.util.Log.d("Subsonic", "albums count=${response.response.albumList2?.album?.size}")
+            val albums = response.response.albumList2?.album
+                ?.map { it.toAlbum(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(albums)
+        } catch (e: Exception) {
+            android.util.Log.e("Subsonic", "albums exception=${e.message}", e)
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getSongsForAlbum(albumId: String): Result<List<Song>> {
+        return try {
+            val response = service.getAlbum(albumId)
+            val songs = response.response.album?.song
+                ?.map { it.toSong(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getArtists(): Result<List<Artist>> {
+        return try {
+            val response = service.getArtists()
+            val artists = response.response.artists?.index
+                ?.flatMap { it.artist ?: emptyList() }
+                ?.map { it.toArtist() }
+                ?: emptyList()
+            Result.Success(artists)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getAlbumsForArtist(artistId: String): Result<List<Album>> {
+        return try {
+            val response = service.getArtist(artistId)
+            val albums = response.response.artist?.album
+                ?.map { it.toAlbum(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(albums)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getAlbumListByType(type: String, size: Int = 10): Result<List<Album>> {
+        return try {
+            val response = service.getAlbumList(type = type, size = size)
+            val albums = response.response.albumList2?.album
+                ?.map { it.toAlbum(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(albums)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getRandomSongs(size: Int = 20): Result<List<Song>> {
+        return try {
+            val response = service.getAlbumList(type = "random", size = size)
+            // random devuelve albums, tomamos el primer song de cada uno como suggestion
+            val songs = response.response.albumList2?.album
+                ?.map { it.toAlbum(baseUrl, username, password).safeGetFirstSong() }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun getStarredSongs(): Result<List<Song>> {
+        return try {
+            val response = service.getStarred()
+            val songs = response.response.starred2?.song
+                ?.map { it.toSong(baseUrl, username, password) }
+                ?: emptyList()
+            Result.Success(songs)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun starSong(subsonicId: String): Result<Unit> {
+        return try {
+            service.star(subsonicId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun unstarSong(subsonicId: String): Result<Unit> {
+        return try {
+            service.unstar(subsonicId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+    suspend fun scrobbleSong(subsonicId: String): Result<Unit> {
+        return try {
+            service.scrobble(subsonicId)
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+
+
+    suspend fun testConnection(): Result<String> {
+        return try {
+            val response = service.search(query = "", songCount = 1)
+            if (response.response.status == "ok") {
+                Result.Success(response.response.version)
+            } else {
+                val msg = response.response.error?.message ?: "Unknown error"
+                Result.Error(Exception(msg))
+            }
+        } catch (e: Exception) {
+            Result.Error(e)
+        }
+    }
+}

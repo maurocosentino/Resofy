@@ -1,17 +1,3 @@
-/*
- * Copyright (c) 2020 Hemanth Savarla.
- *
- * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
- */
 package com.resofy.music.fragments.settings
 
 import android.content.res.ColorStateList
@@ -28,27 +14,60 @@ import com.resofy.music.R
 import com.resofy.music.databinding.FragmentMainSettingsBinding
 import com.resofy.music.extensions.drawAboveSystemBarsWithPadding
 import com.resofy.music.extensions.goToProVersion
-
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.resofy.music.extensions.installLanguageAndRecreate
+import com.resofy.music.util.PreferenceUtil
 class MainSettingsFragment : Fragment(), View.OnClickListener {
 
     private var _binding: FragmentMainSettingsBinding? = null
     private val binding get() = _binding!!
 
-
     override fun onClick(view: View) {
+        if (view.id == R.id.languageSettings) {
+            showLanguageDialog()
+            return
+        }
         findNavController().navigate(
             when (view.id) {
-                R.id.generalSettings -> R.id.action_mainSettingsFragment_to_themeSettingsFragment
+                R.id.generalSettings -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
                 R.id.audioSettings -> R.id.action_mainSettingsFragment_to_audioSettings
-                R.id.personalizeSettings -> R.id.action_mainSettingsFragment_to_personalizeSettingsFragment
                 R.id.imageSettings -> R.id.action_mainSettingsFragment_to_imageSettingFragment
-                R.id.otherSettings -> R.id.action_mainSettingsFragment_to_otherSettingsFragment
                 R.id.aboutSettings -> R.id.action_mainSettingsFragment_to_aboutActivity
-                R.id.nowPlayingSettings -> R.id.action_mainSettingsFragment_to_nowPlayingSettingsFragment
                 R.id.backup_restore_settings -> R.id.action_mainSettingsFragment_to_backupFragment
-                else -> R.id.action_mainSettingsFragment_to_themeSettingsFragment
+                R.id.serverSettings -> R.id.action_mainSettingsFragment_to_musicProvidersFragment
+                else -> R.id.action_mainSettingsFragment_to_appearanceSettingsFragment
             }
         )
+    }
+
+    private fun showLanguageDialog() {
+        val names = resources.getStringArray(R.array.pref_language_names)
+        val codes = resources.getStringArray(R.array.pref_language_codes)
+
+        val currentCode = AppCompatDelegate.getApplicationLocales()
+            .toLanguageTags().ifEmpty { "auto" }
+        val currentIndex = codes.indexOf(currentCode).takeIf { it >= 0 } ?: 0
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.pref_language_name)
+            .setSingleChoiceItems(names, currentIndex) { dialog, which ->
+                val selected = codes[which]
+                PreferenceUtil.languageCode = selected
+                if (selected == "auto") {
+                    AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+                } else {
+                    requireActivity().installLanguageAndRecreate(selected) {
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.forLanguageTags(selected)
+                        )
+                    }
+                }
+                dialog.dismiss()
+            }
+            .setNegativeButton(R.string.cancel, null)
+            .show()
     }
 
     override fun onCreateView(
@@ -65,12 +84,11 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
 
         binding.generalSettings.setOnClickListener(this)
         binding.audioSettings.setOnClickListener(this)
-        binding.nowPlayingSettings.setOnClickListener(this)
-        binding.personalizeSettings.setOnClickListener(this)
         binding.imageSettings.setOnClickListener(this)
-        binding.otherSettings.setOnClickListener(this)
         binding.aboutSettings.setOnClickListener(this)
         binding.backupRestoreSettings.setOnClickListener(this)
+        binding.serverSettings.setOnClickListener(this)
+        binding.languageSettings.setOnClickListener(this)
 
         binding.buyProContainer.apply {
             isGone = App.isProVersion()

@@ -12,20 +12,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:paddingBottom="@dimen/mini_player_height">
 
+        <!-- Buy Pro Card (sin cambios funcionales) -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/buyProContainer"
             style="@style/MaterialCardViewStroke"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="4dp"
-            app:cardCornerRadius="8dp">
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="4dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
@@ -94,81 +96,156 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/generalSettings"
+        <!-- Music Providers -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_palette"
-            app:settingListItemIconColor="@color/md_blue_A400"
-            app:settingListItemText="@string/general_settings_summary"
-            app:settingListItemTitle="@string/general_settings_title" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/nowPlayingSettings"
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/serverSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/avd_music_note"
+                app:settingListItemIconColor="@color/lrc_current_text_color"
+                app:settingListItemText="Local · Navidrome · Subsonic"
+                app:settingListItemTitle="@string/music_providers" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Look and Feel -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_play_circle_filled"
-            app:settingListItemIconColor="@color/md_red_A400"
-            app:settingListItemText="@string/now_playing_summary"
-            app:settingListItemTitle="@string/now_playing" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/audioSettings"
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/generalSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/ic_palette"
+                app:settingListItemIconColor="@color/md_blue_A400"
+                app:settingListItemText="@string/general_settings_summary"
+                app:settingListItemTitle="@string/general_settings_title" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Audio -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_volume_up"
-            app:settingListItemIconColor="@color/md_deep_purple_A400"
-            app:settingListItemText="@string/audio_settings_summary"
-            app:settingListItemTitle="@string/pref_header_audio" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/personalizeSettings"
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/audioSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/ic_volume_up"
+                app:settingListItemIconColor="@color/md_deep_purple_A400"
+                app:settingListItemText="@string/audio_settings_summary"
+                app:settingListItemTitle="@string/pref_header_audio" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Images -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_hdr_strong"
-            app:settingListItemIconColor="@color/md_teal_A400"
-            app:settingListItemText="@string/personalize_settings_summary"
-            app:settingListItemTitle="@string/personalize" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/imageSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/ic_image"
+                app:settingListItemIconColor="@color/md_deep_orange_A400"
+                app:settingListItemText="@string/image_settings_summary"
+                app:settingListItemTitle="@string/pref_header_images" />
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/imageSettings"
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Backup & Restore -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_image"
-            app:settingListItemIconColor="@color/md_deep_orange_A400"
-            app:settingListItemText="@string/image_settings_summary"
-            app:settingListItemTitle="@string/pref_header_images" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/otherSettings"
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/backup_restore_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/ic_restore"
+                app:settingListItemIconColor="@color/default_blue_light"
+                app:settingListItemText="@string/backup_restore_settings_summary"
+                app:settingListItemTitle="@string/backup_restore_title" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- About -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_testing"
-            app:settingListItemIconColor="@color/md_indigo_A400"
-            app:settingListItemText="@string/other_settings_summary"
-            app:settingListItemTitle="@string/others" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/backup_restore_settings"
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/aboutSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/ic_info_outline"
+                app:settingListItemIconColor="@color/md_light_green_A400"
+                app:settingListItemText="@string/about_settings_summary"
+                app:settingListItemTitle="@string/action_about" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Language -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_restore"
-            app:settingListItemIconColor="@color/md_cyan_400"
-            app:settingListItemText="@string/backup_restore_settings_summary"
-            app:settingListItemTitle="@string/backup_restore_title" />
+            android:layout_marginBottom="6dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="?attr/colorSurfaceContainerHigh"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
-        <com.resofy.music.views.SettingListItemView
-            android:id="@+id/aboutSettings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:settingListItemIcon="@drawable/ic_info_outline"
-            app:settingListItemIconColor="@color/md_light_green_A400"
-            app:settingListItemText="@string/about_settings_summary"
-            app:settingListItemTitle="@string/action_about" />
+            <com.resofy.music.views.SettingListItemView
+                android:id="@+id/languageSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:settingListItemIcon="@drawable/ic_language"
+                app:settingListItemIconColor="@color/md_teal_A400"
+                app:settingListItemText="@string/pref_language_name"
+                app:settingListItemTitle="@string/pref_language_name" />
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
