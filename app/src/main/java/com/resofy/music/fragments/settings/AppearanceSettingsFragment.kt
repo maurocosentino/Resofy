@@ -84,6 +84,40 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
             true
         }
 
+        // ocultos pero con lógica mantenida para no romper dependencias
+        val blackTheme: ATESwitchPreference? = findPreference(BLACK_THEME)
+        blackTheme?.isVisible = false
+        blackTheme?.setOnPreferenceChangeListener { _, _ ->
+            ThemeStore.markChanged(requireContext())
+            if (VersionUtils.hasNougatMR()) {
+                requireActivity().setTheme(PreferenceUtil.themeResFromPrefValue("black"))
+                DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
+            }
+            restartActivity()
+            true
+        }
+
+        val materialYou: ATESwitchPreference? = findPreference(MATERIAL_YOU)
+        materialYou?.isVisible = false
+        materialYou?.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue as Boolean) {
+                DynamicColors.applyToActivitiesIfAvailable(App.getContext())
+            }
+            restartActivity()
+            true
+        }
+
+        val colorAppShortcuts: TwoStatePreference? = findPreference(SHOULD_COLOR_APP_SHORTCUTS)
+        colorAppShortcuts?.isVisible = false
+        if (VersionUtils.hasNougatMR()) {
+            colorAppShortcuts?.isChecked = PreferenceUtil.isColoredAppShortcuts
+            colorAppShortcuts?.setOnPreferenceChangeListener { _, newValue ->
+                PreferenceUtil.isColoredAppShortcuts = newValue as Boolean
+                DynamicShortcutManager(requireContext()).updateDynamicShortcuts()
+                true
+            }
+        }
+
         // ── Color desaturado ──
         val desaturatedColor: ATESwitchPreference? = findPreference(DESATURATED_COLOR)
         desaturatedColor?.setOnPreferenceChangeListener { _, value ->
@@ -114,6 +148,27 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
         val adaptiveColor: ATESwitchPreference? = findPreference(ADAPTIVE_COLOR_APP)
         adaptiveColor?.isEnabled =
             PreferenceUtil.nowPlayingScreen in listOf(Normal, Material, Flat)
+
+        // ── Efecto carrusel: oculto ──
+        val carouselEffect: TwoStatePreference? = findPreference(CAROUSEL_EFFECT)
+        carouselEffect?.isVisible = false
+
+        // ── Efecto nieve: oculto ──
+        val snowfall: TwoStatePreference? = findPreference(SNOWFALL)
+        snowfall?.isVisible = false
+
+        // ── Estilo álbum: oculto ──
+        val albumCoverStyle: Preference? = findPreference(ALBUM_COVER_STYLE)
+        albumCoverStyle?.isVisible = false
+
+        // ── Blur: oculto ──
+        val blurAmount: Preference? = findPreference(NEW_BLUR_AMOUNT)
+        blurAmount?.isVisible = false
+
+        // ── Cuadrícula artista/álbum y banner: ocultos ──
+        findPreference<ATEListPreference>(HOME_ARTIST_GRID_STYLE)?.isVisible = false
+        findPreference<ATEListPreference>(HOME_ALBUM_GRID_STYLE)?.isVisible = false
+        findPreference<ATESwitchPreference>(TOGGLE_HOME_BANNER)?.isVisible = false
 
         // ── Pantalla de bloqueo ──
         val albumArtOnLockscreen: ATESwitchPreference? = findPreference(ALBUM_ART_ON_LOCK_SCREEN)
@@ -151,15 +206,6 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_appearance)
-
-        requireContext().getSharedPreferences(
-            "${requireContext().packageName}_preferences",
-            android.content.Context.MODE_PRIVATE
-        ).edit()
-            .putBoolean(MATERIAL_YOU, false)
-            .putBoolean(BLACK_THEME, false)
-            .apply()
-
         val wallpaperAccent: ATESwitchPreference? = findPreference(WALLPAPER_ACCENT)
         wallpaperAccent?.isVisible = VersionUtils.hasOreoMR1() && !VersionUtils.hasS()
     }
@@ -200,7 +246,7 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
         when (key) {
             NOW_PLAYING_SCREEN_ID -> updateNowPlayingScreenSummary()
-            CIRCULAR_ALBUM_ART -> invalidateSettings()
+            CIRCULAR_ALBUM_ART, CAROUSEL_EFFECT -> invalidateSettings()
         }
     }
 }

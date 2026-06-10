@@ -19,13 +19,11 @@ fun Context.getThemeResValue(): Int =
             DARK -> R.style.Theme_Resofy_Base
             BLACK -> R.style.Theme_Resofy_Black
             AUTO -> R.style.Theme_Resofy_FollowSystem
-            GRUVBOX -> R.style.Theme_Resofy_Gruvbox
         }
     }
 
 fun Context.getNightMode(): Int = when (generalThemeValue) {
     LIGHT -> AppCompatDelegate.MODE_NIGHT_NO
     DARK -> AppCompatDelegate.MODE_NIGHT_YES
-    GRUVBOX -> AppCompatDelegate.MODE_NIGHT_YES
     else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 }

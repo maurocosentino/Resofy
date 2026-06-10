@@ -19,6 +19,19 @@
             app:icon="@drawable/ic_palette_outline" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            android:key="black_theme"
+            android:layout="@layout/list_item_view_switch_no_title"
+            android:title="@string/black_theme_name" />
+
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            android:defaultValue="@bool/md3_enabled"
+            android:disableDependentsState="true"
+            android:key="material_you"
+            android:layout="@layout/list_item_view_switch_no_title"
+            android:title="@string/pref_title_md3"
+            app:isPreferenceVisible="@bool/md3_available" />
+
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
             android:defaultValue="false"
             android:key="custom_font"
             android:layout="@layout/list_item_view_switch_no_title"
@@ -32,6 +45,7 @@
             android:title="@string/pref_title_wallpaper_accent" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEColorPreference
+            android:dependency="material_you"
             android:key="accent_color"
             android:layout="@layout/list_item_color_view"
             android:persistent="false"
@@ -41,6 +55,7 @@
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
             android:defaultValue="false"
+            android:dependency="material_you"
             android:key="desaturated_color"
             android:layout="@layout/list_item_view_switch"
             android:summary="@string/pref_summary_desaturated_color"
@@ -52,6 +67,25 @@
             android:layout="@layout/list_item_view_switch"
             android:summary="@string/pref_summary_colored_app"
             android:title="@string/pref_title_colored_app" />
+
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            android:defaultValue="false"
+            android:dependency="material_you"
+            android:key="should_color_app_shortcuts"
+            android:layout="@layout/list_item_view_switch"
+            android:summary="@string/pref_summary_colored_app_shortcuts"
+            android:title="@string/pref_title_app_shortcuts" />
+
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
+            android:defaultValue="auto"
+            android:entries="@array/pref_language_names"
+            android:entryValues="@array/pref_language_codes"
+            android:key="language_name"
+            android:layout="@layout/list_item_view"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_language_name"
+            app:icon="@drawable/ic_language" />
 
     </code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
 
@@ -73,6 +107,11 @@
             android:summary="@string/pref_summary_extra_song_info"
             android:title="@string/pref_title_extra_song_info" />
 
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            android:defaultValue="false"
+            android:key="snowfall"
+            android:layout="@layout/list_item_view_switch_no_title"
+            android:title="@string/pref_snow_fall_title" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
             android:defaultValue="0"
@@ -114,6 +153,20 @@
                 android:layout="@layout/list_item_view"
                 android:title="@string/pref_title_album_cover_transform" />
 
+            <com.resofy.music.preferences.AlbumCoverStylePreference
+                android:key="album_cover_style_id"
+                android:layout="@layout/list_item_view"
+                android:title="@string/pref_title_album_cover_style"
+                app:icon="@drawable/ic_image" />
+
+            <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+                android:layout="@layout/list_item_view_switch"
+                app:defaultValue="false"
+                app:icon="@drawable/ic_view_carousel"
+                app:key="carousel_effect"
+                app:summary="@string/pref_summary_carousel_effect"
+                app:title="@string/pref_title_toggle_carousel_effect" />
+
         </code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory
@@ -151,6 +204,16 @@
                 app:summary="@string/pref_summary_expand_now_playing_panel"
                 app:title="@string/pref_title_expand_now_playing_panel" />
 
+            <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESeekBarPreference
+                android:defaultValue="12"
+                android:key="new_blur_amount"
+                android:layout="@layout/list_item_view_seekbar"
+                android:max="25"
+                android:summary="@string/pref_blur_amount_summary"
+                android:title="@string/pref_blur_amount_title"
+                app:ateKey_pref_unit="px"
+                app:icon="@drawable/ic_blur_on"
+                app:showSeekBarValue="true" />
 
         </code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
 
@@ -174,6 +237,13 @@
             android:layout="@layout/list_item_view_switch"
             android:summary="@string/pref_summary_pause_history"
             android:title="@string/pref_title_pause_history" />
+
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            android:defaultValue="false"
+            android:key="toggle_home_banner"
+            android:layout="@layout/list_item_view_switch"
+            android:summary="@string/pref_summary_home_banner"
+            android:title="@string/pref_title_home_banner" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
             android:defaultValue="0"
@@ -218,7 +288,7 @@
             android:title="@string/pref_title_enable_search_playlist" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
-            android:defaultValue="1"
+            android:defaultValue="0"
             android:entries="@array/pref_tab_text_mode_titles"
             android:entryValues="@array/pref_tab_text_mode_values"
             android:key="tab_text_mode"
@@ -228,7 +298,7 @@
             android:title="@string/pref_title_tab_text_mode" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
-            android:defaultValue="0"
+            android:defaultValue="1"
             android:entries="@array/pref_appbar_mode_titles"
             android:entryValues="@array/pref_appbar_mode_values"
             android:key="appbar_mode"
