@@ -7,63 +7,60 @@
     android:padding="16dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/server_name_hint"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:hint="@string/server_name_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etServerName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/server_url_hint"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:hint="@string/server_url_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etServerUrl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:placeholderText="http://192.168.1.100:4533"
-            android:inputType="textUri" />
-
+            android:inputType="textUri"
+            app:placeholderText="http://192.168.1.100:4533" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/server_username_hint"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:hint="@string/server_username_hint">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etServerUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/server_password_hint">
+        android:hint="@string/server_password_hint"
+        app:endIconMode="password_toggle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etServerPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
-
     </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>
