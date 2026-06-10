@@ -14,12 +14,17 @@ open class ATHActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTime = System.currentTimeMillis()
+        updateTime = ThemeStore.prefs(this).getLong(
+            ThemeStorePrefKeys.VALUES_CHANGED, System.currentTimeMillis()
+        )
     }
 
     override fun onResume() {
         super.onResume()
-        if (ATH.didThemeValuesChange(this, updateTime)) {
+        val valuesChanged = ThemeStore.prefs(this).getLong(
+            ThemeStorePrefKeys.VALUES_CHANGED, -1L
+        )
+        if (valuesChanged != -1L && ATH.didThemeValuesChange(this, updateTime)) {
             onThemeChanged()
         }
     }

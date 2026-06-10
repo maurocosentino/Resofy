@@ -98,7 +98,7 @@ class AppearanceSettingsFragment : AbsSettingsFragment(),
         }
 
         val materialYou: ATESwitchPreference? = findPreference(MATERIAL_YOU)
-        materialYou?.isVisible = false
+        materialYou?.isVisible = true
         materialYou?.setOnPreferenceChangeListener { _, newValue ->
             if (newValue as Boolean) {
                 DynamicColors.applyToActivitiesIfAvailable(App.getContext())

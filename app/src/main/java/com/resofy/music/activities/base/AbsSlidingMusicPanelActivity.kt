@@ -240,13 +240,19 @@ abstract class AbsSlidingMusicPanelActivity : AbsMusicServiceActivity(),
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        bottomSheetBehavior.removeBottomSheetCallback(bottomSheetCallbackList)
+    override fun onPause() {
+        super.onPause()
         PreferenceUtil.unregisterOnSharedPreferenceChangedListener(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        bottomSheetBehavior.removeBottomSheetCallback(bottomSheetCallbackList)
+    }
+
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String?) {
+        android.util.Log.d("RESOFY_PREF", "onSharedPreferenceChanged: key=$key")
         when (key) {
             SWIPE_DOWN_DISMISS -> {
                 bottomSheetBehavior.isHideable = PreferenceUtil.swipeDownToDismiss
@@ -295,7 +301,9 @@ abstract class AbsSlidingMusicPanelActivity : AbsMusicServiceActivity(),
             }
 
             TOGGLE_FULL_SCREEN -> {
-                recreate()
+                if (sharedPreferences.getBoolean(TOGGLE_FULL_SCREEN, false) != PreferenceUtil.isFullScreenMode) {
+                    recreate()
+                }
             }
 
             SCREEN_ON_LYRICS -> {

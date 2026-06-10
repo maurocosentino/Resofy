@@ -3,7 +3,7 @@
     <string name="about_album_label">Acerca de %s</string>
     <string name="about_settings_summary">Equipo, enlaces sociales</string>
     <string name="accent_color">Color de énfasis</string>
-    <string name="accent_color_desc">El color de énfasis del tema, por defecto es morado</string>
+    <string name="accent_color_desc">El color de énfasis del tema, por defecto es rojo</string>
     <string name="action_about">Acerca de</string>
     <string name="action_add_to_blacklist">Añadir a Lista negra</string>
     <string name="action_add_to_favorites">Añadir a favoritos</string>

@@ -129,7 +129,6 @@
         <item>Spanish</item>
     </string-array>
     <string-array name="pref_language_codes">
-        <item>auto</item>
         <item>en</item>
         <item>es</item>
     </string-array>

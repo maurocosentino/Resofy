@@ -77,3 +77,8 @@
 -keep class com.google.gson.reflect.TypeToken
 -keep class * extends com.google.gson.reflect.TypeToken
 -keep public class * implements java.lang.reflect.Type
+# Resofy network and model classes
+-keep class com.resofy.music.model.** { *; }
+-keep class com.resofy.music.network.** { *; }
+-keep class com.resofy.music.network.subsonic.** { *; }
+-keep class com.resofy.music.db.** { *; }

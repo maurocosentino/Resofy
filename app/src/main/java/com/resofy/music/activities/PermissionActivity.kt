@@ -102,9 +102,8 @@ class PermissionActivity : AbsMusicServiceActivity() {
         val appName =
             getString(
                 R.string.message_welcome,
-                "<b>Retro <span  style='color:$hexColor';>Music</span></b>"
-            )
-                .parseAsHtml()
+                "<b>Resofy <span style='color:$hexColor';>Music</span></b>"
+            ).parseAsHtml()
         binding.appNameText.text = appName
     }
 
