@@ -178,6 +178,9 @@ class HomeAdapter(private val activity: AppCompatActivity) :
     private inner class SuggestedArtistsViewHolder(view: View) : AbsHomeViewItem(view) {
         fun bindView(home: Home) {
             title.setText(home.titleRes)
+            itemView.findViewById<View>(R.id.arrow).isVisible = false
+            itemView.findViewById<View>(R.id.clickable_area).isClickable = false
+            itemView.findViewById<View>(R.id.clickable_area).isFocusable = false
             recyclerView.apply {
                 layoutManager = linearLayoutManager()
                 adapter = ArtistAdapter(
