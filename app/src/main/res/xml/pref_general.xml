@@ -24,6 +24,13 @@
 
     </code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
 
+    <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+        android:defaultValue="true"
+        android:key="material_you"
+        android:layout="@layout/list_item_view_switch"
+        android:summary="@string/pref_summary_material_you"
+        android:title="@string/pref_title_material_you" />
+
     <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory
         android:key="category_color"
         android:layout="@layout/preference_category_title"

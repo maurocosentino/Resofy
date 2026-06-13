@@ -57,9 +57,10 @@ abstract class AbsThemeActivity : ATHToolbarActivity(), Runnable {
 
     private fun updateLocale() {
         val localeCode = PreferenceUtil.languageCode
-        if (PreferenceUtil.isLocaleAutoStorageEnabled) {
+        if (localeCode == "auto") {
+            AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList())
+        } else {
             AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(localeCode))
-            PreferenceUtil.isLocaleAutoStorageEnabled = true
         }
     }
 

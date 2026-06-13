@@ -41,11 +41,16 @@ class App : Application() {
             modules(appModules)
         }
         // default theme
-        if (!ThemeStore.isConfigured(this, 3)) {
+        if (!ThemeStore.isConfigured(this, 8)) {
             ThemeStore.editTheme(this)
-                .accentColorRes(code.name.monkey.appthemehelper.R.color.md_deep_purple_A200)
+                .accentColor(android.graphics.Color.parseColor("#E53935"))
                 .coloredNavigationBar(true)
                 .commit()
+            getSharedPreferences("${packageName}_preferences", MODE_PRIVATE)
+                .edit()
+                .putString("appbar_mode", "0")
+                .putBoolean("material_you", false)
+                .apply()
         }
         wallpaperAccentManager.init()
 

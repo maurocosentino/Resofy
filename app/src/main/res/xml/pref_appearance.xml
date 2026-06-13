@@ -19,6 +19,14 @@
             app:icon="@drawable/ic_palette_outline" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
+            android:defaultValue="@bool/md3_enabled"
+            android:disableDependentsState="true"
+            android:key="material_you"
+            android:layout="@layout/list_item_view_switch_no_title"
+            android:title="@string/pref_title_md3"
+            app:isPreferenceVisible="@bool/md3_available" />
+
+        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
             android:defaultValue="false"
             android:key="custom_font"
             android:layout="@layout/list_item_view_switch_no_title"
@@ -32,6 +40,7 @@
             android:title="@string/pref_title_wallpaper_accent" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEColorPreference
+            android:dependency="material_you"
             android:key="accent_color"
             android:layout="@layout/list_item_color_view"
             android:persistent="false"
@@ -41,6 +50,7 @@
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
             android:defaultValue="false"
+            android:dependency="material_you"
             android:key="desaturated_color"
             android:layout="@layout/list_item_view_switch"
             android:summary="@string/pref_summary_desaturated_color"
@@ -72,7 +82,6 @@
             android:layout="@layout/list_item_view_switch"
             android:summary="@string/pref_summary_extra_song_info"
             android:title="@string/pref_title_extra_song_info" />
-
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
             android:defaultValue="0"
@@ -151,7 +160,6 @@
                 app:summary="@string/pref_summary_expand_now_playing_panel"
                 app:title="@string/pref_title_expand_now_playing_panel" />
 
-
         </code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
 
     </code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreferenceCategory>
@@ -175,27 +183,6 @@
             android:summary="@string/pref_summary_pause_history"
             android:title="@string/pref_title_pause_history" />
 
-        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
-            android:defaultValue="0"
-            android:entries="@array/pref_home_grid_style_list_titles"
-            android:entryValues="@array/pref_home_grid_style_list_values"
-            android:key="home_artist_grid_style"
-            android:layout="@layout/list_item_view"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:title="@string/pref_title_home_artist_grid_style"
-            app:icon="@drawable/ic_home" />
-
-        <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
-            android:defaultValue="4"
-            android:entries="@array/pref_home_grid_style_list_titles"
-            android:entryValues="@array/pref_home_grid_style_list_values"
-            android:key="home_album_grid_style"
-            android:layout="@layout/list_item_view"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"
-            android:title="@string/pref_title_home_album_grid_style" />
-
         <com.resofy.music.preferences.LibraryPreference
             android:key="library_categories"
             android:layout="@layout/list_item_view"
@@ -218,7 +205,7 @@
             android:title="@string/pref_title_enable_search_playlist" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
-            android:defaultValue="1"
+            android:defaultValue="0"
             android:entries="@array/pref_tab_text_mode_titles"
             android:entryValues="@array/pref_tab_text_mode_values"
             android:key="tab_text_mode"
@@ -228,7 +215,7 @@
             android:title="@string/pref_title_tab_text_mode" />
 
         <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEListPreference
-            android:defaultValue="0"
+            android:defaultValue="1"
             android:entries="@array/pref_appbar_mode_titles"
             android:entryValues="@array/pref_appbar_mode_values"
             android:key="appbar_mode"

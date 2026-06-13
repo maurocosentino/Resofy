@@ -364,8 +364,8 @@ class LibraryViewModel(
 
     fun addToPlaylist(context: Context, playlistName: String, songs: List<Song>) {
         viewModelScope.launch(IO) {
-            val playlists = checkPlaylistExists(playlistName)
-            if (playlists.isEmpty()) {
+            val existingPlaylists = checkPlaylistExists(playlistName)
+            if (existingPlaylists.isEmpty()) {
                 val playlistId: Long =
                     createPlaylist(PlaylistEntity(playlistName = playlistName))
                 insertSongs(songs.map { it.toSongEntity(playlistId) })
@@ -378,14 +378,14 @@ class LibraryViewModel(
                     )
                 }
             } else {
-                val playlist = playlists.firstOrNull()
+                val playlist = existingPlaylists.firstOrNull()
                 if (playlist != null) {
                     insertSongs(songs.map {
                         it.toSongEntity(playListId = playlist.playListId)
                     })
                 }
             }
-            forceReload(Playlists)
+            playlists.postValue(repository.fetchPlaylistWithSongs())
             withContext(Main) {
                 context.showToast(
                     context.getString(

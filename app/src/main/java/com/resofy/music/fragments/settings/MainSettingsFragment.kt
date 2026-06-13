@@ -1,11 +1,9 @@
 package com.resofy.music.fragments.settings
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import code.name.monkey.appthemehelper.ThemeStore
@@ -13,7 +11,6 @@ import com.resofy.music.App
 import com.resofy.music.R
 import com.resofy.music.databinding.FragmentMainSettingsBinding
 import com.resofy.music.extensions.drawAboveSystemBarsWithPadding
-import com.resofy.music.extensions.goToProVersion
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -89,20 +86,6 @@ class MainSettingsFragment : Fragment(), View.OnClickListener {
         binding.backupRestoreSettings.setOnClickListener(this)
         binding.serverSettings.setOnClickListener(this)
         binding.languageSettings.setOnClickListener(this)
-
-        binding.buyProContainer.apply {
-            isGone = App.isProVersion()
-            setOnClickListener {
-                requireContext().goToProVersion()
-            }
-        }
-        binding.buyPremium.setOnClickListener {
-            requireContext().goToProVersion()
-        }
-        ThemeStore.accentColor(requireContext()).let {
-            binding.buyPremium.setTextColor(it)
-            binding.diamondIcon.imageTintList = ColorStateList.valueOf(it)
-        }
 
         binding.container.drawAboveSystemBarsWithPadding()
     }
