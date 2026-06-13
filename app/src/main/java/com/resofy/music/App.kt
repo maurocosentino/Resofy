@@ -41,7 +41,7 @@ class App : Application() {
             modules(appModules)
         }
         // default theme
-        if (!ThemeStore.isConfigured(this, 7)) {
+        if (!ThemeStore.isConfigured(this, 8)) {
             ThemeStore.editTheme(this)
                 .accentColor(android.graphics.Color.parseColor("#E53935"))
                 .coloredNavigationBar(true)
